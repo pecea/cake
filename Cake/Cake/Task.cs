@@ -45,6 +45,7 @@
         {
             this.name = name;
             dependencies = new List<string>();
+            action = () => { };
             TaskManager.RegisterTask(this);
         }
 
@@ -80,7 +81,7 @@
         {
             action();
             Done = true;
-            Logger.Log(LogLevel.Debug, String.Format("Task {0} executed.", Name));
+            Logger.Log(LogLevel.Debug, String.Format("Task \"{0}\" executed.", Name));
         }
     }
 }

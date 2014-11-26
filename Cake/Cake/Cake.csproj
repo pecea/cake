@@ -57,6 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoslynEngine.cs" />
     <Compile Include="Task.cs" />
+    <Compile Include="TaskException.cs" />
     <Compile Include="TaskManager.cs" />
   </ItemGroup>
   <ItemGroup>

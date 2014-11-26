@@ -44,11 +44,11 @@
             foreach (var assembly in GetExternalAssemblies())
             {
                 Session.AddReference(assembly);
-                Logger.Log(LogLevel.Debug, String.Format("Assembly [{0}] referenced. Importing namespaces from this assembly.", assembly.FullName));
+                Logger.Log(LogLevel.Debug, String.Format("Assembly \"{0}\" referenced. Importing namespaces from this assembly.", assembly.FullName));
                 foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
                 {
                     Session.ImportNamespace(type.FullName);
-                    Logger.Log(LogLevel.Debug, String.Format("Namespace {0} imported.", type.FullName));
+                    Logger.Log(LogLevel.Debug, String.Format("Namespace \"{0}\" imported.", type.FullName));
                 }
             }
         }

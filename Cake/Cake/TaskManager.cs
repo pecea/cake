@@ -27,7 +27,7 @@
         public static void RegisterTask(Task task)
         {
             Tasks.Add(task.Name, task);
-            Logger.Log(LogLevel.Debug, String.Format("Task {0} registered.", task.Name));
+            Logger.Log(LogLevel.Debug, String.Format("Task \"{0}\" registered.", task.Name));
         }
 
         /// <summary>
@@ -50,7 +50,18 @@
         /// <param name="name">A <see cref="Task"/> to be executed.</param>
         private static void RunTaskWithDependencies(string name)
         {
-            var task = Tasks[name];
+            Task task;
+            try
+            {
+                task = Tasks[name];
+            }
+            catch (KeyNotFoundException e)
+            {
+                var taskException = new TaskException(String.Format("Could not find the definition of Task \"{0}\".", name), e.Source);
+                Logger.LogException(LogLevel.Fatal, taskException, "A fatal error has occured.");
+                throw taskException;
+            }
+
             if (task.Done) return;
 
             foreach (var dependency in task.Dependencies)

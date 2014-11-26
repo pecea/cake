@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
 
     using Common;
@@ -22,8 +23,14 @@
         /// <param name="configuration">Build configuration.</param>
         /// <param name="platform">Build platform.</param>
         /// <param name="outputPath">Build output path.</param>
-        public static void BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
+        public static int BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
+            if (!File.Exists(projectFile))
+            {
+                Logger.Log(LogLevel.Error, "The project file specified is nonexistent.");
+                return 1;
+            }
+
             var projectName = projectFile.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Last();
             if (String.IsNullOrEmpty(outputPath))
             {
@@ -35,15 +42,16 @@
             var buildParameters = new BuildParameters(new ProjectCollection()) { Loggers = new List<ILogger>(new ILogger[] { }) };
             var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
 
+
             switch (buildResult.OverallResult)
             {
                 case BuildResultCode.Success:
                     Logger.Log(LogLevel.Info, String.Format("{0} built successfully.", projectName));
-                    break;
+                    return 0;
                 case BuildResultCode.Failure:
                     if (buildResult.Exception != null) Logger.LogException(LogLevel.Error, buildResult.Exception, String.Format("Building {0} failed.", projectName));
                     else Logger.Log(LogLevel.Error, String.Format("Building {0} failed.", projectName));
-                    break;
+                    return 1;
                 default:
                     throw new ArgumentOutOfRangeException("buildResult.OverallResult");
             }

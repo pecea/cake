@@ -46,11 +46,11 @@
         /// </summary>
         /// <param name="e">Exception to be logged.</param>
         /// <param name="logLevel"><see cref="LogLevel"/> of the log.</param>
-        /// <param name="message">Message to be logged. There will be info appended to it about exception's source and message.</param>
+        /// <param name="message">Message to be logged. There will be info appended to it about exception's type, source and message.</param>
         /// <param name="loggerName">Name of the logger to be used.</param>
         public static void LogException(LogLevel logLevel, Exception e, string message, [CallerMemberName] string loggerName = "Script")
         {
-            Log(logLevel, String.Format("{0} Exception source: {1}. Exception message: {2}", message.Trim(), e.Source, e.Message), loggerName);
+            Log(logLevel, String.Format("{0} ExceptionType: {1}. Exception source: {2}. Exception message: {3}", message.Trim(), e.GetType(), e.Source, e.Message), loggerName);
             LogInnerException(logLevel, e, loggerName);
         }
 
