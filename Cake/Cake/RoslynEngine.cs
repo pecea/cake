@@ -29,7 +29,8 @@
         /// </summary>
         static RoslynEngine()
         {
-            Session = new ScriptEngine().CreateSession();
+            var engine = new ScriptEngine();
+            Session = engine.CreateSession();
 
             Session.AddReference(Assembly.GetEntryAssembly());
 
@@ -38,6 +39,7 @@
 
             foreach (var assembly in GetExternalAssemblies())
             {
+                engine.AddReference(assembly);
                 Session.AddReference(assembly);
                 foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
                 {
