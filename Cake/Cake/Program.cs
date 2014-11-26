@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Common;
+
     /// <summary>
     /// Provides an entry point for the application.
     /// </summary>
@@ -13,11 +15,22 @@
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
         static void Main(string[] args)
         {
-            foreach (var script in args)
+            try
             {
-                RoslynEngine.ExecuteFile(script);
+                foreach (var script in args)
+                {
+                    RoslynEngine.ExecuteFile(script);
+                }
             }
-            Console.ReadKey();
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+            }
+            finally
+            {
+                Logger.Info("Program finished.");
+                Console.ReadKey();
+            }
         }
     }
 }

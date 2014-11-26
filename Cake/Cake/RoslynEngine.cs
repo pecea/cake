@@ -8,6 +8,8 @@
 
     using Cake.Configuration;
 
+    using Common;
+
     using Roslyn.Scripting;
     using Roslyn.Scripting.CSharp;
 
@@ -29,17 +31,17 @@
         /// </summary>
         static RoslynEngine()
         {
-            var engine = new ScriptEngine();
-            Session = engine.CreateSession();
+            Session = new ScriptEngine().CreateSession();
 
             Session.AddReference(Assembly.GetEntryAssembly());
+            Session.AddReference(Assembly.GetAssembly(typeof(Logger)));
 
             Session.ImportNamespace(typeof(Task).Namespace);
             Session.ImportNamespace(typeof(TaskFactory).FullName);
+            Session.ImportNamespace(typeof(Logger).Namespace);
 
             foreach (var assembly in GetExternalAssemblies())
             {
-                engine.AddReference(assembly);
                 Session.AddReference(assembly);
                 foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
                 {
