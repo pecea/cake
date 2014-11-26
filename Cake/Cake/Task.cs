@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Common;
+
     /// <summary>
     /// Represents a task to be executed at some point.
     /// </summary>
@@ -30,20 +32,20 @@
         }
 
         /// <summary>
-        /// Determines whether the task has executed already during <see cref="TaskFactory.RunTask"/> execution.
-        /// After <see cref="TaskFactory.RunTask"/> is finished, it is set to false.
+        /// Determines whether the task has executed already during <see cref="TaskManager.RunTask"/> execution.
+        /// After <see cref="TaskManager.RunTask"/> is finished, it is set to false.
         /// </summary>
         internal bool Done { get; set; }
 
         /// <summary>
-        /// Task constructor that is also registering newly created task to the <see cref="TaskFactory"/>.
+        /// Task constructor that is also registering newly created task to the <see cref="TaskManager"/>.
         /// </summary>
         /// <param name="name"></param>
         public Task(string name)
         {
             this.name = name;
             dependencies = new List<string>();
-            TaskFactory.RegisterTask(this);
+            TaskManager.RegisterTask(this);
         }
 
         /// <summary>
@@ -78,6 +80,7 @@
         {
             action();
             Done = true;
+            Logger.Log(LogLevel.Debug, String.Format("Task {0} executed.", Name));
         }
     }
 }

@@ -1,18 +1,21 @@
 ﻿namespace Cake
 {
+    using System;
     using System.Collections.Generic;
+
+    using Common;
 
     /// <summary>
     /// Registers tasks read from the script, figures out task execution order and executes them.
     /// </summary>
-    public static class TaskFactory
+    public static class TaskManager
     {
         private static readonly Dictionary<string, Task> Tasks;
 
         /// <summary>
-        /// Initialises the <see cref="TaskFactory"/>.
+        /// Initialises the <see cref="TaskManager"/>.
         /// </summary>
-        static TaskFactory()
+        static TaskManager()
         {
             Tasks = new Dictionary<string, Task>();
         }
@@ -24,6 +27,7 @@
         public static void RegisterTask(Task task)
         {
             Tasks.Add(task.Name, task);
+            Logger.Log(LogLevel.Debug, String.Format("Task {0} registered.", task.Name));
         }
 
         /// <summary>

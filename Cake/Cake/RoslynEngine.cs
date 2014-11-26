@@ -37,15 +37,18 @@
             Session.AddReference(Assembly.GetAssembly(typeof(Logger)));
 
             Session.ImportNamespace(typeof(Task).Namespace);
-            Session.ImportNamespace(typeof(TaskFactory).FullName);
+            Session.ImportNamespace(typeof(TaskManager).FullName);
             Session.ImportNamespace(typeof(Logger).Namespace);
 
+            Logger.Log(LogLevel.Debug, "Referencing external assemblies in Roslyn session.");
             foreach (var assembly in GetExternalAssemblies())
             {
                 Session.AddReference(assembly);
+                Logger.Log(LogLevel.Debug, String.Format("Assembly [{0}] referenced. Importing namespaces from this assembly.", assembly.FullName));
                 foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
                 {
                     Session.ImportNamespace(type.FullName);
+                    Logger.Log(LogLevel.Debug, String.Format("Namespace {0} imported.", type.FullName));
                 }
             }
         }
