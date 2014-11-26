@@ -3,8 +3,7 @@
     using System.Configuration;
 
     /// <summary>
-    /// ConfigurationElementCollection class used in AssembliesSection configuration section.
-    /// Contains objects of type AssemblyElement. 
+    /// Defines a configuration collection containing <see cref="AssemblyElement"/>s. 
     /// </summary>
     public class AssemblyCollection : ConfigurationElementCollection
     {
@@ -39,7 +38,7 @@
         }
 
         /// <summary>
-        /// Method used for getting path of the assembly the element is representing.
+        /// Gets path of the assembly the element is representing.
         /// </summary>
         /// <param name="element">Configuration element we want to inspect.</param>
         /// <returns>Path value of the configuration element passed to this method.</returns>

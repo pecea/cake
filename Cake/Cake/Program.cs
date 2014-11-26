@@ -13,22 +13,9 @@
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
         static void Main(string[] args)
         {
-            try
+            foreach (var script in args)
             {
-                foreach (var script in args)
-                {
-                    RoslynEngine.ExecuteFile(script);
-                }
-            }
-            catch (Exception e)
-            {
-                // TODO: log
-                do
-                {
-                    Console.WriteLine(e.Message);
-                    e = e.InnerException;
-                }
-                while (e != null);
+                RoslynEngine.ExecuteFile(script);
             }
             Console.ReadKey();
         }

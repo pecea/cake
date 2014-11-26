@@ -1,7 +1,10 @@
 ﻿namespace Cake
 {
+    using System;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Linq;
+    using System.Reflection;
 
     using Cake.Configuration;
 
@@ -9,26 +12,38 @@
     using Roslyn.Scripting.CSharp;
 
     /// <summary>
-    /// Static class handling Roslyn API and providing access to some of its methods.
+    /// Handles Roslyn API and providing access to some of its methods.
     /// </summary>
     public static class RoslynEngine
     {
         /// <summary>
-        /// Scripting engine's session. For internal usage only.
+        /// Scripting engine's session. 
+        /// For internal usage only.
         /// </summary>
         private static readonly Session Session;
 
         /// <summary>
-        /// Static constructor initialising the engine and adding necessary assemblies.
+        /// Initialises the engine and adds necessary assemblies and namespaces.
+        /// External assemblies are loaded from App.config file.
+        /// From those assemblies all static classes are imported as namespaces containing methods to be used in the script.
         /// </summary>
         static RoslynEngine()
         {
-            var engine = new ScriptEngine();
-            foreach (var path in GetExternalAssembliesPaths())
+            Session = new ScriptEngine().CreateSession();
+
+            Session.AddReference(Assembly.GetEntryAssembly());
+
+            Session.ImportNamespace(typeof(Task).Namespace);
+            Session.ImportNamespace(typeof(TaskFactory).FullName);
+
+            foreach (var assembly in GetExternalAssemblies())
             {
-                engine.AddReference(path);
+                Session.AddReference(assembly);
+                foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
+                {
+                    Session.ImportNamespace(type.FullName);
+                }
             }
-            Session = engine.CreateSession();
         }
 
         /// <summary>
@@ -40,22 +55,32 @@
             Session.ExecuteFile(file);
         }
 
-        private static IEnumerable<string> GetExternalAssembliesPaths()
+        /// <summary>
+        /// Goes through App.config file and loads assemblies from specified paths.
+        /// </summary>
+        /// <returns>A collection of needed assemblies.</returns>
+        private static IEnumerable<Assembly> GetExternalAssemblies()
         {
             var configurationSection = ConfigurationManager.GetSection("assembliesSection") as AssembliesSection;
-            if (configurationSection == null)
-            {
-                yield break; // TODO: log
-            }
+            if (configurationSection == null) yield break;
+
             foreach (var configurationElement in configurationSection.Assemblies)
             {
                 var assemblyElement = configurationElement as AssemblyElement;
-                if (assemblyElement == null)
-                {
-                    yield break; // TODO: log czy continue?
-                }
-                yield return assemblyElement.Path;
+                
+                if (assemblyElement == null) yield break;
+                yield return Assembly.LoadFrom(assemblyElement.Path);
             }
+        }
+
+        /// <summary>
+        /// Determines whether specified type is static.
+        /// </summary>
+        /// <param name="type">The type to be checked.</param>
+        /// <returns>True if the type provided is static, false otherwise.</returns>
+        private static bool IsStatic(this Type type)
+        {
+            return type.IsSealed && type.IsAbstract;
         }
     }
 }
