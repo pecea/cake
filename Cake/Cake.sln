@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build.Tests", "Build.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zip", "Zip\Zip.csproj", "{380C3769-B360-44F5-90A0-B4F1429CF49D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zip.Tests", "Zip.Tests\Zip.Tests.csproj", "{17DB0B59-C1B5-4321-8D5F-A16E1D002A48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{380C3769-B360-44F5-90A0-B4F1429CF49D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{380C3769-B360-44F5-90A0-B4F1429CF49D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{380C3769-B360-44F5-90A0-B4F1429CF49D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17DB0B59-C1B5-4321-8D5F-A16E1D002A48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17DB0B59-C1B5-4321-8D5F-A16E1D002A48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17DB0B59-C1B5-4321-8D5F-A16E1D002A48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17DB0B59-C1B5-4321-8D5F-A16E1D002A48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,5 +67,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6D6B81EE-5BF0-472B-A963-1CF49B937F1C} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 		{C9ACD666-BCC3-47CD-829D-1419C4D5005C} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
+		{17DB0B59-C1B5-4321-8D5F-A16E1D002A48} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 	EndGlobalSection
 EndGlobal

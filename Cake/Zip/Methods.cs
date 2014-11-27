@@ -21,21 +21,22 @@ namespace Zip
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool ZipFiles(string zipName, string[] filePaths, string zipPath = null)
         {
-            CheckZipFilesArguments(filePaths, zipPath);
+            if(!CheckZipFilesArguments(filePaths, zipPath)) return false;
             try
             {
                 using (var zip = new ZipFile())
                 {
-                    zip.AddFiles(filePaths);
+                    zip.AddFiles(filePaths, "");
                     zip.Save(!String.IsNullOrEmpty(zipPath)
                         ? String.Format("{0}/{1}.zip", zipPath, zipName)
                         : string.Format("{0}.zip", zipName));
                     Logger.Log(LogLevel.Info, "{0} zipped succesfully");
                 }
             }
-            catch (Exception ex)
+            catch (FileNotFoundException ex)
             {
                 Logger.LogException(LogLevel.Error, ex, String.Format("Zipping {0}.zip failed", zipName));
+                //throw new FileNotFoundException();
                 return false;
             }
             return true;
@@ -52,12 +53,12 @@ namespace Zip
                 return false;
             try
             {
-                Path.GetFullPath(zipPath);
+                var path=Path.GetFullPath(zipPath);
             }
             catch (Exception)
             {
-                Logger.Log(LogLevel.Error, "The zipPath parameter is not a valid path.");
-                return false;
+                Logger.Log(LogLevel.Warn, "The zipPath parameter is not a valid path.");
+                //return false;
             }
             return true;
         }
