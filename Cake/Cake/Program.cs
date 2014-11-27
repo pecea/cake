@@ -14,14 +14,13 @@
         /// Entry point of the application.
         /// </summary>
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
-        /// <returns>0 if ran successfully, 1 otherwise.</returns>
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
             if (args.Length == 0)
             {
                 Logger.Log(LogLevel.Fatal ,"There was no scripts to execute specified. Run the program with command line arguments equal to the paths of the scripts you want to be executed.");
                 Console.ReadKey();
-                return 1;
+                return;
             }
             Logger.Log(LogLevel.Info, String.Format("Cake started for {0}: {1}", args.Length > 1 ? "scripts" : "script", args.Aggregate((a, b) => String.Format("{0}, {1}", a, b))));
 
@@ -36,12 +35,11 @@
             {
                 Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
                 Console.ReadKey();
-                return 1;
+                return;
             }
 
             Logger.Log(LogLevel.Info, "Cake finished successfully. Press any key to continue...");
             Console.ReadKey();
-            return 0;
         }
     }
 }

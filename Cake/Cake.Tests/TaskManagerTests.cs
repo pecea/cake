@@ -9,7 +9,7 @@
         [ExpectedException(typeof(TaskException), "A dependency on a non existing task was specified.")]
         public void RunTaskWithDependenciesShouldThrowWhenDependencyIsNotFound()
         {
-            var task = new Task("test task").DependsOn("non existing task");
+            new Task("test task").DependsOn("non existing task");
             TaskManager.RunTask("test task");
         }
 
