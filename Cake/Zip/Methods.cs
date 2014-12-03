@@ -27,17 +27,21 @@
             {
                 using (var zip = new ZipFile())
                 {
-                    zip.AddFiles(filePaths, "");
+                    foreach (var path in filePaths)
+                    {
+                        var attributes = File.GetAttributes(path);
+                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
+                        else zip.AddFile(path);
+                    }
                     zip.Save(!String.IsNullOrEmpty(zipPath)
                         ? String.Format("{0}/{1}.zip", zipPath, zipName)
                         : string.Format("{0}.zip", zipName));
-                    Logger.Log(LogLevel.Info, "{0} zipped succesfully");
+                    Logger.Log(LogLevel.Info, String.Format("{0} zipped succesfully", zipName));
                 }
             }
             catch (FileNotFoundException ex)
             {
                 Logger.LogException(LogLevel.Error, ex, String.Format("Zipping {0}.zip failed", zipName));
-                //throw new FileNotFoundException();
                 return false;
             }
             return true;
