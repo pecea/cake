@@ -8,6 +8,9 @@ using Common;
 
 namespace Zip
 {
+    /// <summary>
+    /// Encloses methods used with zipping files.
+    /// </summary>
     public static class Methods
     {
         #region methods
