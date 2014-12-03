@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using Ionic.Zip;
-using Common;
-
-namespace Zip
+﻿namespace Zip
 {
-    /// <summary>
-    /// Encloses methods used with zipping files.
-    /// </summary>
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
+    using Common;
+
+    using Ionic.Zip;
+
     public static class Methods
     {
         #region methods
@@ -24,7 +22,7 @@ namespace Zip
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool ZipFiles(string zipName, string[] filePaths, string zipPath = null)
         {
-            if(!CheckZipFilesArguments(filePaths, zipPath)) return false;
+            if (!CheckZipFilesArguments(filePaths, zipPath)) return false;
             try
             {
                 using (var zip = new ZipFile())
@@ -44,6 +42,7 @@ namespace Zip
             }
             return true;
         }
+
         /// <summary>
         /// Checks if arguments passed to ZipFiles methods are valid.
         /// </summary>
@@ -54,14 +53,17 @@ namespace Zip
         {
             if (filePaths.Any(filePath => !File.Exists(filePath)))
                 return false;
-            try
+            if (zipPath != null)
             {
-                var path=Path.GetFullPath(zipPath);
-            }
-            catch (Exception)
-            {
-                Logger.Log(LogLevel.Warn, "The zipPath parameter is not a valid path.");
-                //return false;
+                try
+                {
+                    var path = Path.GetFullPath(zipPath);
+                }
+                catch (Exception)
+                {
+                    Logger.Log(LogLevel.Warn, "The zipPath parameter is not a valid path.");
+                    return false;
+                }
             }
             return true;
         }
