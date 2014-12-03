@@ -59,7 +59,7 @@
         }
 
         [TestMethod]
-        public void BuildProjectShouldReturFailureIfOutputPathIsInvalid()
+        public void BuildProjectShouldReturnFailureIfOutputPathIsInvalid()
         {
             Assert.AreEqual(true, Methods.BuildProject(@"../../../Common/Common.csproj"));
             Assert.AreEqual(false, Methods.BuildProject(@"../../../Common/Common.csproj", outputPath: "invalid output path?"));
