@@ -43,11 +43,13 @@ namespace Zip.Tests
         {
             Assert.AreEqual(true, Methods.ZipFiles("assert", new [] {"testZipFile.txt"}));
         }
+        /// <summary>
+        /// Test method for invalid zip path in zip files method
+        /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(Exception), "Invalid zip path")]
-        public void ZipFilesShouldThrowWhenZipPathIsNotValid()
+        public void ZipFilesShouldReturnFailureWhenZipPathIsNotValid()
         {
-            Methods.ZipFiles("exception", new[] { "invalid zip path" });
+            Assert.AreEqual(false, Methods.ZipFiles("exception", new[] { "testZipFile.txt" }, "invalid zip path"));
         }
     }
 }

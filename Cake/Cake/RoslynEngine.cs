@@ -39,6 +39,7 @@
             Session.ImportNamespace(typeof(Task).Namespace);
             Session.ImportNamespace(typeof(TaskManager).FullName);
             Session.ImportNamespace(typeof(Logger).Namespace);
+            Session.ImportNamespace(typeof(Logger).FullName);
 
             Logger.Log(LogLevel.Debug, "Referencing external assemblies in Roslyn session.");
             foreach (var assembly in GetExternalAssemblies())

@@ -20,6 +20,7 @@
         /// <param name="filePaths">Paths to files</param>
         /// <param name="zipPath">Path of the zip to save</param>
         /// <returns>true in case of success, false otherwise.</returns>
+        /// TODO: zipName i zipPath do jednego argumentu, filePaths dodać params
         public static bool ZipFiles(string zipName, string[] filePaths, string zipPath = null)
         {
             if (!CheckZipFilesArguments(filePaths, zipPath)) return false;
@@ -33,15 +34,21 @@
                         if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
                         else zip.AddFile(path);
                     }
-                    zip.Save(!String.IsNullOrEmpty(zipPath)
-                        ? String.Format("{0}/{1}.zip", zipPath, zipName)
-                        : string.Format("{0}.zip", zipName));
-                    Logger.Log(LogLevel.Info, String.Format("{0} zipped succesfully", zipName));
+                    zip.Save(
+                        !String.IsNullOrEmpty(zipPath)
+                            ? String.Format("{0}/{1}.zip", zipPath, zipName)
+                            : string.Format("{0}.zip", zipName));
+                    Logger.Log(LogLevel.Info, String.Format("{0} zipped succesfully.", zipName));
                 }
             }
-            catch (FileNotFoundException ex)
+            catch (DirectoryNotFoundException e)
             {
-                Logger.LogException(LogLevel.Error, ex, String.Format("Zipping {0}.zip failed", zipName));
+                Logger.LogException(LogLevel.Error, e, String.Format("Zipping {0}.zip failed.", zipName));
+                return false;
+            }
+            catch (FileNotFoundException e)
+            {
+                Logger.LogException(LogLevel.Error, e, String.Format("Zipping {0}.zip failed.", zipName));
                 return false;
             }
             return true;
@@ -55,8 +62,9 @@
         /// <returns></returns>
         private static bool CheckZipFilesArguments(IEnumerable<string> filePaths, string zipPath)
         {
-            if (filePaths.Any(filePath => !File.Exists(filePath)))
+            if (!filePaths.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)))
                 return false;
+
             if (zipPath != null)
             {
                 try
