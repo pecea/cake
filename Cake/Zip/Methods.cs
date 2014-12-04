@@ -8,7 +8,9 @@
     using Common;
 
     using Ionic.Zip;
-
+    /// <summary>
+    /// Encloses methods used with zipping files.
+    /// </summary>
     public static class Methods
     {
         #region methods
@@ -31,7 +33,7 @@
                     zip.Save(!String.IsNullOrEmpty(zipPath)
                         ? String.Format("{0}/{1}.zip", zipPath, zipName)
                         : string.Format("{0}.zip", zipName));
-                    Logger.Log(LogLevel.Info, "{0} zipped succesfully");
+                    Logger.Log(LogLevel.Info, String.Format("{0} zipped succesfully", zipName));
                 }
             }
             catch (FileNotFoundException ex)
