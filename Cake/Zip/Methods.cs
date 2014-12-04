@@ -8,7 +8,9 @@
     using Common;
 
     using Ionic.Zip;
-
+    /// <summary>
+    /// Encloses methods used with zipping files.
+    /// </summary>
     public static class Methods
     {
         #region methods
@@ -31,7 +33,8 @@
                     foreach (var path in filePaths)
                     {
                         var attributes = File.GetAttributes(path);
-                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
+                        if 
+                            ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
                         else zip.AddFile(path);
                     }
                     zip.Save(
