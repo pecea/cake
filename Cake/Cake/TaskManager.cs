@@ -31,16 +31,27 @@
         }
 
         /// <summary>
-        /// Runs <see cref="RunTaskWithDependencies"/> recursive function and resets <see cref="Task.Done"/> property of each <see cref="Task"/> from <see cref="Tasks"/> after it is finished.
+        /// Runs <see cref="RunTaskWithDependencies"/> recursive function 
+        /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="Tasks"/> after it is finished.
         /// </summary>
-        /// <param name="name">A <see cref="Task"/> to be executed.</param>
+        /// <param name="name">Name of a <see cref="Task"/> to be executed.</param>
         public static void RunTask(string name)
         {
             RunTaskWithDependencies(name);
             foreach (var task in Tasks)
             {
-                task.Value.Done = false;
+                task.Value.Status = TaskStatus.NotVisited;
             }
+        }
+
+        /// <summary>
+        /// Runs <see cref="RunTaskWithDependencies"/> recursive function 
+        /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="Tasks"/> after it is finished.
+        /// </summary>
+        /// <param name="task">A <see cref="Task"/> to be executed.</param>
+        public static void RunTask(Task task)
+        {
+            RunTask(task.Name);
         }
 
         /// <summary>
@@ -62,15 +73,18 @@
                 throw taskException;
             }
 
-            if (task.Done) return;
+            if (task.Status == TaskStatus.Done) return;
+            if (task.Status == TaskStatus.Pending)
+                throw new TaskException(String.Format("There is a circular dependency defined in the script. Task visited twice for dependency examination: {0}.", task.Name));
 
+            task.Status = TaskStatus.Pending;
             foreach (var dependency in task.Dependencies)
             {
                 RunTaskWithDependencies(dependency);
             }
 
             task.Execute();
-            task.Done = true;
+            task.Status = TaskStatus.Done;
         }
     }
 }

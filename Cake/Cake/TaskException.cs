@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// These exceptions are thrown when there are errors in user written script concerning tasks.
+    /// </summary>
     public sealed class TaskException : Exception
     {
         /// <summary>

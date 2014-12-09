@@ -60,6 +60,7 @@
     <Compile Include="Task.cs" />
     <Compile Include="TaskException.cs" />
     <Compile Include="TaskManager.cs" />
+    <Compile Include="TaskStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

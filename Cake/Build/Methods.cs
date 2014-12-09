@@ -32,9 +32,9 @@
             var projectName = projectFile.Split(new[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).Last();
 
             var globalProperties = new Dictionary<string, string> { { "Configuration", configuration }, { "Platform", platform }, { "OutputPath", outputPath } };
-            var buildRequest = new BuildRequestData(projectFile, globalProperties, null, new[] { "Build" }, null);
+            var buildRequestData = new BuildRequestData(projectFile, globalProperties, null, new[] { "Build" }, null);
             var buildParameters = new BuildParameters(new ProjectCollection()) { Loggers = new List<ILogger>(new ILogger[] { }) };
-            var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
+            var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequestData);
 
             if (buildResult.OverallResult == BuildResultCode.Success)
             {
@@ -67,15 +67,15 @@
                 return false;
             }
 
-            if (platform != "Any CPU" && platform != "x86" && platform != "x64") // TODO: te wartości z configa pls
+            if (platform != "Any CPU" && platform != "x86" && platform != "x64")
             {
-                Logger.Log(LogLevel.Error, "The platform parameter must be one of: \"Any CPU\", \"x86\", \"x64\"."); // TODO: te wartości z configa pls
+                Logger.Log(LogLevel.Error, "The platform parameter must be one of: \"Any CPU\", \"x86\", \"x64\".");
                 return false;
             }
 
-            if (configuration != "Debug" && configuration != "Release") // TODO: te wartości z configa pls
+            if (configuration != "Debug" && configuration != "Release")
             {
-                Logger.Log(LogLevel.Error, "The configuration parameter must be set to \"Debug\" or \"Release\"."); // TODO: te wartości z configa pls
+                Logger.Log(LogLevel.Error, "The configuration parameter must be set to \"Debug\" or \"Release\".");
                 return false;
             }
 

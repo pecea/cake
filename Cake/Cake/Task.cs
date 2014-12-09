@@ -35,7 +35,7 @@
         /// Determines whether the task has executed already during <see cref="TaskManager.RunTask"/> execution.
         /// After <see cref="TaskManager.RunTask"/> is finished, it is set to false.
         /// </summary>
-        internal bool Done { get; set; }
+        internal TaskStatus Status { get; set; }
 
         /// <summary>
         /// Task constructor that is also registering newly created task to the <see cref="TaskManager"/>.
@@ -44,6 +44,7 @@
         public Task(string name)
         {
             this.name = name;
+            Status = TaskStatus.NotVisited;
             dependencies = new List<string>();
             action = () => { };
             TaskManager.RegisterTask(this);
@@ -52,7 +53,7 @@
         /// <summary>
         /// Adds one or more Tasks that this task is dependent on.
         /// </summary>
-        /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="Dependencies"/></param>
+        /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="Dependencies"/>.</param>
         /// <returns>The Task object is returned so that method chaining can be used in the script.</returns>
         public Task DependsOn(params string[] dependenciesToAdd)
         {
@@ -61,6 +62,16 @@
                 dependencies.Add(dependency);
             }
             return this;
+        }
+
+        /// <summary>
+        /// Adds one or more Tasks that this task is dependent on.
+        /// </summary>
+        /// <param name="dependenciesToAdd">Tasks that this task will be dependent on.</param>
+        /// <returns>The Task object is returned so that method chaining can be used in the script.</returns>
+        public Task DependsOn(params Task[] dependenciesToAdd)
+        {
+            return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
         }
 
         /// <summary>
@@ -80,7 +91,6 @@
         internal void Execute()
         {
             action();
-            Done = true;
             Logger.Log(LogLevel.Debug, String.Format("Task \"{0}\" executed.", Name));
         }
     }
