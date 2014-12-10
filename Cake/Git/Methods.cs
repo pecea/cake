@@ -1,26 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
-using GitHubWrapper = GitHubWrapper.GitHubWrapper;
-
-namespace Git
+﻿namespace Git
 {
+    using System;
+    using System.IO;
+
+    using Common;
+
     /// <summary>
     /// Encloses methods used with running git commands.
     /// </summary>
     public static class Methods
     {
-        private static string[] paths = new[]
-        {
+        private static readonly string[] Paths = {
             Path.Combine(@"C:\Program Files (x86)\Git\bin", "git.exe"),
-            Path.Combine(@"C:\Program Files\Git\bin", "git.exe"),
-            Path.Combine(PathToExe ?? String.Empty, "git.exe")
+            Path.Combine(@"C:\Program Files\Git\bin", "git.exe")
         };
 
         public static string PathToExe { get; set; }
@@ -29,10 +21,10 @@ namespace Git
         {
             get
             {
-                foreach (var path in paths)
+                if (File.Exists(PathToExe)) return PathToExe;
+                foreach (var path in Paths)
                 {
-                    if (File.Exists(path))
-                        return path;
+                    if (File.Exists(path)) return path;
                 }
                 return "git.exe";
             }
@@ -68,16 +60,7 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Tag(string tag)
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "tag "));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
+            return Processor.RunProcess(FullPathExe, "tag ");
         }
 
         /// <summary>
@@ -89,15 +72,8 @@ namespace Git
         public static bool Push(string repository, params string[] branches)
         {
             var refToPush = branches == null ? string.Empty : string.Join(" ", branches);
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush);
+
 
         }
 
@@ -107,15 +83,7 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool ResetAllModifications()
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "reset --hard"));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return Processor.RunProcess(FullPathExe, "reset --hard");
         }
         /// <summary>
         /// Executes git clean command
@@ -124,17 +92,9 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Clean(bool allFiles = false)
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty)));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
+            return Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty));
         }
+
         /// <summary>
         /// Executes git user-specified command
         /// </summary>
@@ -142,15 +102,7 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Run(string parameters)
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, parameters));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            } 
+            return Processor.RunProcess(FullPathExe, parameters);
         }
     }
 }
