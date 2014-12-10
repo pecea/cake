@@ -1,60 +1,133 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using GitHubWrapper = GitHubWrapper.GitHubWrapper;
 
 namespace Git
 {
-    class Methods
+    /// <summary>
+    /// Encloses methods used with running git commands.
+    /// </summary>
+    public static class Methods
     {
+        private static string[] paths = new[]
+        {
+            Path.Combine(@"C:\Program Files (x86)\Git\bin", "git.exe"),
+            Path.Combine(@"C:\Program Files\Git\bin", "git.exe"),
+            Path.Combine(PathToExe ?? String.Empty, "git.exe")
+        };
+
         public static string PathToExe { get; set; }
+
         public static string FullPathExe
         {
             get
             {
-                return Files.LookForFileInFolders("git.exe", @"C:\Program Files (x86)\Git\bin",
-                      @"C:\Program Files\Git\bin", PathToExe ?? string.Empty);
+                foreach (var path in paths)
+                {
+                    if (File.Exists(path))
+                        return path;
+                }
+                return "git.exe";
             }
         }
 
-        public static string CurrentSha()
+        //public static string CurrentSha()
+        //{
+        //    var result = String.Empty;
+        //    try
+        //    {
+        //        result = Processor.RunProcess(FullPathExe, "rev-parse HEAD");
+        //        return String.IsNullOrEmpty(result) ? String.Empty : result;
+
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+
+        //}
+
+        //public static string CurrentBranch()
+        //{
+        //    var result =Processor.RunProcess(FullPathExe, "rev-parse --abbrev-ref HEAD");
+        //    return String.IsNullOrEmpty(result) ? String.Empty : result;
+        //}
+
+        public static bool Tag(string tag)
         {
-            var result = BuildHelper.RunTask(FullPathExe, "rev-parse HEAD", false);
-            return result.Success ? result.Output : string.Empty;
+            try
+            {
+                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "tag "));
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
-        public static string CurrentBranch()
-        {
-            var result = BuildHelper.RunTask(FullPathExe, "rev-parse --abbrev-ref HEAD", false);
-            return result.Success ? result.Output : string.Empty;
-        }
-
-        public static void Tag(string tag)
-        {
-            BuildHelper.RunTask(FullPathExe, "tag " + tag);
-        }
-
-        public static void Push(string repository, params string[] branches)
+        public static bool Push(string repository, params string[] branches)
         {
             var refToPush = branches == null ? string.Empty : string.Join(" ", branches);
-            BuildHelper.RunTask(FullPathExe, "push " + repository + " " + refToPush);
+            try
+            {
+                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush));
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
-        public static void ResetAllModifications()
+        public static bool ResetAllModifications()
         {
-            BuildHelper.RunTask(FullPathExe, "reset --hard");
+            try
+            {
+                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "reset --hard"));
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public static void Clean(bool allFiles = false)
+        public static bool Clean(bool allFiles = false)
         {
-            BuildHelper.RunTask(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty));
+            try
+            {
+                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty)));
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
-        public static Result Run(string parameters)
+        public static bool Run(string parameters)
         {
-            return BuildHelper.RunTask(FullPathExe, parameters);
+            try
+            {
+                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, parameters));
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            } 
         }
     }
 }
