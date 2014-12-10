@@ -33,8 +33,7 @@
                     foreach (var path in filePaths)
                     {
                         var attributes = File.GetAttributes(path);
-                        if 
-                            ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
+                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
                         else zip.AddFile(path);
                     }
                     zip.Save(

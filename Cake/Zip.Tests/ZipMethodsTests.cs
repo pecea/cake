@@ -51,5 +51,6 @@ namespace Zip.Tests
         {
             Assert.AreEqual(false, Methods.ZipFiles("exception", new[] { "testZipFile.txt" }, "invalid zip path"));
         }
+        //TODO: przy ...ShouldReturnSuccess... zrobić dodatkowe testy sprawdzające identyczność plików przed i po zipowaniu
     }
 }

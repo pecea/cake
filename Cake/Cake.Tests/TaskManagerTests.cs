@@ -33,7 +33,7 @@
         /// Tests whether an exception is thrown when a circular dependency is defined.
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(TaskException), "Running a task with a circular dependency was orderd.")]
+        [ExpectedException(typeof(TaskException), "Running a task with a circular dependency was ordered.")]
         public void RunTaskShouldThrowWhenTheresDependencyCycle()
         {
             new Task("first").DependsOn("second");
