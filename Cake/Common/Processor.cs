@@ -6,7 +6,7 @@
     /// <summary>
     /// Encloses methods used with running processes.
     /// </summary>
-    public class Processor
+    public static class Processor
     {
         /// <summary>
         /// Runs command wth arguments
@@ -14,7 +14,7 @@
         /// <param name="command">string containing command</param>
         /// <param name="arguments">arguments for command</param>
         /// <returns></returns>
-        public static string RunProcess(string command, string arguments = "")
+        public static bool RunProcess(string command, string arguments = "")
         {
             var outputBuilder = new StringBuilder();
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
@@ -31,24 +31,25 @@
                     WorkingDirectory = "."
                 }
             };
-            process.OutputDataReceived += (sender, e) =>
-            {
-                outputBuilder.AppendLine(e.Data);
-                Logger.Log(LogLevel.Debug, e.Data);
-            };
+
+            process.OutputDataReceived += (sender, e) => { outputBuilder.AppendLine(e.Data); };
 
             process.Start();
             process.BeginOutputReadLine();
+
             process.WaitForExit();
             process.CancelOutputRead();
 
+            var output = outputBuilder.ToString().TrimEnd('\n', '\r');
             if (process.ExitCode == 0)
             {
-                Logger.Log(LogLevel.Debug, "  =>Process run successfully!");
-                return outputBuilder.ToString().TrimEnd('\n', '\r');
+                Logger.Log(LogLevel.Debug, "Process run successfully!");
+                Logger.Log(LogLevel.Info, output);
+                return true;
             }
-            Logger.Log(LogLevel.Debug, "  =>Process exited with an error!");
-            throw new Exception("  =>Process exited with an error!");
+            Logger.Log(LogLevel.Debug, "Process exited with an error!");
+            Logger.Log(LogLevel.Warn, output);
+            return false;
         }
     }
 }
