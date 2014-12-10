@@ -1,9 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
-
-namespace Common
+﻿namespace Common
 {
+    using System.Diagnostics;
+    using System.Text;
+
     /// <summary>
     /// Encloses methods used with running processes.
     /// </summary>
