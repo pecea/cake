@@ -53,73 +53,56 @@
         //    return String.IsNullOrEmpty(result) ? String.Empty : result;
         //}
 
+        /// <summary>
+        /// Executes git tag command
+        /// </summary>
+        /// <param name="tag">string containing tag</param>
+        /// <returns>true in case of success, false otherwise.</returns>
         public static bool Tag(string tag)
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "tag "));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
+            return Processor.RunProcess(FullPathExe, "tag ");
         }
 
+        /// <summary>
+        /// Executes git push command
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="branches"></param>
+        /// <returns>true in case of success, false otherwise.</returns>
         public static bool Push(string repository, params string[] branches)
         {
             var refToPush = branches == null ? string.Empty : string.Join(" ", branches);
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush);
+
 
         }
 
+        /// <summary>
+        /// Executes git reset command
+        /// </summary>
+        /// <returns>true in case of success, false otherwise.</returns>
         public static bool ResetAllModifications()
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "reset --hard"));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return Processor.RunProcess(FullPathExe, "reset --hard");
         }
-
+        /// <summary>
+        /// Executes git clean command
+        /// </summary>
+        /// <param name="allFiles"></param>
+        /// <returns>true in case of success, false otherwise.</returns>
         public static bool Clean(bool allFiles = false)
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty)));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
+            return Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty));
         }
 
+        /// <summary>
+        /// Executes git user-specified command
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns>true in case of success, false otherwise.</returns>
         public static bool Run(string parameters)
         {
-            try
-            {
-                Logger.Log(LogLevel.Info, Processor.RunProcess(FullPathExe, parameters));
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            } 
+            return Processor.RunProcess(FullPathExe, parameters);
         }
     }
 }
