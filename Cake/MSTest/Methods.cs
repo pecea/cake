@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Linq;
 
     using Common;
 
@@ -10,12 +11,21 @@
     /// </summary>
     public static class Methods
     {
-        private static readonly string[] Paths = {
-            Path.Combine(@"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE", "MSTest.exe"),
-            Path.Combine(@"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE", "MSTest.exe"),
-            Path.Combine(@"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE", "MSTest.exe"),
-            Path.Combine(@"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE", "MSTest.exe"),
-        };
+        private static readonly string[] Paths =
+            {
+                Path.Combine(
+                    @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE",
+                    "MSTest.exe"),
+                Path.Combine(
+                    @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE",
+                    "MSTest.exe"),
+                Path.Combine(
+                    @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE",
+                    "MSTest.exe"),
+                Path.Combine(
+                    @"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE",
+                    "MSTest.exe"),
+            };
 
         public static string PathToExe { get; set; }
 
@@ -23,12 +33,7 @@
         {
             get
             {
-                if (File.Exists(PathToExe)) return PathToExe;
-                foreach (var path in Paths)
-                {
-                    if (File.Exists(path)) return path;
-                }
-                return "MSTest.exe";
+                return File.Exists(PathToExe) ? PathToExe : Paths.FirstOrDefault(File.Exists) ?? "MSTest.exe";
             }
         }
 
@@ -50,7 +55,7 @@
             {
                 try
                 {
-                    Processor.RunProcess(FullPathExe, "/testcontainer:" + path);
+                    result = Processor.RunProcess(FullPathExe, "/testcontainer:" + path) && result;
                 }
                 catch (Exception e)
                 {
