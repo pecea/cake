@@ -10,9 +10,10 @@
     /// </summary>
     public static class Methods
     {
+        private static readonly string app = "git.exe";
         private static readonly string[] Paths = {
-            Path.Combine(@"C:\Program Files (x86)\Git\bin", "git.exe"),
-            Path.Combine(@"C:\Program Files\Git\bin", "git.exe")
+            Path.Combine(@"C:\Program Files (x86)\Git\bin", app),
+            Path.Combine(@"C:\Program Files\Git\bin", app)
         };
 
         public static string PathToExe { get; set; }
@@ -26,7 +27,7 @@
                 {
                     if (File.Exists(path)) return path;
                 }
-                return "git.exe";
+                return app;
             }
         }
 
