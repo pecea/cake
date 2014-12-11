@@ -1,7 +1,6 @@
 ﻿namespace Git
 {
     using System;
-    using System.Diagnostics;
     using System.IO;
 
     using Common;
@@ -11,15 +10,15 @@
     /// </summary>
     public static class Methods
     {
-        private static readonly string[] Paths =
-            {
-                Path.Combine(@"C:\Program Files (x86)\Git\bin", "git.exe"),
-                Path.Combine(@"C:\Program Files\Git\bin", "git.exe")
-            };
+        private static readonly string app = "git.exe";
+        private static readonly string[] Paths = {
+            Path.Combine(@"C:\Program Files (x86)\Git\bin", app),
+            Path.Combine(@"C:\Program Files\Git\bin", app)
+        };
 
         public static string PathToExe { get; set; }
 
-        private static string FullPathExe
+        public static string FullPathExe
         {
             get
             {
@@ -28,36 +27,41 @@
                 {
                     if (File.Exists(path)) return path;
                 }
-                return "git.exe";
+                return app;
             }
         }
 
-        /// <summary>
-        /// Prints current SHA.
-        /// </summary>
-        /// <returns>True if successful, false otherwise.</returns>
-        public static bool CurrentSha()
-        {
-            return Processor.RunProcess(FullPathExe, "rev-parse HEAD");
-        }
+        //public static string CurrentSha()
+        //{
+        //    var result = String.Empty;
+        //    try
+        //    {
+        //        result = Processor.RunProcess(FullPathExe, "rev-parse HEAD");
+        //        return String.IsNullOrEmpty(result) ? String.Empty : result;
+
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+
+        //}
+
+        //public static string CurrentBranch()
+        //{
+        //    var result =Processor.RunProcess(FullPathExe, "rev-parse --abbrev-ref HEAD");
+        //    return String.IsNullOrEmpty(result) ? String.Empty : result;
+        //}
 
         /// <summary>
-        /// Prints current branch.
+        /// Executes git tag command
         /// </summary>
-        /// <returns>True if successful, false otherwise.</returns>
-        public static bool CurrentBranch()
-        {
-            return Processor.RunProcess(FullPathExe, "rev-parse --abbrev-ref HEAD");
-        }
-
-        /// <summary>
-        /// Executes git tag command.
-        /// </summary>
-        /// <param name="tag">string containing tag, if no tag is specified, a list of all previous tags is printed.</param>
+        /// <param name="tag">string containing tag</param>
         /// <returns>true in case of success, false otherwise.</returns>
-        public static bool Tag(string tag = "")
+        public static bool Tag(string tag)
         {
-            return Processor.RunProcess(FullPathExe, "tag " + tag);
+            return Processor.RunProcess(FullPathExe, "tag ");
         }
 
         /// <summary>
@@ -70,6 +74,8 @@
         {
             var refToPush = branches == null ? string.Empty : string.Join(" ", branches);
             return Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush);
+
+
         }
 
         /// <summary>
@@ -80,7 +86,6 @@
         {
             return Processor.RunProcess(FullPathExe, "reset --hard");
         }
-
         /// <summary>
         /// Executes git clean command
         /// </summary>

@@ -32,7 +32,7 @@
                 }
             };
 
-            process.OutputDataReceived += (sender, e) => { outputBuilder.AppendLine(e.Data); };
+            process.OutputDataReceived += (sender, e) => outputBuilder.AppendLine(e.Data);
 
             process.Start();
             process.BeginOutputReadLine();
