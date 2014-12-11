@@ -53,6 +53,12 @@
     <Compile Include="GitMethodsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Git\Git.csproj">
+      <Project>{f094228a-79c4-4b6a-935c-3d8a10a04a18}</Project>
+      <Name>Git</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

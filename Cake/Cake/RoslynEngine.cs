@@ -6,7 +6,7 @@
     using System.Linq;
     using System.Reflection;
 
-    using Cake.Configuration;
+    using Configuration;
 
     using Common;
 

@@ -38,7 +38,6 @@
             catch (Exception e)
             {
                 Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
-                Console.ReadKey();
                 return;
             }
 
