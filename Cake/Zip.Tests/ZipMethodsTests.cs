@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Ionic.Zip;
+﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Zip.Tests
