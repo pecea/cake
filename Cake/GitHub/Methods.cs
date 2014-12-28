@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Octokit;
 using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace GitHub
 {
@@ -14,12 +12,19 @@ namespace GitHub
         private static string _releaseNotesFile;
         private static string _repository;
         private static string _tagName;
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private static ReleaseAssetUpload BuildAssetUpload(UploadFile item)
         {
             return new ReleaseAssetUpload { ContentType = item.ContentType ?? "application/octet-stream", FileName = Path.GetFileName(item.Path), RawData = File.OpenRead(item.Path) };
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private static ReleaseUpdate BuildReleaseData()
         {
             var update = new ReleaseUpdate(_tagName);
@@ -29,7 +34,15 @@ namespace GitHub
             }
             return update;
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="repository"></param>
+        /// <param name="oauthToken"></param>
+        /// <param name="tagName"></param>
+        /// <param name="files"></param>
+        /// <param name="releaseNotesFile"></param>
+        /// <returns></returns>
         public static bool Release(string repository, string oauthToken, string tagName, UploadFile[] files, string releaseNotesFile = null)
         {
             _repository = repository;
@@ -45,23 +58,40 @@ namespace GitHub
             }
             return true;
         }
-        
-        private static string TaskItemFor(Octokit.Release release, Task<ReleaseAsset> asset)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="release"></param>
+        /// <param name="asset"></param>
+        /// <returns></returns>
+        private static string TaskItemFor(Octokit.Release release, Task<ReleaseAsset> asset)//what is release parameter for?
         {
             return ("https://github.com/" + _repository + "/releases/download/" + _tagName + "/" + asset.Result.Name);
         }
-        
-        private static string Upload(IReleasesClient client, Octokit.Release release, UploadFile sourceItem)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="release"></param>
+        /// <param name="sourceItem"></param>
+        /// <returns></returns>
+        private static string Upload(IReleasesClient client, Release release, UploadFile sourceItem)
         {
             var asset = client.UploadAsset(release, BuildAssetUpload(sourceItem));
             return TaskItemFor(release, asset);
         }
-        
-        private static string[] UploadAll(IReleasesClient client, Octokit.Release release, IEnumerable<UploadFile> items)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="release"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        private static string[] UploadAll(IReleasesClient client, Release release, IEnumerable<UploadFile> items)
         {
             return (from item in items select Upload(client, release, item)).ToArray<string>();
         }
-        
+
         private static ICredentialStore CredentialStore
         {
             get
@@ -89,7 +119,9 @@ namespace GitHub
         }
         
         public static string[] UploadedAssets { get; private set; }
-        
+        /// <summary>
+        /// 
+        /// </summary>
         private class InPlaceCredentialStore : ICredentialStore
         {
             private static string _token;
