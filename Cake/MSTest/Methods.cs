@@ -40,7 +40,7 @@
         /// <summary>
         /// Runs mstest.exe with test assemblies.
         /// </summary>
-        /// <param name="testAssembliesPaths">Assemblies of the tests to be run.</param>
+        /// <param name="testAssembliesPaths">Assemblies of the tests to be run. Paths may contain wildcards.</param>
         /// <returns>True if the tests were executed successfully, false otherwise.</returns>
         public static bool Test(params string[] testAssembliesPaths)
         {
@@ -55,7 +55,7 @@
             {
                 try
                 {
-                    result = Processor.RunProcess(FullPathExe, "/testcontainer:" + path) && result;
+                    result = path.GetFilePaths().Aggregate(result, (current, filePath) => Processor.RunProcess(FullPathExe, "/testcontainer:" + filePath) && current);
                 }
                 catch (Exception e)
                 {

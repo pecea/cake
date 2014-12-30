@@ -16,7 +16,7 @@
         public void RunTaskWithDependenciesShouldThrowWhenDependencyIsNotFound()
         {
             new Task("test task").DependsOn("non existing task");
-            TaskManager.RunTask("test task");
+            TaskManager.SetDefault("test task");
         }
 
         /// <summary>
@@ -26,7 +26,7 @@
         [ExpectedException(typeof(TaskException), "Running a non existing task was ordered.")]
         public void RunTaskShouldThrowWhenTaskIsNotFound()
         {
-            TaskManager.RunTask("non existing task");
+            TaskManager.SetDefault("non existing task");
         }
 
         /// <summary>
@@ -39,7 +39,7 @@
             new Task("first").DependsOn("second");
             new Task("second").DependsOn("first");
 
-            TaskManager.RunTask("first");
+            TaskManager.SetDefault("first");
         }
     }
 }

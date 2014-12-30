@@ -16,15 +16,24 @@
     /// </summary>
     public static class Methods
     {
+
+
         /// <summary>
-        /// Builds a single project or a solution.
+        /// Builds one or more projects or solutions.
         /// </summary>
-        /// <param name="projectFile">Project's file name or path.</param>
+        /// <param name="projectFile">Project's file name or path. Might contain wildcards.</param>
         /// <param name="configuration">Build configuration.</param>
         /// <param name="platform">Build platform.</param>
         /// <param name="outputPath">Build output path.</param>
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
+        {
+            return projectFile.GetFilePaths()
+                .Aggregate(true, (current, filePath) 
+                    => current && BuildSingleProject(filePath, outputPath, configuration, platform));
+        }
+
+        private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)
         {
             if (String.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
@@ -43,9 +52,9 @@
             }
             else
             {
-                if (buildResult.Exception != null) 
+                if (buildResult.Exception != null)
                     Logger.LogException(LogLevel.Error, buildResult.Exception, String.Format("Building {0} failed.", projectName));
-                else 
+                else
                     Logger.Log(LogLevel.Error, String.Format("Building {0} failed.", projectName));
                 return false;
             }

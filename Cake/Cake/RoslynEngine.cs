@@ -1,12 +1,10 @@
 ﻿namespace Cake
 {
     using System;
-    using System.Collections.Generic;
-    using System.Configuration;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
-
-    using Configuration;
+    using System.Text.RegularExpressions;
 
     using Common;
 
@@ -41,45 +39,53 @@
             Session.ImportNamespace(typeof(TaskManager).FullName);
             Session.ImportNamespace(typeof(Logger).Namespace);
             Session.ImportNamespace(typeof(Logger).FullName);
-
-            Logger.Log(LogLevel.Debug, "Referencing external assemblies in Roslyn session.");
-            foreach (var assembly in GetExternalAssemblies())
-            {
-                Session.AddReference(assembly);
-                Logger.Log(LogLevel.Debug, String.Format("Assembly \"{0}\" referenced. Importing namespaces from this assembly.", assembly.FullName));
-                foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
-                {
-                    Session.ImportNamespace(type.FullName);
-                    Logger.Log(LogLevel.Debug, String.Format("Namespace \"{0}\" imported.", type.FullName));
-                }
-            }
         }
 
         /// <summary>
         /// Executes .csx script with C# code in it.
         /// </summary>
-        /// <param name="file">Script's path.</param>
-        public static void ExecuteFile(string file)
+        /// <param name="filePath">Script's path.</param>
+        public static void ExecuteFile(string filePath)
         {
-            Session.ExecuteFile(file);
+            LoadAssemblies(filePath);
+            Session.ExecuteFile(filePath);
         }
 
-        /// <summary>
-        /// Goes through App.config file and loads assemblies from specified paths.
-        /// </summary>
-        /// <returns>A collection of needed assemblies.</returns>
-        private static IEnumerable<Assembly> GetExternalAssemblies()
+        private static void LoadAssemblies(string filePath)
         {
-            var configurationSection = ConfigurationManager.GetSection("assembliesSection") as AssembliesSection;
-            if (configurationSection == null) yield break;
-
-            foreach (var configurationElement in configurationSection.Assemblies)
+            var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\./\\-_])+"";$");
+            using (var streamReader = new StreamReader(filePath))
             {
-                var assemblyElement = configurationElement as AssemblyElement;
-                
-                if (assemblyElement == null) yield break;
-                yield return Assembly.LoadFrom(assemblyElement.Path);
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    var match = assemblyRegex.Match(line);
+                    if (!match.Success) continue;
+
+                    var assemblyPath = ExtractAssemblyPath(match.Groups[0].Value);
+                    var assembly = Assembly.LoadFrom(assemblyPath);
+
+                    Session.AddReference(assembly);
+                    Logger.Log(LogLevel.Debug, String.Format("Assembly \"{0}\" referenced. Importing namespaces from this assembly.", assembly.FullName));
+
+                    foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
+                    {
+                        Session.ImportNamespace(type.FullName);
+                        Logger.Log(LogLevel.Debug, String.Format("Namespace \"{0}\" imported.", type.FullName));
+                    }
+                }
             }
+        }
+
+        private static string ExtractAssemblyPath(string usingDirective)
+        {
+            return usingDirective
+                    .TrimStart('/')
+                    .TrimEnd(';')
+                    .Trim()
+                    .Replace("cake using ", String.Empty)
+                    .TrimStart('"')
+                    .TrimEnd('"');
         }
 
         /// <summary>

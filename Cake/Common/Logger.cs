@@ -1,6 +1,7 @@
 ﻿namespace Common
 {
     using System;
+    using System.Collections.Generic;
     using System.Runtime.CompilerServices;
 
     using NLog;
@@ -64,6 +65,38 @@
         {
             for (e = e.InnerException; e != null; e = e.InnerException)
                 Log(logLevel, String.Format("Inner exception source: {0}. Inner exception message: {1}", e.Source, e.Message), loggerName);
+        }
+
+        public static void Reconfigure(string logLevelName)
+        {
+            NLog.LogLevel logLevel;
+            try
+            {
+                logLevel = NLog.LogLevel.FromString(logLevelName);
+            }
+            catch (Exception e)
+            {
+                Log(LogLevel.Warn, "Invalid log level argument was specified. Valid log levels are: Debug, Info, Warn, Error and Fatal.");
+                return;
+            }
+
+            var logLevels = new List<NLog.LogLevel>
+                                {
+                                    NLog.LogLevel.Debug,
+                                    NLog.LogLevel.Info,
+                                    NLog.LogLevel.Warn,
+                                    NLog.LogLevel.Error,
+                                    NLog.LogLevel.Fatal
+                                };
+
+            foreach (var loggingRule in LogManager.Configuration.LoggingRules)
+            {
+                foreach (var level in logLevels)
+                {
+                    if (level.Ordinal >= logLevel.Ordinal) loggingRule.EnableLoggingForLevel(level);
+                    else loggingRule.DisableLoggingForLevel(level);
+                }
+            }
         }
     }
 }
