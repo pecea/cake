@@ -7,9 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake", "Cake\Cake.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5311970D-8E70-4432-BFEC-7418C5E3713E}"
 	ProjectSection(SolutionItems) = preProject
+		IntegrationTests.testsettings = IntegrationTests.testsettings
+		IntegrationTests1.testsettings = IntegrationTests1.testsettings
+		IntegrationTests2.testsettings = IntegrationTests2.testsettings
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
+		UnitTests.testsettings = UnitTests.testsettings
+		UnitTests1.testsettings = UnitTests1.testsettings
+		UnitTests2.testsettings = UnitTests2.testsettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{189F3E91-4158-420A-9FC4-6A2A75DBD31C}"
@@ -37,6 +43,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHub", "GitHub\GitHub.csproj", "{7F6E2CA3-5C51-4962-8111-77C024ED08B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHub.Tests", "GitHub.Tests\GitHub.Tests.csproj", "{21C0A635-8F1D-4EDC-A3DA-9CE643AF932F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extension", "Extension\Extension.csproj", "{02ADA9A4-91F3-46F5-A4EB-6D42104C7E4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSIX Extension", "VSIX Extension\VSIX Extension.csproj", "{99EC868D-2417-47A3-831F-401AE60C028E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Files", "Files\Files.csproj", "{7530F94D-0387-492E-B784-A1D4EB22B26B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Files.Tests", "Files.Tests\Files.Tests.csproj", "{BF0C9E9E-8A4F-4D4F-9E15-81B21612E274}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testy", "Testy\Testy.csproj", "{3D2C7F17-5651-4076-A036-52C119FB2490}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -96,6 +112,26 @@ Global
 		{21C0A635-8F1D-4EDC-A3DA-9CE643AF932F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21C0A635-8F1D-4EDC-A3DA-9CE643AF932F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21C0A635-8F1D-4EDC-A3DA-9CE643AF932F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02ADA9A4-91F3-46F5-A4EB-6D42104C7E4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02ADA9A4-91F3-46F5-A4EB-6D42104C7E4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02ADA9A4-91F3-46F5-A4EB-6D42104C7E4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02ADA9A4-91F3-46F5-A4EB-6D42104C7E4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99EC868D-2417-47A3-831F-401AE60C028E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99EC868D-2417-47A3-831F-401AE60C028E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99EC868D-2417-47A3-831F-401AE60C028E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99EC868D-2417-47A3-831F-401AE60C028E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7530F94D-0387-492E-B784-A1D4EB22B26B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7530F94D-0387-492E-B784-A1D4EB22B26B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7530F94D-0387-492E-B784-A1D4EB22B26B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7530F94D-0387-492E-B784-A1D4EB22B26B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF0C9E9E-8A4F-4D4F-9E15-81B21612E274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF0C9E9E-8A4F-4D4F-9E15-81B21612E274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF0C9E9E-8A4F-4D4F-9E15-81B21612E274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF0C9E9E-8A4F-4D4F-9E15-81B21612E274}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2C7F17-5651-4076-A036-52C119FB2490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2C7F17-5651-4076-A036-52C119FB2490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2C7F17-5651-4076-A036-52C119FB2490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2C7F17-5651-4076-A036-52C119FB2490}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,5 +143,6 @@ Global
 		{A1D5EEE9-0021-4F41-ABE5-FB8E5FB954E2} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 		{FD6E2A6A-6B89-4A3D-85D0-BAFAFC307BE8} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 		{21C0A635-8F1D-4EDC-A3DA-9CE643AF932F} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
+		{BF0C9E9E-8A4F-4D4F-9E15-81B21612E274} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 	EndGlobalSection
 EndGlobal
