@@ -33,7 +33,8 @@
         {
             Session = new ScriptEngine().CreateSession();
 
-            Session.AddReference(Assembly.GetEntryAssembly());
+            //Session.AddReference(Assembly.GetEntryAssembly());
+            Session.AddReference(Assembly.GetAssembly(typeof(RoslynEngine)));
             Session.AddReference(Assembly.GetAssembly(typeof(Logger)));
 
             Session.ImportNamespace(typeof(Task).Namespace);
