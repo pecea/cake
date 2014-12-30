@@ -51,9 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\AssembliesSection.cs" />
-    <Compile Include="Configuration\AssemblyCollection.cs" />
-    <Compile Include="Configuration\AssemblyElement.cs" />
+    <Compile Include="Argument.cs" />
+    <Compile Include="ArgumentParser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoslynEngine.cs" />

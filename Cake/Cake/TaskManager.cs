@@ -12,6 +12,8 @@
     {
         private static readonly Dictionary<string, Task> Tasks;
 
+        public static string TaskToRun { get; set; }
+
         /// <summary>
         /// Initialises the <see cref="TaskManager"/>.
         /// </summary>
@@ -35,8 +37,10 @@
         /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="Tasks"/> after it is finished.
         /// </summary>
         /// <param name="name">Name of a <see cref="Task"/> to be executed.</param>
-        public static void RunTask(string name)
+        public static void SetDefault(string name)
         {
+            if (!String.IsNullOrEmpty(TaskToRun)) name = TaskToRun;
+
             RunTaskWithDependencies(name);
             foreach (var task in Tasks)
             {
@@ -49,9 +53,9 @@
         /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="Tasks"/> after it is finished.
         /// </summary>
         /// <param name="task">A <see cref="Task"/> to be executed.</param>
-        public static void RunTask(Task task)
+        public static void SetDefault(Task task)
         {
-            RunTask(task.Name);
+            SetDefault(task.Name);
         }
 
         /// <summary>

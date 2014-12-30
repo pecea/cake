@@ -25,6 +25,14 @@
         /// TODO: zipName i zipPath do jednego argumentu, filePaths dodać params
         public static bool ZipFiles(string zipName, string[] filePaths, string zipPath = null)
         {
+            var paths = new List<string>();
+            foreach (var filePath in filePaths)
+            {
+                paths.AddRange(filePath.GetFilePaths());
+                paths.AddRange(filePath.GetFolderPaths());
+            }
+            filePaths = paths.ToArray();
+
             if (!CheckZipFilesArguments(filePaths, zipPath)) return false;
             try
             {
@@ -71,7 +79,7 @@
             {
                 try
                 {
-                    var path = Path.GetFullPath(zipPath);
+                    Path.GetFullPath(zipPath);
                 }
                 catch (Exception)
                 {

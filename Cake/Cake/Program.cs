@@ -13,27 +13,43 @@
         /// <summary>
         /// Entry point of the application.
         /// </summary>
-        /// <param name="args">Paths to *.csx scripts to be executed.</param>
+        /// <param name="args">Paths to *.csx scripts to be executed.</param> // TODO: opis argumentow
         static void Main(string[] args)
         {
-            if (args.Length == 0)
-            {
-                Logger.Log(LogLevel.Fatal,
-                    "There was no scripts to execute specified. Run the program with command line arguments equal to the paths of the scripts you want to be executed.");
-                Console.ReadKey();
-                return;
-            }
-            Logger.Log(LogLevel.Info,
-                String.Format("Cake started for {0}: {1}",
-                    args.Length > 1 ? "scripts" : "script",
-                    args.Aggregate((a, b) => String.Format("{0}, {1}", a, b))));
-
+            // Parsing arguments
+            Argument[] arguments;
             try
             {
-                foreach (var script in args)
-                {
-                    RoslynEngine.ExecuteFile(script);
-                }
+                arguments = ArgumentParser.Parse(args);
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
+                return;
+            }
+
+            // Retrieving user specified logging level
+            var logLevelArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/verbosity"));
+            if (logLevelArgument != null) Logger.Reconfigure(logLevelArgument.Value);
+
+            // Retrieving script path
+            var scriptArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/script"));
+            if (scriptArgument == null)
+            {
+                Logger.Log(LogLevel.Fatal, "You must specify a script to be run with the /script or /s argument.");
+                return;
+            }
+
+            // Retrieving user specified task to run
+            var taskToRunArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/runtask"));
+            if (taskToRunArgument != null) TaskManager.TaskToRun = taskToRunArgument.Value;
+
+            Logger.Log(LogLevel.Info, String.Format("Cake started for script: {0}", scriptArgument.Value));
+
+            // Running the script
+            try
+            {
+                RoslynEngine.ExecuteFile(scriptArgument.Value);
             }
             catch (Exception e)
             {

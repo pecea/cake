@@ -32,8 +32,9 @@
         }
 
         /// <summary>
-        /// Determines whether the task has executed already during <see cref="TaskManager.RunTask"/> execution.
-        /// After <see cref="TaskManager.RunTask"/> is finished, it is set to false.
+        /// Determines whether the task has executed already or is executed during <see cref="TaskManager.SetDefault(string)"/> 
+        /// or <see cref="TaskManager.SetDefault(Cake.Task)"/> execution.
+        /// After TaskManager.SetDefault is finished, it is set to Done.
         /// </summary>
         internal TaskStatus Status { get; set; }
 
