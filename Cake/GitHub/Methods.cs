@@ -6,6 +6,9 @@ using System.IO;
 
 namespace GitHub
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Methods
     {
         private static string _oauthToken;

@@ -19,6 +19,7 @@
         /// <param name="loggerName">Name of the logger to be used.</param>
         public static void Log(LogLevel logLevel, string message, [CallerMemberName] string loggerName = "Script")
         {
+            Console.WriteLine(message);
             switch (logLevel)
             {
                 case LogLevel.Debug:
