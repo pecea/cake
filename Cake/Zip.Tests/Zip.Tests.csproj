@@ -66,9 +66,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\testZipFile.txt" />
-    <Content Include="bin\Debug\testZipFile2.txt" />
+    <Content Include="testZipFile.txt" />
+    <Content Include="testZipFile2.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
