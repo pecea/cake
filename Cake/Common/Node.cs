@@ -11,7 +11,6 @@
         {
             Value = value;
             Children = new List<Node>();
-            Paths = new List<string>();
         }
 
         public Node(string value, string[] splitPath)
@@ -20,31 +19,31 @@
             SplitPath = splitPath;
         }
 
-        public static List<string> Paths { get; private set; }
-
         private static string[] SplitPath { get; set; }
 
         private string Value { get; set; }
 
         private List<Node> Children { get; set; }
 
-        public void ResolveNode(GetPathsOptions option, int pathIndex = 0)
+        public IEnumerable<string> ResolveNode(GetPathsOptions option, int pathIndex = 0)
         {
+            var result = new List<string>();
             var nextPathPart = SplitPath[pathIndex + 1];
 
-            if (String.IsNullOrEmpty(nextPathPart)) return;
+            if (String.IsNullOrEmpty(nextPathPart)) return result;
 
             if (pathIndex + 2 == SplitPath.Length && option == GetPathsOptions.Files)
             {
                 var files = Directory.GetFiles(Value, nextPathPart);
-                Paths.AddRange(files);
-                return;
+                result.AddRange(files);
+                return result;
             }
 
             if (nextPathPart == "**")
             {
-                var directories = Directory.GetDirectories(Value);
+                var directories = Directory.GetDirectories(Value, "*", SearchOption.AllDirectories);
                 Children.AddRange(directories.Select(directory => new Node(directory)));
+                Children.Add(new Node(Value));
             }
             else if (nextPathPart.Contains("*"))
             {
@@ -58,11 +57,13 @@
 
             if (pathIndex + 2 == SplitPath.Length)
             {
-                Paths.AddRange(Children.Select(child => child.Value));
-                return;
+                result.AddRange(Children.Select(child => child.Value));
+                return result;
             }
 
-            foreach (var child in Children) child.ResolveNode(option, pathIndex + 1);
+            foreach (var child in Children) result.AddRange(child.ResolveNode(option, pathIndex + 1));
+
+            return result;
         }
     }
 }
