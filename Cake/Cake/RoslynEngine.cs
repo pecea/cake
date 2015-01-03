@@ -4,6 +4,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
     using System.Text.RegularExpressions;
 
     using Common;
@@ -52,8 +53,9 @@
 
         private static void LoadAssemblies(string filePath)
         {
-            var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\./\\-_])+"";$");
-            using (var streamReader = new StreamReader(filePath))
+            var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";$");
+
+            using (var streamReader = new StreamReader(filePath, Encoding.GetEncoding("ISO-8859-2")))
             {
                 string line;
                 while ((line = streamReader.ReadLine()) != null)
