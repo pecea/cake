@@ -35,7 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>keyCake.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Roslyn.Compilers">
@@ -68,6 +71,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="keyCake.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
