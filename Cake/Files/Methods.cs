@@ -21,14 +21,24 @@ namespace Files
         public static bool CopyFolder(string sourceDir, string destinationDir, bool copySubDirs = true, bool overwrite = false, bool cleanDestinationDirectory = false)
         {
             // Get the subdirectories for the specified directory.
-            var dir = new DirectoryInfo(sourceDir);
-            var dirs = dir.GetDirectories();
-
+            DirectoryInfo dir;
+            try
+            {
+                dir = new DirectoryInfo(sourceDir);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            //var dir = new DirectoryInfo(sourceDir);
             if (!dir.Exists)
             {
                 //TODO: jakiś error
                 return false;
             }
+            var dirs = dir.GetDirectories();
+
+            
 
             // If the destination directory doesn't exist, create it. 
             if (!Directory.Exists(destinationDir))

@@ -53,6 +53,20 @@
     <Compile Include="FilesMethodsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Files\Files.csproj">
+      <Project>{7530f94d-0387-492e-b784-a1d4eb22b26b}</Project>
+      <Name>Files</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test Files\File2ToCopy.txt" />
+    <Content Include="Test Files\FileToCopy.txt" />
+    <Content Include="Test Files\Folder To Copy\File3ToCopy.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test Files\Copied Content\" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
