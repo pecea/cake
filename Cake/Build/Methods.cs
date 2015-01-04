@@ -29,8 +29,8 @@
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
             return projectFile.GetFilePaths()
-                .Aggregate(true, (current, filePath) 
-                    => current && BuildSingleProject(filePath, outputPath, configuration, platform));
+                .Aggregate(true, (currentResult, filePath) 
+                    => currentResult && BuildSingleProject(filePath, outputPath, configuration, platform));
         }
 
         private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)

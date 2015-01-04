@@ -3,7 +3,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Contains tests concerning Task class/
+    /// Contains tests concerning Task class
     /// </summary>
     [TestClass]
     public class TaskManagerTests
@@ -24,7 +24,7 @@
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(TaskException), "Running a non existing task was ordered.")]
-        public void RunTaskShouldThrowWhenTaskIsNotFound()
+        public void SetDefaultShouldThrowWhenTaskIsNotFound()
         {
             TaskManager.SetDefault("non existing task");
         }
@@ -34,7 +34,7 @@
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(TaskException), "Running a task with a circular dependency was ordered.")]
-        public void RunTaskShouldThrowWhenTheresDependencyCycle()
+        public void SetDefaultShouldThrowWhenTheresDependencyCycle()
         {
             new Task("first").DependsOn("second");
             new Task("second").DependsOn("first");

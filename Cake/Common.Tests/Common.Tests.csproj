@@ -60,7 +60,35 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Test Files\" />
+    <Folder Include="Test Files\Folder1\Folder2\" />
+    <Folder Include="Test Files\Folder1\Folder3\" />
+    <Folder Include="Test Files\Folder2\Folder2\" />
+    <Folder Include="Test Files\Folder2\Folder3\" />
+    <Folder Include="Test Files\Folder3\Folder2\" />
+    <Folder Include="Test Files\Folder3\Folder3\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test Files\File1.txt" />
+    <Content Include="Test Files\File2.txt" />
+    <Content Include="Test Files\File3.txt" />
+    <Content Include="Test Files\Folder1\File1.txt" />
+    <Content Include="Test Files\Folder1\File2.txt" />
+    <Content Include="Test Files\Folder1\File3.txt" />
+    <Content Include="Test Files\Folder1\Folder1\File1.txt" />
+    <Content Include="Test Files\Folder1\Folder1\File2.txt" />
+    <Content Include="Test Files\Folder1\Folder1\File3.txt" />
+    <Content Include="Test Files\Folder2\File1.txt" />
+    <Content Include="Test Files\Folder2\File2.txt" />
+    <Content Include="Test Files\Folder2\File3.txt" />
+    <Content Include="Test Files\Folder2\Folder1\File1.txt" />
+    <Content Include="Test Files\Folder2\Folder1\File2.txt" />
+    <Content Include="Test Files\Folder2\Folder1\File3.txt" />
+    <Content Include="Test Files\Folder3\File1.txt" />
+    <Content Include="Test Files\Folder3\File2.txt" />
+    <Content Include="Test Files\Folder3\File3.txt" />
+    <Content Include="Test Files\Folder3\Folder1\File1.txt" />
+    <Content Include="Test Files\Folder3\Folder1\File2.txt" />
+    <Content Include="Test Files\Folder3\Folder1\File3.txt" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

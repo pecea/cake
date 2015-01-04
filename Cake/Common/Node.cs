@@ -5,7 +5,10 @@
     using System.IO;
     using System.Linq;
 
-    public class Node
+    /// <summary>
+    /// Represents a tree node used when resolving wildcarded paths.
+    /// </summary>
+    internal class Node
     {
         private Node(string value)
         {
@@ -13,6 +16,11 @@
             Children = new List<Node>();
         }
 
+        /// <summary>
+        /// Creates a new <see cref="Node"/>.
+        /// </summary>
+        /// <param name="value">Node's value, resolved path so far.</param>
+        /// <param name="splitPath">Whole path to be resolved split by '\'.</param>
         public Node(string value, string[] splitPath)
             : this(value)
         {
@@ -25,6 +33,12 @@
 
         private List<Node> Children { get; set; }
 
+        /// <summary>
+        /// Resolves a node by finding all subdirectories or files matching a wildcard.
+        /// </summary>
+        /// <param name="option"><see cref="GetPathsOptions"/> specifying whether directories or files are to be found.</param>
+        /// <param name="pathIndex">Index of the tree level we are currently on.</param>
+        /// <returns>Enumeration of paths found that match the wildcard.</returns>
         public IEnumerable<string> ResolveNode(GetPathsOptions option, int pathIndex = 0)
         {
             var result = new List<string>();
@@ -52,7 +66,8 @@
             }
             else
             {
-                Children.Add(new Node(String.Format("{0}\\{1}", Value, nextPathPart)));
+                var directory = String.Format("{0}\\{1}", Value, nextPathPart);
+                if (Directory.Exists(directory)) Children.Add(new Node(directory));
             }
 
             if (pathIndex + 2 == SplitPath.Length)
