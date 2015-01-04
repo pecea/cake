@@ -9,7 +9,7 @@ namespace Zip.Tests
     [TestClass]
     public class ZipMethodsTests
     {
-        private const string pathForTests = "../../assert";
+        private const string pathForTests = "../../Test Files/assert";
 
         /// <summary>
         /// Test method for non-existing file in zip files method
@@ -19,7 +19,7 @@ namespace Zip.Tests
         {
             if(File.Exists(pathForTests+".zip"))
                 File.Delete(pathForTests+".zip");
-            Assert.AreEqual(false, Methods.ZipFiles(pathForTests, new[] {"Nonexisting or invalid project/solution file"}));
+            Assert.AreEqual(false, Methods.ZipFiles(pathForTests, "Nonexisting or invalid project/solution file"));
         }
         /// <summary>
         /// Test method for empty file path in zip files method
@@ -29,7 +29,7 @@ namespace Zip.Tests
         {
             if (File.Exists(pathForTests + ".zip"))
                 File.Delete(pathForTests + ".zip");
-            Assert.AreEqual(false, Methods.ZipFiles(pathForTests, new[] {""}));
+            Assert.AreEqual(false, Methods.ZipFiles(pathForTests, ""));
         }
         /// <summary>
         /// Test method for successful zip files method
@@ -39,7 +39,7 @@ namespace Zip.Tests
         {
             if (File.Exists(pathForTests + ".zip"))
                 File.Delete(pathForTests + ".zip");
-            Assert.AreEqual(true, Methods.ZipFiles(pathForTests, new [] {"../../testZipFile.txt"}));
+            Assert.AreEqual(true, Methods.ZipFiles(pathForTests, "../../Test Files/testZipFile.txt"));
         }
         /// <summary>
         /// Test method for unspecified zip path in zip files method
@@ -49,7 +49,7 @@ namespace Zip.Tests
         {
             if (File.Exists(pathForTests + ".zip"))
                 File.Delete(pathForTests + ".zip");
-            Assert.AreEqual(true, Methods.ZipFiles(pathForTests, new [] {"../../testZipFile.txt"}));
+            Assert.AreEqual(true, Methods.ZipFiles(pathForTests, "../../Test Files/testZipFile.txt"));
         }
         /// <summary>
         /// Test method for invalid zip path in zip files method
@@ -57,7 +57,7 @@ namespace Zip.Tests
         [TestMethod]
         public void ZipFilesShouldReturnFailureWhenZipPathIsNotValid()
         {
-            Assert.AreEqual(false, Methods.ZipFiles("invalid zip path:!@", new[] { "../../testZipFile.txt" }));
+            Assert.AreEqual(false, Methods.ZipFiles("invalid zip path:!@", "../../Test Files/testZipFile.txt"));
         }
         //TODO: przy ...ShouldReturnSuccess... zrobić dodatkowe testy sprawdzające identyczność plików przed i po zipowaniu
         /// <summary>
@@ -66,7 +66,7 @@ namespace Zip.Tests
         [TestMethod]
         public void ZipFilesShouldReturnSuccessWhenZippedAndUnzippedFilesAreSameAsNotZippedFiles()
         {
-            const string unzippedPath = "../../UnzippedFliesForTest";
+            const string unzippedPath = "../../Test Files/UnzippedFliesForTest";
             var filesToTest = new[] {"testZipFile.txt", "testZipFile2.txt"};
             if (Directory.Exists(unzippedPath))
             {
@@ -77,9 +77,9 @@ namespace Zip.Tests
                 }
                 Directory.Delete(unzippedPath);
             }
-            if (File.Exists("../../sameContentTest.zip"))
-                File.Delete("../../sameContentTest.zip");
-            Methods.ZipFiles("../../sameContentTest", new[] {"../../testZipFile.txt", "../../testZipFile2.txt"});
+            if (File.Exists("../../Test Files/sameContentTest.zip"))
+                File.Delete("../../Test Files/sameContentTest.zip");
+            Methods.ZipFiles("../../Test Files/sameContentTest", "../../Test Files/testZipFile.txt", "../../Test Files/testZipFile2.txt");
             System.IO.Compression.ZipFile.ExtractToDirectory("sameContentTest.zip", unzippedPath);
             foreach (var file in filesToTest)
             {

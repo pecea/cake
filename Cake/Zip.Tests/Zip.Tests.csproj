@@ -66,8 +66,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="testZipFile.txt" />
-    <Content Include="testZipFile2.txt" />
+    <Content Include="Test Files\testZipFile.txt" />
+    <Content Include="Test Files\testZipFile2.txt" />
   </ItemGroup>
   <ItemGroup />
   <Choose>
