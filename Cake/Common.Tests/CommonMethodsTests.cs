@@ -1,6 +1,7 @@
 ﻿namespace Common.Tests
 {
     using System.IO;
+    using System.Linq;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,6 +20,44 @@
             }
         }
 
+        [TestMethod]
+        public void PathParserGetDirectoriesPathsShouldReturnDirectoriesOnly()
+        {
+            var directories = @"..\..\Test Files\**".GetDirectoriesPaths();
 
+            foreach (var directory in directories)
+            {
+                Assert.AreEqual(false, File.Exists(directory));
+                Assert.AreEqual(true, Directory.Exists(directory));
+            }
+        }
+
+        [TestMethod]
+        public void PathParserGetDirectoriesPathsShouldReturnZeroItemsIfNonExistingPathIsSpecified()
+        {
+            var result = @"..\..\Test Files\**\Non existing folder\*".GetDirectoriesPaths();
+            Assert.AreEqual(0, result.Count());
+        }        
+        
+        [TestMethod]
+        public void PathParserGetFilesPathsShouldReturnZeroItemsIfNonExistingPathIsSpecified()
+        {
+            var result = @"..\..\Test Files\**\Non existing folder\*".GetFilePaths();
+            Assert.AreEqual(0, result.Count());
+        }
+
+        [TestMethod]
+        public void PathParserGetDirectoriesPathsShouldReturnZeroItemsIfInvalidPathIsSpecified()
+        {
+            var result = @":\?.:\**".GetDirectoriesPaths();
+            Assert.AreEqual(0, result.Count());
+        }
+
+        [TestMethod]
+        public void PathParserGetFilesPathsShouldReturnZeroItemsIfInvalidPathIsSpecified()
+        {
+            var result = @":\?.:\*.*".GetFilePaths();
+            Assert.AreEqual(0, result.Count());
+        }
     }
 }

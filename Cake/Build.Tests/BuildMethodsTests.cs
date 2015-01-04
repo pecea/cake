@@ -1,6 +1,7 @@
 ﻿namespace Build.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     /// <summary>
     /// Class for testing Build module methods
     /// </summary>

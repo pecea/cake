@@ -9,6 +9,7 @@
 
     using Common;
 
+    using Roslyn.Compilers;
     using Roslyn.Scripting;
     using Roslyn.Scripting.CSharp;
 
@@ -32,9 +33,9 @@
         {
             Session = new ScriptEngine().CreateSession();
 
-            Session.AddReference(Assembly.GetEntryAssembly());
+            Session.AddReference(Assembly.GetAssembly(typeof(Task)));
             Session.AddReference(Assembly.GetAssembly(typeof(Logger)));
-
+            
             Session.ImportNamespace(typeof(Task).Namespace);
             Session.ImportNamespace(typeof(TaskManager).FullName);
             Session.ImportNamespace(typeof(Logger).Namespace);

@@ -51,6 +51,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Isolated.cs" />
+    <Compile Include="RoslynEngineFacade.cs" />
+    <Compile Include="RoslynEngineTests.cs" />
     <Compile Include="TaskManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,6 +62,9 @@
       <Project>{9199aa5e-b022-423a-946b-dc6e3683f935}</Project>
       <Name>Cake</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test Files\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
