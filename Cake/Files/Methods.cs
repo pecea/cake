@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Security.Cryptography;
+using Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace Files
         /// <returns>True, if copying succedeed</returns>
         public static bool CopyFolder(string sourceDir, string destinationDir, bool copySubDirs = true, bool overwrite = false, bool cleanDestinationDirectory = false)
         {
-            // Get the subdirectories for the specified directory.
+
             DirectoryInfo dir;
             try
             {
@@ -28,17 +30,18 @@ namespace Files
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Error, String.Format("Incorrect directory name: {0}", sourceDir));
                 return false;
             }
-            //var dir = new DirectoryInfo(sourceDir);
             if (!dir.Exists)
             {
-                //TODO: jakiś error
+                Logger.Log(LogLevel.Error, String.Format("Directory {0} not found", sourceDir));
                 return false;
             }
+            // Get the subdirectories for the specified directory.
             var dirs = dir.GetDirectories();
 
-            
+            //
 
             // If the destination directory doesn't exist, create it. 
             if (!Directory.Exists(destinationDir))
@@ -49,8 +52,11 @@ namespace Files
                 }
                 catch (Exception)
                 {
+                    Logger.Log(LogLevel.Error, String.Format("Could not create {0}", destinationDir));
+
                     return false;
                 }
+                Logger.Log(LogLevel.Info, String.Format("Directory {0} created", destinationDir));
 
             }
             else
@@ -59,9 +65,12 @@ namespace Files
                     try
                     {
                         CleanDirectory(destinationDir);
+                        Logger.Log(LogLevel.Info, String.Format("Directory {0} cleaned", destinationDir));
                     }
                     catch (Exception)
                     {
+                        Logger.Log(LogLevel.Error, String.Format("Could not clean {0}", destinationDir));
+
                         return false;
                     }
 
@@ -75,11 +84,13 @@ namespace Files
                 {
                     var tempPath = Path.Combine(destinationDir, file.Name);
                     file.CopyTo(tempPath, overwrite);
+                    Logger.Log(LogLevel.Debug, String.Format("File {0} copied", file.Name));
+                    
 
                 }
                 catch (Exception)
                 {
-                    return false;
+                    Logger.Log(LogLevel.Warn, String.Format("Could not copy {0}", file.Name));
                 }
             }
 
@@ -90,11 +101,14 @@ namespace Files
                 try
                 {
                     var tempPath = Path.Combine(destinationDir, subdir.Name);
+                    Logger.Log(LogLevel.Info, String.Format("Copying {0} from {1}", subdir.Name, tempPath));
                     CopyFolder(subdir.FullName, tempPath, true, overwrite);
                 }
                 catch (Exception)
                 {
-                    return false;
+                    Logger.Log(LogLevel.Warn, String.Format("Could not copy {0}", subdir.FullName));
+                    
+                    //return false;
                 }
 
             }
@@ -111,15 +125,23 @@ namespace Files
         public static bool CopyFile(string sourceName, string destName, bool overwrite = true) 
         {
             if (!File.Exists(sourceName))
+            {
+                Logger.Log(LogLevel.Error, String.Format("Could not find {0}", sourceName));
+                
                 return false;
+            }
             //TODO: jakiś error
             try
             {
                 File.Copy(sourceName, destName, overwrite);
+                Logger.Log(LogLevel.Info, String.Format("File {0} copied", sourceName));
+                    
                 return true;
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Error, String.Format("Could not copy {0}", sourceName));
+                 
                 return false;
             }
 
@@ -133,15 +155,23 @@ namespace Files
         public static bool DeleteFile(string filePath)
         {
             if (!File.Exists(filePath))
+            {
+                Logger.Log(LogLevel.Error, String.Format("Could not find {0}", filePath));
+                
                 return false;
+            }
             //TODO: jakiś error
             try
             {
                 File.Delete(filePath);
+                Logger.Log(LogLevel.Info, String.Format("File {0} deleted", filePath));
+                
                 return true;
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Error, String.Format("Could not delete {0}", filePath));
+                
                 return false;
             }
             
@@ -168,19 +198,29 @@ namespace Files
         public static bool DeleteFilesWithPattern(string parentDirectoryPath, string filePattern)
         {
             if (!Directory.Exists(parentDirectoryPath))
+            {
+                Logger.Log(LogLevel.Error, String.Format("Could not find {0}", parentDirectoryPath));
+                
                 return false;
+            }
             //TODO: jakiś error
             foreach (var directory in GetFilesWithPattern(parentDirectoryPath, filePattern))
             {
                 try
                 {
                     DeleteFile(directory);
+                    Logger.Log(LogLevel.Debug, String.Format("File {0} deleted", directory));
+                
                 }
                 catch (Exception)
                 {
-                    return false;
+                    Logger.Log(LogLevel.Warn, String.Format("Could not delete {0}", directory));
+                
                 }
             }
+
+            Logger.Log(LogLevel.Info, String.Format("Files from {0} deleted", parentDirectoryPath));
+                
             return true;
         }
 
@@ -195,21 +235,31 @@ namespace Files
         {
             var option = subdirectories == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             if (!Directory.Exists(parentDirectoryPath))
+            {
+                Logger.Log(LogLevel.Error, String.Format("Could not find {0}", parentDirectoryPath));
+                
                 return false;
+            }
             //TODO: jakiś error
             foreach (var directory in Directory.GetDirectories(parentDirectoryPath, directoryPattern, option))
             {
                 try
                 {
                     DeleteDirectory(directory);
+                    Logger.Log(LogLevel.Debug, String.Format("Directory {0} deleted", directory));
+                
 
                 }
                 catch (Exception)
                 {
-                    return false;
+                    Logger.Log(LogLevel.Warn, String.Format("Could not delete {0}", directory));
+                
+                
                 }
 
             }
+            Logger.Log(LogLevel.Info, String.Format("Directories from {0} deleted", parentDirectoryPath));
+                
             return true;
         }
 
@@ -221,15 +271,23 @@ namespace Files
         public static bool DeleteDirectory(string directoryPath)
         {
             if (!Directory.Exists(directoryPath))
+            {
+                Logger.Log(LogLevel.Error, String.Format("Could not find {0}", directoryPath));
+                
                 return false;
+            }
             //TODO: jakiś error
             try
             {
                 Directory.Delete(directoryPath, true);
+                Logger.Log(LogLevel.Info, String.Format("Directory {0} deleted", directoryPath));
+                
                 return true;
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Error, String.Format("Could not delete {0}", directoryPath));
+                
                 return false;
             }
         }
@@ -242,7 +300,11 @@ namespace Files
         public static bool CleanDirectory(string directoryPath)
         {
             if (!Directory.Exists(directoryPath))
+            {
+                Logger.Log(LogLevel.Error, String.Format("Could not find {0}", directoryPath));
+                
                 return false;
+            }
             //TODO: jakiś error
             try
             {
@@ -252,15 +314,19 @@ namespace Files
                     try
                     {
                         Directory.Delete(dir, true);
+                        Logger.Log(LogLevel.Debug, String.Format("Directory {0} deleted", dir));
+                
                     }
                     catch (Exception)
                     {
-                        return false;
+                        Logger.Log(LogLevel.Warn, String.Format("Could not delete {0}", dir));
                     }
                 }
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Error, String.Format("Could not clean {0}", directoryPath));
+                
                 return false;
             }
 
@@ -272,19 +338,27 @@ namespace Files
                     try
                     {
                         File.Delete(file);
+                        Logger.Log(LogLevel.Debug, String.Format("File {0} deleted", file));
+                
             
                     }
                     catch (Exception)
                     {
-                        return false;
+                        Logger.Log(LogLevel.Warn, String.Format("Could not delete {0}", file));
+                
+                        //return false;
                     }
                     
                 }        
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Error, String.Format("Could not clean {0}", directoryPath));
+                
                 return false;
             }
+            Logger.Log(LogLevel.Info, String.Format("{0} finished cleaning", directoryPath));
+                
             return true;
         }
 
@@ -298,15 +372,23 @@ namespace Files
         public static bool ReplaceText(string filePath, string regex, string newText)
         {
             if (!File.Exists(filePath))
+            {
+                Logger.Log(LogLevel.Error, String.Format("Could not find {0}", filePath));
+                
                 return false;
+            }
             //TODO: jakiś error
             try
             {
                 File.WriteAllText(filePath, Regex.Replace(File.ReadAllText(filePath), regex, newText));
+                Logger.Log(LogLevel.Info, String.Format("File {0} overwritten", filePath));
+                
                 return true;
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Error, String.Format("Could not overwrite {0}", filePath));
+                
                 return false;
             }
         }
@@ -326,6 +408,8 @@ namespace Files
             }
             catch (Exception)
             {
+                Logger.Log(LogLevel.Warn, String.Format("Incorrect filename or folderPaths"));
+                
                 return new[] {filename};
             }
         }
