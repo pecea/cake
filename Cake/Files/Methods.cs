@@ -189,13 +189,15 @@ namespace Files
         /// </summary>
         /// <param name="parentDirectoryPath">Path to folder</param>
         /// <param name="directoryPattern">Delete pattern</param>
+        /// <param name="subdirectories">If true, recursive</param>
         /// <returns>True, if directories where correctly deleted</returns>
-        public static bool DeleteDirectoriesWithPattern(string parentDirectoryPath, string directoryPattern)
+        public static bool DeleteDirectoriesWithPattern(string parentDirectoryPath, string directoryPattern, bool subdirectories = false)
         {
+            var option = subdirectories == true ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             if (!Directory.Exists(parentDirectoryPath))
                 return false;
             //TODO: jakiś error
-            foreach (var directory in Directory.GetDirectories(parentDirectoryPath, directoryPattern))
+            foreach (var directory in Directory.GetDirectories(parentDirectoryPath, directoryPattern, option))
             {
                 try
                 {

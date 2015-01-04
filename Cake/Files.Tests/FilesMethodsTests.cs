@@ -82,89 +82,120 @@ namespace Files.Tests
         [TestMethod]
         public void CopyFolderCleanDestinationDirectoryShouldDeleteAllPreviousContent()
         {
-            
+            Directory.Delete(pathForTests+"Copied Content", true);
+            Methods.CopyFolder(pathForTests, pathForTests + "Copied Content", true, true);
+            var files = new DirectoryInfo(pathForTests + "Copied Content").GetFiles("*", SearchOption.AllDirectories);
+            Methods.CopyFolder(pathForTests, pathForTests+"Copied Content", false, false, true);
+            Assert.AreEqual(2, new DirectoryInfo(pathForTests+"Copied Content").GetFiles().Count());
+            Assert.AreEqual(0, new DirectoryInfo(pathForTests+"Copied Content").GetDirectories().Count());
+            Assert.AreNotEqual(files.Count(), new DirectoryInfo(pathForTests + "Copied Content").GetFiles().Count());
         }
 
         [TestMethod]
         public void CopyFileShouldReturnFalseIfFilesDoesNotExist()
         {
-            
+            Assert.AreEqual(false, Methods.CopyFile(pathForTests+"not existing file", pathForTests+"Copied Content"));
+        }
+
+        [TestMethod]
+        public void CopyFileShouldReturnFalseIfFilePathIsNotCorrect()
+        {
+            Assert.AreEqual(false, Methods.CopyFile(pathForTests + ":@!@#", pathForTests + "Copied Content"));
         }
 
         [TestMethod]
         public void CopyFileShouldOverwritePreviousFile()
         {
-
+            Methods.CopyFolder(pathForTests, pathForTests + "Copied Content");
+            var file = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt");
+            Methods.CopyFile(pathForTests + "FileToCopy.txt", pathForTests + "Copied Content");
+            Assert.AreNotEqual(file, new FileInfo(pathForTests + "Copied Content/FileToCopy.txt"));
         }
 
-        [TestMethod]
-        public void CopyFileWithoutOverwriteShouldNotOverwritePreviousFile()
-        {
-            
-        }
+        //[TestMethod]
+        //public void CopyFileWithoutOverwriteShouldNotOverwritePreviousFile()
+        //{
+        //    Methods.CopyFolder(pathForTests, pathForTests + "Copied Content");
+        //    var file = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt");
+        //    Methods.CopyFile(pathForTests + "FileToCopy.txt", pathForTests + "Copied Content", false);
+        //    Assert.AreEqual(file, new FileInfo(pathForTests + "Copied Content/FileToCopy.txt"));
+        //}
 
         [TestMethod]
         public void DeleteFileShouldReturnFalseIfFileDoesNotExist()
         {
-            
+            Assert.AreEqual(false,Methods.DeleteFile(pathForTests + "non existing file"));
         }
 
         [TestMethod]
         public void DeleteFileShouldDeleteFile()
         {
-            
+            Methods.CopyFile(pathForTests + "FileToCopy.txt", pathForTests + "Copied Content");
+            Methods.DeleteFile(pathForTests + "Copied Content/FileToCopy.txt");
+            Assert.AreEqual(false, File.Exists(pathForTests + "Copied Content/FileToCopy.txt"));
         }
 
         [TestMethod]
         public void GetFilesWithPatternShouldNotReturnFilePathsFromSubdirectories()
         {
-            
+            Assert.AreEqual(0, Methods.GetFilesWithPattern(pathForTests, "File3ToCopy.txt").Count());
         }
 
-        [TestMethod]
-        public void GetFilesWithPatternSubdirectoriesIncludedShouldReturnFilePathsFromSubdirectories()
-        {
-            
-        }
+        //[TestMethod]
+        //public void GetFilesWithPatternSubdirectoriesIncludedShouldReturnFilePathsFromSubdirectories()
+        //{
+        //    Assert.AreEqual(1, Methods.GetFilesWithPattern(pathForTests, "File3ToCopy.txt", true).Count());
+        //}
 
         [TestMethod]
-        public void GetFilesWithPatternShouldReturnFalseIfParentDirectoryPathIsIncorrect()
+        public void GetFilesWithPatternShouldReturnEmptyArrayIfParentDirectoryPathIsIncorrect()
         {
-            
+            Assert.AreEqual(0, Methods.GetFilesWithPattern("incorect path:!@@#Q#", "filePattern").Count());
         }
 
         [TestMethod]
         public void DeleteFilesWithPatternShouldReturnFalseIfParentDirectoryPathIsIncorrect()
         {
-
+            Assert.AreEqual(false, Methods.DeleteFilesWithPattern("incorrect path:!@!#", "filePattern"));
         }
 
         [TestMethod]
         public void DeleteFilesWithPatternShouldDeleteOnlyFiles()
         {
-            
+            Methods.CopyFolder(pathForTests, pathForTests + "Copied Content");
+            var dirs = new DirectoryInfo(pathForTests + "Copied Content").GetDirectories();
+            var files = new DirectoryInfo(pathForTests + "Copied Content").GetFiles(); 
+            Methods.DeleteFilesWithPattern(pathForTests + "Copied Content", "Copy");
+            var dirsDel = new DirectoryInfo(pathForTests + "Copied Content").GetDirectories();
+            var filesDel = new DirectoryInfo(pathForTests + "Copied Content").GetFiles();
+            CollectionAssert.AreEqual(dirs, dirsDel);
+            CollectionAssert.AreNotEqual(files, filesDel);
+
         }
 
         [TestMethod]
         public void DeleteDirectoriesWithPatternShouldReturnFalseIfParentDirectoryPathIsIncorrect()
         {
-
+            Assert.AreEqual(false, Methods.DeleteDirectoriesWithPattern("incorrect path:!@!#", "directoryPattern"));
         }
 
         [TestMethod]
-        public void DeleteDirectoriesWithPatternShouldReturnFalseIfSomeDirectoryIsNotEmpty()// CZYŻBY?
+        public void DeleteDirectoriesWithPatternShouldReturnTrueIfSomeDirectoryIsNotEmpty()// CZYŻBY?
         {
-            
+            Methods.CopyFolder(pathForTests, pathForTests + "Copied Content", true, true);
+            var dirInfos = new DirectoryInfo(pathForTests + "Copied Content").GetDirectories();
+            var dirs = Directory.GetDirectories(pathForTests + "Copied Content");
+            Assert.AreEqual(true, Methods.DeleteDirectoriesWithPattern(pathForTests + "Copied Content/", "Copied Content", true));
         }
 
-        [TestMethod]
-        public void DeleteDirectoryShouldDeleteDirectory()
-        {
+        //[TestMethod]
+        //public void DeleteDirectoryShouldDeleteDirectory()
+        //{
             
-        }
+        //}
 
         [TestMethod]
-        public void DeleteDirectoryShouldReturnFalseIfsDirectoryPathIsIncorrect()
+        public void DeleteDirectoryShouldReturnFalseIfDirectoryPathIsIncorrect()
         {
 
         }
