@@ -22,9 +22,7 @@
 
             var splitPath = path.Split('\\', '/');
             var pathsRoot = new Node(splitPath[0], splitPath);
-            pathsRoot.ResolveNode(option);
-
-            return Node.Paths;
+            return pathsRoot.ResolveNode(option);
         }
     }
 }

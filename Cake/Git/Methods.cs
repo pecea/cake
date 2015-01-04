@@ -61,7 +61,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Tag(string tag)
         {
-            return Processor.RunProcess(FullPathExe, "tag "+tag);
+            return Processor.RunProcess(FullPathExe, "tag " + tag);
         }
 
         /// <summary>
