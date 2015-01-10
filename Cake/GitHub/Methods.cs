@@ -37,6 +37,7 @@ namespace GitHub
             _tagName = tagName;
             _releaseNotesFile = releaseNotesFile;
             var client = new GitHubClient(new ProductHeaderValue("GitTfsTasks"), CredentialStore).Release;
+
             var result = client.Create(Owner, RepositoryName, BuildReleaseData()).Result;
             IdRelease = result.Id;
             if ((files != null) && (files.Length != 0))
@@ -63,7 +64,7 @@ namespace GitHub
         {
             return (from item in items select Upload(client, release, item)).ToArray<string>();
         }
-
+        
         private static ICredentialStore CredentialStore
         {
             get

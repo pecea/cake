@@ -1,6 +1,8 @@
 ﻿namespace Cake
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
@@ -9,7 +11,6 @@
 
     using Common;
 
-    using Roslyn.Compilers;
     using Roslyn.Scripting;
     using Roslyn.Scripting.CSharp;
 
@@ -54,7 +55,7 @@
 
         private static void LoadAssemblies(string filePath)
         {
-            var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";$");
+            var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";");
 
             using (var streamReader = new StreamReader(filePath, Encoding.GetEncoding("ISO-8859-2")))
             {
@@ -70,10 +71,15 @@
                     Session.AddReference(assembly);
                     Logger.Log(LogLevel.Debug, String.Format("Assembly \"{0}\" referenced. Importing namespaces from this assembly.", assembly.FullName));
 
-                    foreach (var type in assembly.GetTypes().Where(type => type.IsStatic()))
+                    var namespaces = assembly.GetTypes().Select(type => type.Namespace);
+                    var staticTypes = assembly.GetTypes().Where(type => type.IsStatic()).Select(type => type.FullName);
+
+                    namespaces = namespaces.Union(staticTypes);
+
+                    foreach (var ns in namespaces)
                     {
-                        Session.ImportNamespace(type.FullName);
-                        Logger.Log(LogLevel.Debug, String.Format("Namespace \"{0}\" imported.", type.FullName));
+                        Session.ImportNamespace(ns);
+                        Logger.Log(LogLevel.Debug, String.Format("Namespace \"{0}\" imported.", ns));
                     }
                 }
             }
