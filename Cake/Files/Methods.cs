@@ -7,7 +7,10 @@ using System.Linq;
 using System.Text.RegularExpressions;
 namespace Files
 {
-    public class Methods
+    /// <summary>
+    /// Encloses methods used with operations on files.
+    /// </summary>
+    public static class Methods
     {
 
         

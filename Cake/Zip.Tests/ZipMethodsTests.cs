@@ -3,17 +3,13 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Zip.Tests
 {
-    /// <summary>
-    /// Class for testing Zip module methods
-    /// </summary>
+
     [TestClass]
     public class ZipMethodsTests
     {
         private const string pathForTests = "../../Test Files/assert";
 
-        /// <summary>
-        /// Test method for non-existing file in zip files method
-        /// </summary>
+
         [TestMethod]
         public void ZipFilesShouldReturnFailureIfFileDoesNotExist()
         {
@@ -21,9 +17,7 @@ namespace Zip.Tests
                 File.Delete(pathForTests+".zip");
             Assert.AreEqual(false, Methods.ZipFiles(pathForTests, "Nonexisting or invalid project/solution file"));
         }
-        /// <summary>
-        /// Test method for empty file path in zip files method
-        /// </summary>
+
         [TestMethod]
         public void ZipFilesShoudReturnFailureIfFilePathIsEmpty()
         {
@@ -31,9 +25,7 @@ namespace Zip.Tests
                 File.Delete(pathForTests + ".zip");
             Assert.AreEqual(false, Methods.ZipFiles(pathForTests, ""));
         }
-        /// <summary>
-        /// Test method for successful zip files method
-        /// </summary>
+
         [TestMethod]
         public void ZipFilesShouldReturnSuccessIfParametersAreValid()
         {
@@ -41,9 +33,7 @@ namespace Zip.Tests
                 File.Delete(pathForTests + ".zip");
             Assert.AreEqual(true, Methods.ZipFiles(pathForTests, "../../Test Files/testZipFile.txt"));
         }
-        /// <summary>
-        /// Test method for unspecified zip path in zip files method
-        /// </summary>
+
         [TestMethod]
         public void ZipFilesShouldReturnSuccessIfZipPathIsNotSpecified()
         {
@@ -51,18 +41,13 @@ namespace Zip.Tests
                 File.Delete(pathForTests + ".zip");
             Assert.AreEqual(true, Methods.ZipFiles(pathForTests, "../../Test Files/testZipFile.txt"));
         }
-        /// <summary>
-        /// Test method for invalid zip path in zip files method
-        /// </summary>
+
         [TestMethod]
         public void ZipFilesShouldReturnFailureWhenZipPathIsNotValid()
         {
             Assert.AreEqual(false, Methods.ZipFiles("invalid zip path:!@", "../../Test Files/testZipFile.txt"));
         }
-        //TODO: przy ...ShouldReturnSuccess... zrobić dodatkowe testy sprawdzające identyczność plików przed i po zipowaniu
-        /// <summary>
-        /// Test method for successful comparison of zipped and unzipped files with not zipped files
-        /// </summary>
+
         [TestMethod]
         public void ZipFilesShouldReturnSuccessWhenZippedAndUnzippedFilesAreSameAsNotZippedFiles()
         {

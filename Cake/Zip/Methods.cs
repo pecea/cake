@@ -27,7 +27,7 @@
             foreach (var filePath in filePaths)
             {
                 paths.AddRange(filePath.GetFilePaths());
-                //paths.AddRange(filePath.GetFolderPaths());
+                paths.AddRange(filePath.GetDirectoriesPaths());
             }
             filePaths = paths.ToArray();
 
@@ -67,7 +67,7 @@
         /// <returns></returns>
         private static bool CheckZipFilesArguments(IEnumerable<string> filePaths, string zipPath)
         {
-            if (!filePaths.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)))
+            if (!filePaths.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)) || !filePaths.Any())
                 return false;
 
             if (String.IsNullOrEmpty(zipPath)) return true;

@@ -46,7 +46,6 @@ namespace GitHub
             return true;
         }
 
-
         private static string TaskItemFor(Octokit.Release release, Task<ReleaseAsset> asset)//what is release parameter for?
         {
             return ("https://github.com/" + _repository + "/releases/download/" + _tagName + "/" + asset.Result.Name);
