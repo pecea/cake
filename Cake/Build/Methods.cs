@@ -28,7 +28,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            var paths = projectFile.GetFilePaths() as string[];
+            var paths = projectFile.GetFilePaths();
 
             if (paths == null || !paths.Any()) return false;
 

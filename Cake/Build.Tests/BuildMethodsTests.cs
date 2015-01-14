@@ -5,6 +5,8 @@
     [TestClass]
     public class BuildMethodsTests
     {
+        private const string ProjectPath = @"../../Test Files/Build.Tests.TestProject/Build.Tests.TestProject.csproj";
+
         [TestMethod]
         public void BuildProjectShouldReturnFailureIfProjectFileArgumentIsEmpty()
         {
@@ -26,43 +28,43 @@
         [TestMethod]
         public void BuildProjectShouldReturnSuccessIfProjectIsValid()
         {
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath));
         }
 
         [TestMethod]
         public void BuildProjectShouldReturnFailureIfPlatformIsNotValid()
         {
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln"));
-            Assert.AreEqual(false, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "invalid platform"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath));
+            Assert.AreEqual(false, Methods.BuildProject(ProjectPath, platform: "invalid platform"));
         }
 
         [TestMethod]
         public void BuildProjectShouldReturnSuccessIfPlatformIsValid()
         {
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "Any CPU"));
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "x86"));
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "x64"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath, platform: "Any CPU"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath, platform: "x86"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath, platform: "x64"));
         }
 
         [TestMethod]
         public void BuildProjectShouldReturnFailureIfConfigurationIsNotValid()
         {
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln"));
-            Assert.AreEqual(false, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", configuration: "invalid configuration"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath));
+            Assert.AreEqual(false, Methods.BuildProject(ProjectPath, configuration: "invalid configuration"));
         }
 
         [TestMethod]
         public void BuildProjectShouldReturnSuccessIfConfigurationIsValid()
         {
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", configuration: "Debug"));
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", configuration: "Release"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath, configuration: "Debug"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath, configuration: "Release"));
         }
 
         [TestMethod]
         public void BuildProjectShouldReturnFailureIfOutputPathIsInvalid()
         {
-            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln"));
-            Assert.AreEqual(false, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", outputPath: "invalid output path?"));
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath));
+            Assert.AreEqual(false, Methods.BuildProject(ProjectPath, outputPath: "invalid output path?"));
         }
     }
 }
