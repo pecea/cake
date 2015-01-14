@@ -30,8 +30,6 @@ namespace Files.Tests
             var dirToCopy = new DirectoryInfo(pathForTests).GetDirectories();
             foreach(var dir in Directory.GetDirectories(pathForTests+"Copied Content"))
                 Directory.Delete(dir, true);
-            //foreach (var file in Directory.GetFiles(pathForTests + "Copied Content"))
-            //    File.Delete(file);
             Methods.CopyFolder(pathForTests, pathForTests + "Copied Content", false);
             var filesCopied = new DirectoryInfo(pathForTests + "Copied Content").GetFiles();
             Assert.AreEqual(filesToCopy.Count(), filesCopied.Count());
@@ -43,7 +41,6 @@ namespace Files.Tests
         [TestMethod]
         public void CopyFolderOverwriteShouldOverwrite()
         {
-            //DateTime ctBefore, ctBefore2;
             FileInfo f, f2;
             if (File.Exists(pathForTests + "Copied Content/FileToCopy.txt"))
             {
@@ -51,17 +48,12 @@ namespace Files.Tests
                 {
                     f = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt");
                     f2 = new FileInfo(pathForTests + "Copied Content/File2ToCopy.txt");
-                    //ctBefore = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt").LastAccessTime;
-                    //ctBefore2 = new FileInfo(pathForTests + "Copied Content/File2ToCopy.txt").LastAccessTime;
                 }
                 else
                 {
                     Methods.CopyFolder(pathForTests, pathForTests + "Copied Content");
                     f = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt");
                     f2 = new FileInfo(pathForTests + "Copied Content/File2ToCopy.txt");
-                    //ctBefore = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt").LastAccessTime;
-                    //ctBefore2 = new FileInfo(pathForTests + "Copied Content/File2ToCopy.txt").LastAccessTime;
-
                 }
             }
             else
@@ -69,9 +61,6 @@ namespace Files.Tests
                 Methods.CopyFolder(pathForTests, pathForTests + "Copied Content");
                 f = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt");
                 f2 = new FileInfo(pathForTests + "Copied Content/File2ToCopy.txt");
-                //ctBefore = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt").LastAccessTime;
-                //ctBefore2 = new FileInfo(pathForTests + "Copied Content/File2ToCopy.txt").LastAccessTime;
-
             }
             Methods.CopyFolder(pathForTests, pathForTests + "Copied Content", false, true);
             var fa = new FileInfo(pathForTests + "Copied Content/FileToCopy.txt");
@@ -182,7 +171,7 @@ namespace Files.Tests
         [TestMethod]
         public void GetFilesWithPatternSubdirectoriesIncludedShouldReturnFilePathsFromSubdirectories()
         {
-            if (Directory.Exists(pathForTests + "Copied Content")) ;
+            if (Directory.Exists(pathForTests + "Copied Content"))
                 Directory.Delete(pathForTests + "Copied Content", true);
             Assert.AreEqual(1, Methods.GetFilesWithPattern(pathForTests, "File3ToCopy.txt", true).Count());
         }
@@ -230,12 +219,6 @@ namespace Files.Tests
             var dirs = Directory.GetDirectories(pathForTests + "Copied Content");
             Assert.AreEqual(true, Methods.DeleteDirectoriesWithPattern(pathForTests + "Copied Content/", "Copied Content", true));
         }
-
-        //[TestMethod]
-        //public void DeleteDirectoryShouldDeleteDirectory()
-        //{
-            
-        //}
 
         [TestMethod]
         public void DeleteDirectoryShouldReturnFalseIfDirectoryPathIsIncorrect()
