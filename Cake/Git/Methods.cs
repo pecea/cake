@@ -62,7 +62,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Tag(string tag)
         {
-            return Processor.RunProcess(FullPathExe, "tag " + tag);
+            return Processor.RunProcess(FullPathExe, "tag " + tag, PathToRepository);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@
         public static bool Push(string repository, params string[] branches)
         {
             var refToPush = branches == null ? string.Empty : string.Join(" ", branches);
-            return Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush);
+            return Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush, PathToRepository);
 
 
         }
@@ -85,7 +85,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool ResetAllModifications()
         {
-            return Processor.RunProcess(FullPathExe, "reset --hard");
+            return Processor.RunProcess(FullPathExe, "reset --hard", PathToRepository);
         }
         /// <summary>
         /// Executes git clean command
@@ -94,7 +94,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Clean(bool allFiles = false)
         {
-            return Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty));
+            return Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty), PathToRepository);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Run(string parameters)
         {
-            return Processor.RunProcess(FullPathExe, parameters);
+            return Processor.RunProcess(FullPathExe, parameters, PathToRepository);
         }
     }
 }
