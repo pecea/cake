@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Common;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Common;
-
 namespace Files
 {
     /// <summary>
@@ -132,7 +131,6 @@ namespace Files
                 
                 return false;
             }
-            //TODO: jakiś error
             try
             {
                 File.Copy(sourceName, destName, overwrite);
@@ -162,7 +160,6 @@ namespace Files
                 
                 return false;
             }
-            //TODO: jakiś error
             try
             {
                 File.Delete(filePath);
@@ -205,7 +202,6 @@ namespace Files
                 
                 return false;
             }
-            //TODO: jakiś error
             foreach (var directory in GetFilesWithPattern(parentDirectoryPath, filePattern))
             {
                 try
@@ -242,7 +238,6 @@ namespace Files
                 
                 return false;
             }
-            //TODO: jakiś error
             foreach (var directory in Directory.GetDirectories(parentDirectoryPath, directoryPattern, option))
             {
                 try
@@ -278,7 +273,6 @@ namespace Files
                 
                 return false;
             }
-            //TODO: jakiś error
             try
             {
                 Directory.Delete(directoryPath, true);
@@ -307,7 +301,6 @@ namespace Files
                 
                 return false;
             }
-            //TODO: jakiś error
             try
             {
                 var directoriesToClean = Directory.GetDirectories(directoryPath);
@@ -379,7 +372,6 @@ namespace Files
                 
                 return false;
             }
-            //TODO: jakiś error
             try
             {
                 File.WriteAllText(filePath, Regex.Replace(File.ReadAllText(filePath), regex, newText));

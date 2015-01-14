@@ -1,6 +1,6 @@
 ﻿namespace Cake
 {
-    public class Argument
+    internal class Argument
     {
         public Argument(string[] names, bool hasValue)
         {

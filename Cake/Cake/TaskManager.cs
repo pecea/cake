@@ -12,11 +12,8 @@
     {
         private static readonly Dictionary<string, Task> Tasks;
 
-        public static string TaskToRun { get; set; }
+        internal static string TaskToRun { get; set; }
 
-        /// <summary>
-        /// Initialises the <see cref="TaskManager"/>.
-        /// </summary>
         static TaskManager()
         {
             Tasks = new Dictionary<string, Task>();
@@ -58,11 +55,6 @@
             SetDefault(task.Name);
         }
 
-        /// <summary>
-        /// Executes <see cref="Task"/>'s action executing its dependencies' actions first.
-        /// A dependency is executed only once, even if occurs on the created stack more than once.
-        /// </summary>
-        /// <param name="name">A <see cref="Task"/> to be executed.</param>
         private static void RunTaskWithDependencies(string name)
         {
             Task task;

@@ -96,11 +96,6 @@
                     .TrimEnd('"');
         }
 
-        /// <summary>
-        /// Determines whether specified type is static.
-        /// </summary>
-        /// <param name="type">The type to be checked.</param>
-        /// <returns>True if the type provided is static, false otherwise.</returns>
         private static bool IsStatic(this Type type)
         {
             return type.IsSealed && type.IsAbstract;

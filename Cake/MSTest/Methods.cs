@@ -27,6 +27,9 @@
                     "MSTest.exe"),
             };
 
+        /// <summary>
+        /// Local path to MSTest.exe
+        /// </summary>
         public static string PathToExe { get; set; }
 
         private static string FullPathExe

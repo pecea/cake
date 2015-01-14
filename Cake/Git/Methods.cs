@@ -1,6 +1,7 @@
-﻿namespace Git
+﻿using System.Linq;
+
+namespace Git
 {
-    using System;
     using System.IO;
 
     using Common;
@@ -10,7 +11,8 @@
     /// </summary>
     public static class Methods
     {
-        private static readonly string app = "git.exe";
+        private const string app = "git.exe";
+
         private static readonly string[] Paths = {
             Path.Combine(@"C:\Program Files (x86)\Git\bin", app),
             Path.Combine(@"C:\Program Files\Git\bin", app)
@@ -24,9 +26,9 @@
             get
             {
                 if (File.Exists(PathToExe)) return PathToExe;
-                foreach (var path in Paths)
+                foreach (var path in Paths.Where(File.Exists))
                 {
-                    if (File.Exists(path)) return path;
+                    return path;
                 }
                 return app;
             }
