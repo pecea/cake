@@ -40,8 +40,8 @@
         public void BuildProjectShouldReturnSuccessIfPlatformIsValid()
         {
             Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "Any CPU"));
-            //Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "x86"));
-            //Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "x64"));
+            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "x86"));
+            Assert.AreEqual(true, Methods.BuildProject(@"../../Test Files/Test Project/Test Project.sln", platform: "x64"));
         }
 
         [TestMethod]
