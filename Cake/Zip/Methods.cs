@@ -40,7 +40,7 @@
                     {
                         var attributes = File.GetAttributes(path);
                         if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
-                        else zip.AddFile(path);
+                        else zip.AddFile(path,"");
                     }
                     zip.Save(String.Format("{0}.zip", zipPathAndName));
                     Logger.Log(LogLevel.Info, String.Format("{0} zipped succesfully.", zipPathAndName));

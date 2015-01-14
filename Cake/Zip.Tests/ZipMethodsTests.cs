@@ -51,21 +51,15 @@ namespace Zip.Tests
         [TestMethod]
         public void ZipFilesShouldReturnSuccessWhenZippedAndUnzippedFilesAreSameAsNotZippedFiles()
         {
-            const string unzippedPath = "../../Test Files/UnzippedFliesForTest";
+            const string unzippedPath = "../../Test Files/UnzippedFilesForTest";
+            const string archivePath = "../../Test Files/sameContentTest";
             var filesToTest = new[] {"testZipFile.txt", "testZipFile2.txt"};
             if (Directory.Exists(unzippedPath))
-            {
-                var dir = new DirectoryInfo(unzippedPath);
-                foreach (var file in dir.GetFiles())
-                {
-                    file.Delete();
-                }
-                Directory.Delete(unzippedPath);
-            }
-            if (File.Exists("../../Test Files/sameContentTest.zip"))
-                File.Delete("../../Test Files/sameContentTest.zip");
+                Directory.Delete(unzippedPath, true);
+            if (File.Exists(archivePath+".zip"))
+                File.Delete(archivePath+".zip");
             Methods.ZipFiles("../../Test Files/sameContentTest", "../../Test Files/testZipFile.txt", "../../Test Files/testZipFile2.txt");
-            System.IO.Compression.ZipFile.ExtractToDirectory("sameContentTest.zip", unzippedPath);
+            System.IO.Compression.ZipFile.ExtractToDirectory(Path.GetFullPath(archivePath) + ".zip", Path.GetFullPath(unzippedPath));
             foreach (var file in filesToTest)
             {
 
