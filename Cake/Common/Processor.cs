@@ -1,4 +1,6 @@
-﻿namespace Common
+﻿using System.IO;
+
+namespace Common
 {
     using System.Diagnostics;
     using System.Text;
@@ -8,16 +10,27 @@
     /// </summary>
     public static class Processor
     {
+
         /// <summary>
         /// Runs command wth arguments
         /// </summary>
-        /// <param name="command">string containing command</param>
-        /// <param name="arguments">arguments for command</param>
+        /// <param name="command">Command to run</param>
+        /// <param name="arguments">Arguments to go with command</param>
+        /// <param name="workingDirectory">Directory on which command should run</param>
         /// <returns></returns>
-        public static bool RunProcess(string command, string arguments = "")
+        public static bool RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
             var outputBuilder = new StringBuilder();
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
+
+            if (workingDirectory != ".")
+            {
+                if (!Directory.Exists(workingDirectory))
+                {
+                    workingDirectory = ".";
+                    Logger.Log(LogLevel.Warn, "Working directory path does not exist! Changed path to "+Directory.GetCurrentDirectory());
+                }
+            }
 
             var process = new Process
             {
@@ -28,7 +41,7 @@
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
                     UseShellExecute = false,
-                    WorkingDirectory = "."
+                    WorkingDirectory = Path.GetFullPath(workingDirectory)
                 }
             };
 
