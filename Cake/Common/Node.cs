@@ -5,9 +5,6 @@
     using System.IO;
     using System.Linq;
 
-    /// <summary>
-    /// Represents a tree node used when resolving wildcarded paths.
-    /// </summary>
     internal class Node
     {
         private Node(string value)

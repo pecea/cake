@@ -11,31 +11,22 @@
     /// </summary>
     public class Task
     {
-        private readonly string name;
-        private readonly List<string> dependencies;
-        private Action action;
+        private readonly string _name;
+        private readonly List<string> _dependencies;
+        private Action _action;
 
-        /// <summary>
-        /// Task's name.
-        /// </summary>
         internal string Name
         {
-            get { return name; }
+            get { return _name; }
         }
 
-        /// <summary>
-        /// Names of the tasks this task is dependent on.
-        /// </summary>
+
         internal List<string> Dependencies
         {
-            get { return dependencies; }
+            get { return _dependencies; }
         }
 
-        /// <summary>
-        /// Determines whether the task has executed already or is executed during <see cref="TaskManager.SetDefault(string)"/> 
-        /// or <see cref="TaskManager.SetDefault(Cake.Task)"/> execution.
-        /// After TaskManager.SetDefault is finished, it is set to Done.
-        /// </summary>
+
         internal TaskStatus Status { get; set; }
 
         /// <summary>
@@ -44,10 +35,10 @@
         /// <param name="name"></param>
         public Task(string name)
         {
-            this.name = name;
+            this._name = name;
             Status = TaskStatus.NotVisited;
-            dependencies = new List<string>();
-            action = () => { };
+            _dependencies = new List<string>();
+            _action = () => { };
             TaskManager.RegisterTask(this);
         }
 
@@ -58,9 +49,9 @@
         /// <returns>The Task object is returned so that method chaining can be used in the script.</returns>
         public Task DependsOn(params string[] dependenciesToAdd)
         {
-            foreach (var dependency in dependenciesToAdd.Where(dependency => dependencies.All(added => added != dependency)))
+            foreach (var dependency in dependenciesToAdd.Where(dependency => _dependencies.All(added => added != dependency)))
             {
-                dependencies.Add(dependency);
+                _dependencies.Add(dependency);
             }
             return this;
         }
@@ -82,16 +73,13 @@
         /// <returns>The Task object is returned so that method chaining can be used in the script.</returns>
         public Task Does(Action actionToDo)
         {
-            action = actionToDo;
+            _action = actionToDo;
             return this;
         }
 
-        /// <summary>
-        /// Invokes Task's action.
-        /// </summary>
         internal void Execute()
         {
-            action();
+            _action();
             Logger.Log(LogLevel.Debug, String.Format("Task \"{0}\" executed.", Name));
         }
     }

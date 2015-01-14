@@ -6,6 +6,9 @@ using System.IO;
 
 namespace GitHub
 {
+    /// <summary>
+    /// Encloses methods used with integration with github.
+    /// </summary>
     public static class Methods
     {
         private static string _oauthToken;
@@ -30,6 +33,15 @@ namespace GitHub
             return update;
         }
 
+        /// <summary>
+        /// Method for making a release to github.
+        /// </summary>
+        /// <param name="repository">URL to repository</param>
+        /// <param name="oauthToken">Github oauthToken</param>
+        /// <param name="tagName">Tag</param>
+        /// <param name="files">Files included into release</param>
+        /// <param name="releaseNotesFile">Path to file with notes for the release</param>
+        /// <returns></returns>
         public static bool Release(string repository, string oauthToken, string tagName, UploadFile[] files, string releaseNotesFile = null)
         {
             _repository = repository;
@@ -73,7 +85,7 @@ namespace GitHub
             }
         }
         
-        public static int IdRelease { get; private set; }
+        internal static int IdRelease { get; private set; }
         
         private static string Owner
         {
@@ -91,7 +103,7 @@ namespace GitHub
             }
         }
         
-        public static string[] UploadedAssets { get; private set; }
+        internal static string[] UploadedAssets { get; private set; }
 
 
         private class InPlaceCredentialStore : ICredentialStore

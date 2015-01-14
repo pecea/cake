@@ -63,14 +63,6 @@
             }
         }
 
-        /// <summary>
-        /// Checks if arguments passed to BuildProject methods are valid.
-        /// </summary>
-        /// <param name="projectFile">Project's file name or path.</param>
-        /// <param name="configuration">Build configuration.</param>
-        /// <param name="platform">Build platform.</param>
-        /// <param name="outputPath">Build output path.</param>
-        /// <returns>true in case of success, false otherwise.</returns>
         private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
         {
             if (!File.Exists(projectFile))

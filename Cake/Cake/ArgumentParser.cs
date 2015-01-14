@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    public static class ArgumentParser
+    internal static class ArgumentParser
     {
         static ArgumentParser()
         {
@@ -25,7 +25,7 @@
         {
             var result = new List<Argument>();
 
-            for (int i = 0; i < args.Length; i++)
+            for (var i = 0; i < args.Length; i++)
             {
                 var argName = args[i];
                 var argument = Arguments.FirstOrDefault(arg => arg.Names.Contains(argName));
