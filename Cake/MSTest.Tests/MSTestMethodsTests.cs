@@ -5,6 +5,9 @@
     [TestClass]
     public class MsTestMethodsTests
     {
+        private const string PathToTestLibrary = @"../../Test Files/SampleUnitTestProject.dll";
+        private const string PathToFailingTestLibrary = @"../../Test Files/SampleFailingUnitTestProject.dll";
+
         [TestMethod]
         public void ShouldReturnFailureIfInvalidTestPathIsSpecified()
         {
@@ -14,13 +17,13 @@
         [TestMethod]
         public void ShouldReturnSuccessIfValidTestPathIsSpecified()
         {
-            Assert.AreEqual(true, Methods.Test(@"../../../Cake.Tests/bin/Debug/Cake.Tests.dll"));
+            Assert.AreEqual(true, Methods.Test(PathToTestLibrary));
         }
 
         [TestMethod]
         public void ShouldReturnFailureIfNotPassingTests()
         {
-            Assert.AreEqual(false, Methods.Test(@"../../../Build.Tests/bin/Debug/Build.Tests.dll"));
+            Assert.AreEqual(false, Methods.Test(PathToFailingTestLibrary));
         }
     }
 }
