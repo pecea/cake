@@ -17,6 +17,7 @@
         };
 
         public static string PathToExe { get; set; }
+        public static string PathToRepository { get; set; }
 
         public static string FullPathExe
         {

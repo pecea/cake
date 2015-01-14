@@ -9,7 +9,7 @@ namespace Git.Tests
         [TestMethod]
         public void TagShouldReturnSuccess()
         {
-            Methods.PathToExe = @"C:\Users\ernes_000\Source\Repos\Praca Inżynierska\Cake\Git.Tests\bin\Debug\testForCake";
+            Methods.PathToRepository = "../../Test Files/testRepository";
             Assert.AreEqual(true, Methods.Tag("unitTestTag"));
             Assert.AreEqual(true, Methods.Tag("-d unitTestTag"));
         }
@@ -17,6 +17,7 @@ namespace Git.Tests
         [TestMethod]
         public void ResetAllModificationsShouldReturnSucces()
         {
+            Methods.PathToRepository = "../../Test Files/testRepository";
             Assert.AreEqual(true, Methods.ResetAllModifications());
         }
 
@@ -29,12 +30,14 @@ namespace Git.Tests
         [TestMethod]
         public void CleanShouldReturnSuccess()
         {
+            Methods.PathToRepository = "../../Test Files/testRepository";
             Assert.AreEqual(true, Methods.Clean());
         }
 
         [TestMethod]
         public void RunShouldReturnSuccess()
         {
+            Methods.PathToRepository = "../../Test Files/testRepository";
             Assert.AreEqual(true, Methods.Run("tag unitTestTag"));
             Assert.AreEqual(true, Methods.Run("tag -d unitTestTag"));
         }
