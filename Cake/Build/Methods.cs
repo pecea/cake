@@ -28,9 +28,12 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            return projectFile.GetFilePaths()
-                .Aggregate(true, (currentResult, filePath) 
-                    => currentResult && BuildSingleProject(filePath, outputPath, configuration, platform));
+            var paths = projectFile.GetFilePaths() as string[];
+
+            if (paths == null || !paths.Any()) return false;
+
+            return paths.Aggregate(true,
+                (current, path) => current & BuildSingleProject(path, outputPath, configuration, platform));
         }
 
         private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)

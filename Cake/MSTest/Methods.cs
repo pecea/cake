@@ -55,7 +55,15 @@
             {
                 try
                 {
-                    result = path.GetFilePaths().Aggregate(result, (current, filePath) => Processor.RunProcess(FullPathExe, "/testcontainer:" + filePath) && current);
+                    var paths = path.GetFilePaths() as string[];
+
+                    if (paths == null || !paths.Any())
+                    {
+                        result = false;
+                        continue;
+                    }
+
+                    result = paths.Aggregate(result, (current, filePath) => Processor.RunProcess(FullPathExe, "/testcontainer:" + filePath) && current);
                 }
                 catch (Exception e)
                 {

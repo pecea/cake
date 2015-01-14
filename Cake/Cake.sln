@@ -1,21 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake", "Cake\Cake.csproj", "{9199AA5E-B022-423A-946B-DC6E3683F935}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5311970D-8E70-4432-BFEC-7418C5E3713E}"
 	ProjectSection(SolutionItems) = preProject
-		IntegrationTests.testsettings = IntegrationTests.testsettings
-		IntegrationTests1.testsettings = IntegrationTests1.testsettings
-		IntegrationTests2.testsettings = IntegrationTests2.testsettings
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
-		UnitTests.testsettings = UnitTests.testsettings
-		UnitTests1.testsettings = UnitTests1.testsettings
-		UnitTests2.testsettings = UnitTests2.testsettings
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{189F3E91-4158-420A-9FC4-6A2A75DBD31C}"
