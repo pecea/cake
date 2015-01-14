@@ -1,4 +1,6 @@
-﻿namespace MSTest
+﻿using System.Diagnostics;
+
+namespace MSTest
 {
     using System;
     using System.IO;
@@ -58,15 +60,25 @@
             {
                 try
                 {
-                    var paths = path.GetFilePaths() as string[];
-
-                    if (paths == null || !paths.Any())
+                    var paths = path.GetFilePaths();
+                    if (paths == null)
                     {
                         result = false;
                         continue;
                     }
 
-                    result = paths.Aggregate(result, (current, filePath) => Processor.RunProcess(FullPathExe, "/testcontainer:" + filePath) && current);
+                    var enumeratedPaths = paths.ToArray();
+
+                    if (enumeratedPaths.Length == 0)
+                    {
+                        result = false;
+                        continue;
+                    }
+
+                    result = enumeratedPaths.Aggregate(result,
+                        (current, testPath) =>
+                            Processor.RunProcess(FullPathExe, "/testcontainer:" + Processor.QuoteArgument(testPath)) &&
+                            current);
                 }
                 catch (Exception e)
                 {

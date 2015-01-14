@@ -65,7 +65,7 @@ namespace Zip.Tests
             if (File.Exists("../../Test Files/sameContentTest.zip"))
                 File.Delete("../../Test Files/sameContentTest.zip");
             Methods.ZipFiles("../../Test Files/sameContentTest", "../../Test Files/testZipFile.txt", "../../Test Files/testZipFile2.txt");
-            System.IO.Compression.ZipFile.ExtractToDirectory("sameContentTest.zip", unzippedPath);
+            System.IO.Compression.ZipFile.ExtractToDirectory("../../Test Files/sameContentTest.zip", unzippedPath);
             foreach (var file in filesToTest)
             {
 

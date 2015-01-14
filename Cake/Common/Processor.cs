@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Common
 {
@@ -10,7 +11,6 @@ namespace Common
     /// </summary>
     public static class Processor
     {
-
         /// <summary>
         /// Runs command wth arguments
         /// </summary>
@@ -63,6 +63,16 @@ namespace Common
             Logger.Log(LogLevel.Debug, "Process exited with an error!");
             Logger.Log(LogLevel.Warn, output);
             return false;
+        }
+
+        /// <summary>
+        /// Encloses a string with quotes if it contains any whitespace characters.
+        /// </summary>
+        /// <param name="arg">String to be modified.</param>
+        /// <returns>String enclosed with quotes</returns>
+        public static string QuoteArgument(string arg)
+        {
+            return arg.Contains(" ") ? String.Format(@"""{0}""", arg) : arg;
         }
     }
 }

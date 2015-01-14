@@ -59,8 +59,10 @@
       <Name>MSTest</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Test Files\" />
+    <Content Include="Test Files\SampleFailingUnitTestProject.dll" />
+    <Content Include="Test Files\SampleUnitTestProject.dll" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
