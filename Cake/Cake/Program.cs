@@ -58,7 +58,6 @@
             }
 
             Logger.Log(LogLevel.Info, "Cake finished successfully.");
-            Console.ReadLine();
         }
     }
 }

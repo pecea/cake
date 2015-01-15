@@ -15,19 +15,6 @@ namespace Git.Tests
         }
 
         [TestMethod]
-        public void ResetAllModificationsShouldReturnSucces()
-        {
-            Methods.PathToRepository = "../../Test Files/testRepository";
-            Assert.AreEqual(true, Methods.ResetAllModifications());
-        }
-
-        //[TestMethod]
-        //public void PushShouldReturnSuccess()
-        //{
-        //    Assert.AreEqual(true, Methods.Push(@"C:\Users\ernes_000\Source\Repos\Praca Inżynierska\Cake\Git.Tests\bin\Debug\testForCake"));
-        //}
-
-        [TestMethod]
         public void CleanShouldReturnSuccess()
         {
             Methods.PathToRepository = "../../Test Files/testRepository";
