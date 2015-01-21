@@ -31,7 +31,6 @@
             // Retrieving user specified logging level
             var logLevelArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/verbosity"));
             if (logLevelArgument != null) Logger.Reconfigure(logLevelArgument.Value);
-
             // Retrieving script path
             var scriptArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/script"));
             if (scriptArgument == null)

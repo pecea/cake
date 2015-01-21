@@ -64,7 +64,12 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Tag(string tag)
         {
-            return Processor.RunProcess(FullPathExe, "tag " + tag, PathToRepository);
+            var res = Processor.RunProcess(FullPathExe, "tag " + tag, PathToRepository);
+            if (res)
+                Logger.Log(LogLevel.Info, "Git tag" + tag + " added correctly");
+            else
+                Logger.Log(LogLevel.Error, "Git tag not added!");
+            return res;
         }
 
         /// <summary>
@@ -76,7 +81,12 @@ namespace Git
         public static bool Push(string repository, params string[] branches)
         {
             var refToPush = branches == null ? string.Empty : string.Join(" ", branches);
-            return Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush, PathToRepository);
+            var res = Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush, PathToRepository);
+            if (res)
+                Logger.Log(LogLevel.Info, "Git push command executed correctly");
+            else
+                Logger.Log(LogLevel.Error, "Git push command executed with error!");
+            return res;
 
 
         }
@@ -87,7 +97,12 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool ResetAllModifications()
         {
-            return Processor.RunProcess(FullPathExe, "reset --hard", PathToRepository);
+            var res = Processor.RunProcess(FullPathExe, "reset --hard", PathToRepository);
+            if (res)
+                Logger.Log(LogLevel.Info, "Git reset command executed correctly");
+            else
+                Logger.Log(LogLevel.Error, "Git reset command executed with error!");
+            return res;
         }
         /// <summary>
         /// Executes git clean command
@@ -96,7 +111,12 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Clean(bool allFiles = false)
         {
-            return Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty), PathToRepository);
+            var res = Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty), PathToRepository);
+            if (res)
+                Logger.Log(LogLevel.Info, "Git clean command executed correctly");
+            else
+                Logger.Log(LogLevel.Error, "Git clean command executed with error!");
+            return res;
         }
 
         /// <summary>
@@ -106,7 +126,12 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Run(string parameters)
         {
-            return Processor.RunProcess(FullPathExe, parameters, PathToRepository);
+            var res =  Processor.RunProcess(FullPathExe, parameters, PathToRepository);
+            if (res)
+                Logger.Log(LogLevel.Info, "Git run command executed correctly");
+            else
+                Logger.Log(LogLevel.Error, "Git run command executed with error!");
+            return res;
         }
     }
 }

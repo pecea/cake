@@ -32,5 +32,7 @@
 
             TaskManager.SetDefault("first");
         }
+
+        //TODO: jakieś zależności między taskami
     }
 }

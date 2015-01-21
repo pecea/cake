@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Octokit;
 using System.IO;
+using Common;
 
 namespace GitHub
 {
@@ -48,18 +50,42 @@ namespace GitHub
             _oauthToken = oauthToken;
             _tagName = tagName;
             _releaseNotesFile = releaseNotesFile;
-            var client = new GitHubClient(new ProductHeaderValue("GitTfsTasks"), CredentialStore).Release;
 
-            var result = client.Create(Owner, RepositoryName, BuildReleaseData()).Result;
-            IdRelease = result.Id;
-            if ((files != null) && (files.Length != 0))
+            try
             {
-                UploadedAssets = UploadAll(client, result, files);
+                var client = new GitHubClient(new ProductHeaderValue("GitTfsTasks"), CredentialStore).Release;
+                var result = client.Create(Owner, RepositoryName, BuildReleaseData()).Result;
+                IdRelease = result.Id;
+                if ((files != null) && (files.Length != 0))
+                {
+                    files = (UploadFile[])files.Where((f) => (f.ContentType != null) && File.Exists(f.Path));
+                    //var upAssets = new List<string>();
+                    //foreach (var file in files)
+                    //{
+                    //    try
+                    //    {
+                    //        upAssets.Add(Upload(client, result, file));
+                    //        Logger.Log(LogLevel.Debug, "File "+Path.GetFileName(file.Path)+"uploaded correctly");
+                    //    }
+                    //    catch (Exception)
+                    //    {
+                    //        Logger.Log(LogLevel.Warn, "File "+Path.GetFileName(file.Path)+" not uploaded!");
+                    //    }
+
+
+                    //}
+                    UploadedAssets = UploadAll(client, result, files);
+                    Logger.Log(LogLevel.Info, "Successful release!");
+                }
+                return true;
             }
-            return true;
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        private static string TaskItemFor(Octokit.Release release, Task<ReleaseAsset> asset)//what is release parameter for?
+        private static string TaskItemFor(Task<ReleaseAsset> asset)
         {
             return ("https://github.com/" + _repository + "/releases/download/" + _tagName + "/" + asset.Result.Name);
         }
@@ -68,7 +94,7 @@ namespace GitHub
         private static string Upload(IReleasesClient client, Release release, UploadFile sourceItem)
         {
             var asset = client.UploadAsset(release, BuildAssetUpload(sourceItem));
-            return TaskItemFor(release, asset);
+            return TaskItemFor(asset);
         }
 
 

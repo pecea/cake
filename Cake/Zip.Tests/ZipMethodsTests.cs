@@ -63,7 +63,7 @@ namespace Zip.Tests
             foreach (var file in filesToTest)
             {
 
-                var fs = new FileStream(file, FileMode.Open, FileAccess.Read);
+                var fs = new FileStream("../../Test Files/"+file, FileMode.Open, FileAccess.Read);
                 var fs2 = new FileStream(unzippedPath + "/" + file, FileMode.Open, FileAccess.Read);
                 int notZippedFileByte, unzippedFileByte;
                 Assert.AreEqual(fs.Length, fs2.Length);

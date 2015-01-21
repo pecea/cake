@@ -14,12 +14,12 @@ namespace Git.Tests
             Assert.AreEqual(true, Methods.Tag("-d unitTestTag"));
         }
 
-        [TestMethod]
-        public void ResetAllModificationsShouldReturnSucces()
-        {
-            Methods.PathToRepository = "../../Test Files/testRepository";
-            Assert.AreEqual(true, Methods.ResetAllModifications());
-        }
+        //[TestMethod]
+        //public void ResetAllModificationsShouldReturnSucces()
+        //{
+        //    Methods.PathToRepository = "../../Test Files/testRepository";
+        //    Assert.AreEqual(true, Methods.ResetAllModifications());
+        //}
 
         //[TestMethod]
         //public void PushShouldReturnSuccess()
@@ -41,5 +41,7 @@ namespace Git.Tests
             Assert.AreEqual(true, Methods.Run("tag unitTestTag"));
             Assert.AreEqual(true, Methods.Run("tag -d unitTestTag"));
         }
+
+        //TODO: tworzyć repo przy testach (może test init)
     }
 }

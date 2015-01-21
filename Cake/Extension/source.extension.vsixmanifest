@@ -2,11 +2,14 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="8a8b754a-ccd8-461b-899f-2bfedc57f9d8" Version="1.0" Language="en-US" Publisher="Ernest Przestrzelski, Piotr Szyperski" />
-    <DisplayName>Extension</DisplayName>
-    <Description>Execute c# scripts from Visual Studio</Description>
+    <DisplayName>Cake Extension</DisplayName>
+    <Description xml:space="preserve">Execute c# scripts from Visual Studio</Description>
+    <Icon>Resources\Package.ico</Icon>
+    <PreviewImage>Package.ico</PreviewImage>
   </Metadata>
   <Installation InstalledByMsi="false" AllUsers="true">
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />
+    <InstallationTarget Version="[10.0,13.0]" Id="Microsoft.VisualStudio.Ultimate" />
+    <InstallationTarget Version="[10.0,13.0]" Id="Microsoft.VisualStudio.Pro" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />

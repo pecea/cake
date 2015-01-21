@@ -53,6 +53,15 @@
     <Compile Include="GitHubMethodsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GitHub\GitHub.csproj">
+      <Project>{7f6e2ca3-5c51-4962-8111-77c024ed08b5}</Project>
+      <Name>GitHub</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test Files\TestFile.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
