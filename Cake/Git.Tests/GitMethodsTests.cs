@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Git.Tests
@@ -6,12 +8,27 @@ namespace Git.Tests
     [TestClass]
     public class GitMethodsTests
     {
+        const string path = "../../Test Files/UnitTestRepository";
+
+        [TestInitialize]
+        public void CreateRepository()
+        {
+            //const string path = "../../Test Files/UnitTestRepository";
+            Methods.PathToRepository = path;
+            if (Directory.Exists(path)) return;
+            Directory.CreateDirectory(path);
+            Directory.SetCurrentDirectory(path);
+            Methods.Run("init");
+            Methods.Run("add");
+        }
         [TestMethod]
         public void TagShouldReturnSuccess()
         {
-            Methods.PathToRepository = "../../Test Files/testRepository";
-            Assert.AreEqual(true, Methods.Tag("unitTestTag"));
-            Assert.AreEqual(true, Methods.Tag("-d unitTestTag"));
+            Directory.SetCurrentDirectory(path);
+            //Assert.AreEqual(0,0);
+            Methods.PathToRepository = path;
+            Assert.AreEqual(true, Methods.Tag("unitTest"));
+            Assert.AreEqual(true, Methods.Tag("-d unitTest"));
         }
 
         //[TestMethod]
@@ -30,18 +47,41 @@ namespace Git.Tests
         [TestMethod]
         public void CleanShouldReturnSuccess()
         {
-            Methods.PathToRepository = "../../Test Files/testRepository";
+            Directory.SetCurrentDirectory(path);
+            Methods.PathToRepository = path;
             Assert.AreEqual(true, Methods.Clean());
         }
 
         [TestMethod]
         public void RunShouldReturnSuccess()
         {
-            Methods.PathToRepository = "../../Test Files/testRepository";
-            Assert.AreEqual(true, Methods.Run("tag unitTestTag"));
-            Assert.AreEqual(true, Methods.Run("tag -d unitTestTag"));
+            Directory.SetCurrentDirectory(path);
+            Methods.PathToRepository = path;
+            Assert.AreEqual(true, Methods.Run("tag unitTest"));
+            Assert.AreEqual(true, Methods.Run("tag -d unitTest"));
         }
 
+        [TestCleanup]
+        public void CleanUp()
+        {
+            try
+            {
+                Directory.SetCurrentDirectory(path);
+                Methods.PathToRepository = path;
+                Methods.Clean(true);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
+                throw;
+            }
+        }
+        //[TestCleanup]
+        //public void AfterTests()
+        //{
+        //    Methods.Clean(true);
+        //    Directory.Delete(path, true);
+        //}
         //TODO: tworzyć repo przy testach (może test init)
     }
 }

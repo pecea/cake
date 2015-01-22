@@ -32,7 +32,7 @@ namespace Common
                 }
             }
 
-            var process = new Process
+            using (var process = new Process
             {
                 StartInfo =
                 {
@@ -43,26 +43,28 @@ namespace Common
                     UseShellExecute = false,
                     WorkingDirectory = Path.GetFullPath(workingDirectory)
                 }
-            };
-
-            process.OutputDataReceived += (sender, e) => outputBuilder.AppendLine(e.Data);
-
-            process.Start();
-            process.BeginOutputReadLine();
-
-            process.WaitForExit();
-            process.CancelOutputRead();
-
-            var output = outputBuilder.ToString().TrimEnd('\n', '\r');
-            if (process.ExitCode == 0)
+            })
             {
-                Logger.Log(LogLevel.Debug, "Process run successfully!");
-                Logger.Log(LogLevel.Info, output);
-                return true;
+
+                process.OutputDataReceived += (sender, e) => outputBuilder.AppendLine(e.Data);
+
+                process.Start();
+                process.BeginOutputReadLine();
+                process.CancelOutputRead();
+                process.WaitForExit();
+                //process.CancelOutputRead();
+
+                var output = outputBuilder.ToString().TrimEnd('\n', '\r');
+                if (process.ExitCode == 0)
+                {
+                    Logger.Log(LogLevel.Debug, "Process run successfully!");
+                    Logger.Log(LogLevel.Info, output);
+                    return true;
+                }
+                Logger.Log(LogLevel.Debug, "Process exited with an error!");
+                Logger.Log(LogLevel.Warn, output);
+                return false;
             }
-            Logger.Log(LogLevel.Debug, "Process exited with an error!");
-            Logger.Log(LogLevel.Warn, output);
-            return false;
         }
 
         /// <summary>
