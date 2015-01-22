@@ -66,5 +66,7 @@
             Assert.AreEqual(true, Methods.BuildProject(ProjectPath));
             Assert.AreEqual(false, Methods.BuildProject(ProjectPath, outputPath: "invalid output path?"));
         }
+
+        //TODO: testowanie konfiguracji i czy pliki w folderach
     }
 }

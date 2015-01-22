@@ -63,8 +63,10 @@
       <Name>Cake</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Test Files\" />
+    <None Include="Test Files\ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx" />
+    <None Include="Test Files\ShouldThrowWhenTypeCannotBeFound.csx" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

@@ -16,7 +16,7 @@
         #region methods
 
         /// <summary>
-        /// 
+        /// Adds files to .zip archive
         /// </summary>
         /// <param name="zipPathAndName">Path and name of the zip file</param>
         /// <param name="filePaths">Paths to files for zipping</param>

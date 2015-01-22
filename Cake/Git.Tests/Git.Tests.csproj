@@ -54,34 +54,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Test Files\testRepository\.git\config" />
-    <None Include="Test Files\testRepository\.git\description" />
-    <None Include="Test Files\testRepository\.git\HEAD" />
-    <None Include="Test Files\testRepository\.git\hooks\README.sample" />
-    <None Include="Test Files\testRepository\.git\index" />
-    <None Include="Test Files\testRepository\.git\info\exclude" />
-    <None Include="Test Files\testRepository\.git\logs\HEAD" />
-    <None Include="Test Files\testRepository\.git\logs\refs\heads\master" />
-    <None Include="Test Files\testRepository\.git\objects\3a\bbc741c192064a096fa2411628da1b2eb311e1" />
-    <None Include="Test Files\testRepository\.git\objects\41\2eeda78dc9de1186c2e0e1526764af82ab3431" />
-    <None Include="Test Files\testRepository\.git\objects\58\bcbf82a078b82bee68534fe414dde7a232c0af" />
-    <None Include="Test Files\testRepository\.git\objects\8f\eef8a2ed121c69dfcd7ac978d0385d8c13de59" />
-    <None Include="Test Files\testRepository\.git\refs\heads\master" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Git\Git.csproj">
       <Project>{f094228a-79c4-4b6a-935c-3d8a10a04a18}</Project>
       <Name>Git</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Test Files\testRepository\.gitattributes" />
-    <Content Include="Test Files\testRepository\.gitignore" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Test Files\testRepository\.git\objects\info\" />
-    <Folder Include="Test Files\testRepository\.git\objects\pack\" />
-    <Folder Include="Test Files\testRepository\.git\refs\tags\" />
+    <Folder Include="Test Files\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

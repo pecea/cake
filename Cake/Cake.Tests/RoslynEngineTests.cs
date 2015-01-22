@@ -31,5 +31,7 @@
         {
             RoslynEngine.ExecuteFile(@"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx");
         }
+
+        //TODO: przerobić na isolated i coś jeszcze jak w duszy zagra
     }
 }

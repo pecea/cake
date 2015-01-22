@@ -1,10 +1,10 @@
-﻿using Common;
-using System;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-namespace Files
+﻿namespace Files
 {
+    using Common;
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Text.RegularExpressions;
     /// <summary>
     /// Encloses methods used with operations on files.
     /// </summary>

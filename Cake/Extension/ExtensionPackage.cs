@@ -78,17 +78,8 @@ namespace ErnestPrzestrzelskiPiotrSzyperski.Extension
             // Get an instance of the currently running Visual Studio IDE.
             var dte2 = (DTE2)Marshal.
                 GetActiveObject("VisualStudio.DTE.12.0");
-            //var path = DTE.ActiveDocument.Path + DTE.ActiveDocument.Name;
-            //var session = new ScriptEngine().CreateSession();
             RoslynEngine.ExecuteFile(dte2.ActiveDocument.Path + dte2.ActiveDocument.Name);
-            //session.AddReference(Assembly.GetEntryAssembly());
-            //session.AddReference(Assembly.GetAssembly(typeof(Methods)));
-            //session.ExecuteFile(dte2.ActiveDocument.Path+dte2.ActiveDocument.Name);
-            //engine.ExecuteFile(DTE.ActiveDocument.Path + DTE.ActiveDocument.Name);
-            //var engine = new ScriptEngine().CreateSession().Execute("System.Console.WriteLine(\"test\")");
-            //var proc = new Process { StartInfo = { FileName = "notepad.exe" } };
-            //proc.Start();
-            //Console.WriteLine("test");
+
             //// Show a Message Box to prove we were here
             //IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
             //Guid clsid = Guid.Empty;
