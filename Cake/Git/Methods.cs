@@ -34,28 +34,23 @@ namespace Git
             }
         }
 
-        //public static string CurrentSha()
-        //{
-        //    var result = String.Empty;
-        //    try
-        //    {
-        //        result = Processor.RunProcess(FullPathExe, "rev-parse HEAD");
-        //        return String.IsNullOrEmpty(result) ? String.Empty : result;
+        /// <summary>
+        /// Gets the current sha
+        /// </summary>
+        /// <returns></returns>
+        public static bool CurrentSha()
+        {
+            return Processor.RunProcess(FullPathExe, "rev-parse HEAD", PathToRepository);
+        }
 
-        //    }
-        //    catch (Exception)
-        //    {
-
-        //        throw;
-        //    }
-
-        //}
-
-        //public static string CurrentBranch()
-        //{
-        //    var result =Processor.RunProcess(FullPathExe, "rev-parse --abbrev-ref HEAD");
-        //    return String.IsNullOrEmpty(result) ? String.Empty : result;
-        //}
+        /// <summary>
+        /// Gets the current branch
+        /// </summary>
+        /// <returns></returns>
+        public static bool CurrentBranch()
+        {
+            return Processor.RunProcess(FullPathExe, "rev-parse --abbrev-ref HEAD", PathToRepository);
+        }
 
         /// <summary>
         /// Executes git tag command

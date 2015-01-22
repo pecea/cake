@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace MSTest
+﻿namespace MSTest
 {
     using System;
     using System.IO;
