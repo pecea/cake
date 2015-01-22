@@ -1,8 +1,8 @@
-﻿namespace Cake.Tests
+﻿namespace Common
 {
     using System;
 
-    public class Isolated<T> : IDisposable 
+    public class Isolated<T> : IDisposable
         where T : MarshalByRefObject
     {
         private AppDomain domain;

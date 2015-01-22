@@ -10,28 +10,28 @@
     /// </summary>
     public static class TaskManager
     {
-        private static readonly Dictionary<string, Task> Tasks;
+        private static Dictionary<string, Task> _tasks;
 
         internal static string TaskToRun { get; set; }
 
         static TaskManager()
         {
-            Tasks = new Dictionary<string, Task>();
+            _tasks = new Dictionary<string, Task>();
         }
 
         /// <summary>
-        /// Registers <see cref="Task"/> by adding it to the <see cref="Tasks"/> dictionary.
+        /// Registers <see cref="Task"/> by adding it to the <see cref="_tasks"/> dictionary.
         /// </summary>
         /// <param name="task">A <see cref="Task"/> to be added.</param>
         public static void RegisterTask(Task task)
         {
-            Tasks.Add(task.Name, task);
+            _tasks.Add(task.Name, task);
             Logger.Log(LogLevel.Debug, String.Format("Task \"{0}\" registered.", task.Name));
         }
 
         /// <summary>
         /// Runs <see cref="RunTaskWithDependencies"/> recursive function 
-        /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="Tasks"/> after it is finished.
+        /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="_tasks"/> after it is finished.
         /// </summary>
         /// <param name="name">Name of a <see cref="Task"/> to be executed.</param>
         public static void SetDefault(string name)
@@ -39,7 +39,7 @@
             if (!String.IsNullOrEmpty(TaskToRun)) name = TaskToRun;
 
             RunTaskWithDependencies(name);
-            foreach (var task in Tasks)
+            foreach (var task in _tasks)
             {
                 task.Value.Status = TaskStatus.NotVisited;
             }
@@ -47,7 +47,7 @@
 
         /// <summary>
         /// Runs <see cref="RunTaskWithDependencies"/> recursive function 
-        /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="Tasks"/> after it is finished.
+        /// and resets <see cref="Task.Status"/> property of each <see cref="Task"/> from <see cref="_tasks"/> after it is finished.
         /// </summary>
         /// <param name="task">A <see cref="Task"/> to be executed.</param>
         public static void SetDefault(Task task)
@@ -55,12 +55,21 @@
             SetDefault(task.Name);
         }
 
+        /// <summary>
+        /// Clears TaskManager's task list.
+        /// Used in unit testing.
+        /// </summary>
+        public static void ClearTasks()
+        {
+            _tasks = new Dictionary<string, Task>();
+        }
+
         private static void RunTaskWithDependencies(string name)
         {
             Task task;
             try
             {
-                task = Tasks[name];
+                task = _tasks[name];
             }
             catch (KeyNotFoundException e)
             {

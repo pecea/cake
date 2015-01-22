@@ -1,11 +1,21 @@
-﻿namespace Build.Tests
-{
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+namespace Build.Tests
+{
     [TestClass]
     public class BuildMethodsTests
     {
         private const string ProjectPath = @"../../Test Files/Build.Tests.TestProject/Build.Tests.TestProject.csproj";
+        private const string OutputPathDebug = @"../../Test Files/Build.Tests.TestProject/bin/Debug";
+        private const string OutputPathRelease = @"../../Test Files/Build.Tests.TestProject/bin/Release";
+
+        [TestInitialize]
+        public void CleanUpBuiltFiles()
+        {
+            Files.Methods.CleanDirectory(OutputPathDebug);
+        }
 
         [TestMethod]
         public void BuildProjectShouldReturnFailureIfProjectFileArgumentIsEmpty()
@@ -67,6 +77,33 @@
             Assert.AreEqual(false, Methods.BuildProject(ProjectPath, outputPath: "invalid output path?"));
         }
 
-        //TODO: testowanie konfiguracji i czy pliki w folderach
+        [TestMethod]
+        public void BuildProjectShouldCreateFilesWhenBuildingAProject()
+        {
+            Files.Methods.CleanDirectory(OutputPathDebug);
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath));
+
+            Assert.AreEqual(true, (OutputPathDebug + "/*.*").GetFilePaths().Any());
+        }
+
+        [TestMethod]
+        public void BuildProjectShouldBuildAProjectInDebugIfDebugWasSpecified()
+        {
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath, configuration: "Debug"));
+            using (var isolated = new Isolated<ConfigurationChecker>())
+            {
+                Assert.AreEqual(true, isolated.Value.IsDebug((OutputPathDebug + "/*.dll").GetFilePaths().First()));
+            }
+        }
+
+        [TestMethod]
+        public void BuildProjectShouldBuildAProjectInReleaseIfReleaseWasSpecified()
+        {
+            Assert.AreEqual(true, Methods.BuildProject(ProjectPath, configuration: "Release"));
+            using (var isolated = new Isolated<ConfigurationChecker>())
+            {
+                Assert.AreEqual(true, isolated.Value.IsRelease((OutputPathRelease + "/*.dll").GetFilePaths().First()));
+            }
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Cake.Tests
+﻿using Common;
+
+namespace Cake.Tests
 {
     using System;
     using System.IO;
@@ -20,18 +22,22 @@
 
         [TestMethod]
         [ExpectedException(typeof(FileNotFoundException))]
-        public void ShouldThrowWhenNotExistingScriptIsSpecified()
+        public void ShouldThrowWhenNonExistingScriptIsSpecified()
         {
-            RoslynEngine.ExecuteFile(@"../../Test Files/Non existing script.csx");
+            using (var isolated = new Isolated<RoslynEngineFacade>())
+            {
+                isolated.Value.ExecuteFile(@"../../Test Files/Non existing script.csx");
+            }
         }
 
         [TestMethod]
         [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript()
         {
-            RoslynEngine.ExecuteFile(@"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx");
+            using (var isolated = new Isolated<RoslynEngineFacade>())
+            {
+                isolated.Value.ExecuteFile(@"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx");
+            }
         }
-
-        //TODO: przerobić na isolated i coś jeszcze jak w duszy zagra
     }
 }

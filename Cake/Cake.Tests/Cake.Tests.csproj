@@ -51,7 +51,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Isolated.cs" />
     <Compile Include="RoslynEngineFacade.cs" />
     <Compile Include="RoslynEngineTests.cs" />
     <Compile Include="TaskManagerTests.cs" />
@@ -61,6 +60,10 @@
     <ProjectReference Include="..\Cake\Cake.csproj">
       <Project>{9199aa5e-b022-423a-946b-dc6e3683f935}</Project>
       <Name>Cake</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9ad8621e-e325-47d5-8ee9-cf0f6aaa300b}</Project>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

@@ -52,12 +52,21 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BuildMethodsTests.cs" />
+    <Compile Include="ConfigurationChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Build\Build.csproj">
       <Project>{189f3e91-4158-420a-9fc4-6a2a75dbd31c}</Project>
       <Name>Build</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{9ad8621e-e325-47d5-8ee9-cf0f6aaa300b}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Files\Files.csproj">
+      <Project>{7530f94d-0387-492e-b784-a1d4eb22b26b}</Project>
+      <Name>Files</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
