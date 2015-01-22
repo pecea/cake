@@ -28,6 +28,12 @@
                 return;
             }
 
+
+            // Retrieving whether to show help or not
+            var helpArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/help"));
+            if(helpArgument != null)
+                Console.Write("\n\nTo use the program run cake.exe with arguments:\n\n1./script (/s) - path to your c# script - necessary\n2./verbosity (/v) - level of output\n    Possible values: debug, info, warn, error, fatal\n3./runtask (/r) - name of the task to run from your c# script\n   Necessary if your c# script does not have SetDefault(taskName) method\n4./help (/h) - show help\n\n");
+
             // Retrieving user specified logging level
             var logLevelArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/verbosity"));
             if (logLevelArgument != null) Logger.Reconfigure(logLevelArgument.Value);
@@ -42,6 +48,7 @@
             // Retrieving user specified task to run
             var taskToRunArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/runtask"));
             if (taskToRunArgument != null) TaskManager.TaskToRun = taskToRunArgument.Value;
+
 
             Logger.Log(LogLevel.Info, String.Format("Cake started for script: {0}", scriptArgument.Value));
 
