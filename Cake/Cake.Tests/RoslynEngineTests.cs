@@ -12,13 +12,10 @@
         [ExpectedException(typeof(Exception), AllowDerivedTypes = true)]
         public void ShouldThrowWhenTypeCannotBeFound()
         {
-            RoslynEngine.ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx");
-
-            // BUG: Access violation exception
-            /*using (var isolated = new Isolated<RoslynEngineFacade>())
+            using (var isolated = new Isolated<RoslynEngineFacade>())
             {
                 isolated.Value.ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx");
-            }*/
+            }
         }
 
         [TestMethod]

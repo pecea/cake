@@ -55,7 +55,7 @@
 
         private static void LoadAssemblies(string filePath)
         {
-            var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";*");
+            var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\-\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";*");
 
             using (var streamReader = new StreamReader(filePath, Encoding.GetEncoding("ISO-8859-2")))
             {

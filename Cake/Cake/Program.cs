@@ -13,7 +13,7 @@
         /// <summary>
         /// Entry point of the application.
         /// </summary>
-        /// <param name="args">Paths to *.csx scripts to be executed.</param> // TODO: opis argumentow
+        /// <param name="args">Paths to *.csx scripts to be executed.</param>
         static void Main(string[] args)
         {
             // Parsing arguments
