@@ -13,7 +13,6 @@ namespace Git.Tests
         [TestInitialize]
         public void CreateRepository()
         {
-            //const string path = "../../Test Files/UnitTestRepository";
             Methods.PathToRepository = path;
             if (Directory.Exists(path)) return;
             Directory.CreateDirectory(path);
@@ -76,12 +75,5 @@ namespace Git.Tests
                 throw;
             }
         }
-        //[TestCleanup]
-        //public void AfterTests()
-        //{
-        //    Methods.Clean(true);
-        //    Directory.Delete(path, true);
-        //}
-        //TODO: tworzyć repo przy testach (może test init)
     }
 }
