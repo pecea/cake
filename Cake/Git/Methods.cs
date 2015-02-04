@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Git
 {
@@ -11,12 +12,15 @@ namespace Git
     /// </summary>
     public static class Methods
     {
-        private const string app = "git.exe";
+        private const string App = "git.exe";
 
         private static readonly string[] Paths = {
-            Path.Combine(@"C:\Program Files (x86)\Git\bin", app),
-            Path.Combine(@"C:\Program Files\Git\bin", app)
+            Path.Combine(@"C:\Program Files (x86)\Git\bin", App),
+            Path.Combine(@"C:\Program Files\Git\bin", App),
+            Path.Combine()
         };
+
+        private static bool _initialized = false;
 
         public static string PathToExe { get; set; }
         public static string PathToRepository { get; set; }
@@ -30,7 +34,23 @@ namespace Git
                 {
                     return path;
                 }
-                return app;
+                return App;
+            }
+        }
+
+        private static void Initialize()
+        {
+            var path = Path.Combine(Directory.GetParent(Directory.GetParent(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)).FullName).FullName, ".gitconfig");
+            _initialized = true;
+
+            using (var reader = new StreamReader(path))
+            {
+                var fileData = reader.ReadToEnd();
+                if (!fileData.Contains("notepad"))
+                {
+                    Logger.Log(LogLevel.Debug, "Setting notepad.exe as git's standard input editor.");
+                    Run("config --global core.editor \"%windir%/system32/notepad.exe\"");
+                }
             }
         }
 
@@ -40,6 +60,8 @@ namespace Git
         /// <returns></returns>
         public static bool CurrentSha()
         {
+            if (!_initialized) Initialize();
+            
             return Processor.RunProcess(FullPathExe, "rev-parse HEAD", PathToRepository);
         }
 
@@ -49,6 +71,8 @@ namespace Git
         /// <returns></returns>
         public static bool CurrentBranch()
         {
+            if (!_initialized) Initialize();
+
             return Processor.RunProcess(FullPathExe, "rev-parse --abbrev-ref HEAD", PathToRepository);
         }
 
@@ -59,6 +83,8 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Tag(string tag)
         {
+            if (!_initialized) Initialize();
+
             var res = Processor.RunProcess(FullPathExe, "tag " + tag, PathToRepository);
             if (res)
                 Logger.Log(LogLevel.Info, "Git tag" + tag + " added correctly");
@@ -75,6 +101,8 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Push(string repository, params string[] branches)
         {
+            if (!_initialized) Initialize();
+
             var refToPush = branches == null ? string.Empty : string.Join(" ", branches);
             var res = Processor.RunProcess(FullPathExe, "push " + repository + " " + refToPush, PathToRepository);
             if (res)
@@ -82,8 +110,6 @@ namespace Git
             else
                 Logger.Log(LogLevel.Error, "Git push command executed with error!");
             return res;
-
-
         }
 
         /// <summary>
@@ -92,6 +118,8 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool ResetAllModifications()
         {
+            if (!_initialized) Initialize();
+
             var res = Processor.RunProcess(FullPathExe, "reset --hard", PathToRepository);
             if (res)
                 Logger.Log(LogLevel.Info, "Git reset command executed correctly");
@@ -106,6 +134,8 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Clean(bool allFiles = false)
         {
+            if (!_initialized) Initialize();
+
             var res = Processor.RunProcess(FullPathExe, "clean -f" + (allFiles ? " -dx" : string.Empty), PathToRepository);
             if (res)
                 Logger.Log(LogLevel.Info, "Git clean command executed correctly");
@@ -121,6 +151,8 @@ namespace Git
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool Run(string parameters)
         {
+            if (!_initialized) Initialize();
+
             var res =  Processor.RunProcess(FullPathExe, parameters, PathToRepository);
             if (res)
                 Logger.Log(LogLevel.Info, "Git run command executed correctly");

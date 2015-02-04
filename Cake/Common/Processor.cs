@@ -1,11 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Common
 {
-    using System.Diagnostics;
-    using System.Text;
-
     /// <summary>
     /// Encloses methods used with running processes.
     /// </summary>
@@ -20,7 +18,6 @@ namespace Common
         /// <returns></returns>
         public static bool RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
-            var outputBuilder = new StringBuilder();
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
             if (workingDirectory != ".")
@@ -28,7 +25,7 @@ namespace Common
                 if (!Directory.Exists(workingDirectory))
                 {
                     workingDirectory = ".";
-                    Logger.Log(LogLevel.Warn, "Working directory path does not exist! Changed path to "+Directory.GetCurrentDirectory());
+                    Logger.Log(LogLevel.Warn, "Working directory path does not exist! Changed path to " + Directory.GetCurrentDirectory());
                 }
             }
 
@@ -39,30 +36,34 @@ namespace Common
                     FileName = command,
                     Arguments = arguments,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     CreateNoWindow = true,
                     UseShellExecute = false,
-                    WorkingDirectory = Path.GetFullPath(workingDirectory)
+                    WorkingDirectory = workingDirectory
                 }
             })
             {
-
-                process.OutputDataReceived += (sender, e) => outputBuilder.AppendLine(e.Data);
+                process.OutputDataReceived +=
+                    (sender, e) => { if (!String.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Info, e.Data); };
+                process.ErrorDataReceived +=
+                    (sender, e) => { if (!String.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Error, e.Data); };
 
                 process.Start();
-                process.BeginOutputReadLine();
-                process.CancelOutputRead();
-                process.WaitForExit();
-                //process.CancelOutputRead();
 
-                var output = outputBuilder.ToString().TrimEnd('\n', '\r');
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                process.WaitForExit();
+
+                process.CancelOutputRead();
+                process.CancelErrorRead();
+                
                 if (process.ExitCode == 0)
                 {
                     Logger.Log(LogLevel.Debug, "Process run successfully!");
-                    Logger.Log(LogLevel.Info, output);
                     return true;
                 }
                 Logger.Log(LogLevel.Debug, "Process exited with an error!");
-                Logger.Log(LogLevel.Warn, output);
                 return false;
             }
         }

@@ -8,47 +8,55 @@ namespace Git.Tests
     [TestClass]
     public class GitMethodsTests
     {
-        const string Path = "../../Test Files/UnitTestRepository";
+        const string Path = @"..\..\Test Files\UnitTestRepository\";
 
         [TestInitialize]
         public void CreateRepository()
         {
-            Methods.PathToRepository = Path;
-            if (Directory.Exists(Path)) return;
-            Directory.CreateDirectory(Path);
+            //Directory.SetCurrentDirectory(Directory.GetCurrentDirectory());
+            //Methods.PathToRepository = Directory.GetCurrentDirectory();
+            if (!Directory.Exists(Path))
+                Directory.CreateDirectory(Path);
             Directory.SetCurrentDirectory(Path);
             Methods.Run("init");
             Methods.Run("add");
+            //Methods.Run("commit");
         }
+
         [TestMethod]
         public void TagShouldReturnSuccess()
         {
-            Assert.AreEqual(true, Methods.Tag("unitTest"));
-            Assert.AreEqual(true, Methods.Tag("-d unitTest"));
+            Directory.SetCurrentDirectory(Path);
+            Assert.AreEqual(true, Methods.Tag("unitTestTagut"));
+            Assert.AreEqual(true, Methods.Tag("-d unitTestTagut"));
         }
 
         [TestMethod]
         public void CleanShouldReturnSuccess()
         {
+            Directory.SetCurrentDirectory(Path);
             Assert.AreEqual(true, Methods.Clean());
         }
 
         [TestMethod]
         public void RunShouldReturnSuccess()
         {
-            Assert.AreEqual(true, Methods.Run("tag unitTest"));
-            Assert.AreEqual(true, Methods.Run("tag -d unitTest"));
+            Directory.SetCurrentDirectory(Path);
+            Assert.AreEqual(true, Methods.Run("tag unitTestTagut"));
+            Assert.AreEqual(true, Methods.Run("tag -d unitTestTagut"));
         }
 
         [TestMethod]
         public void CurrentBranchShouldReturnSuccess()
         {
+            Directory.SetCurrentDirectory(Path);
             Assert.AreEqual(true, Methods.CurrentBranch());
         }
 
         [TestMethod]
         public void CurrentShaShouldReturnSuccess()
         {
+            Directory.SetCurrentDirectory(Path);
             Assert.AreEqual(true, Methods.CurrentSha());
         }
 
@@ -57,6 +65,7 @@ namespace Git.Tests
         {
             try
             {
+                Directory.SetCurrentDirectory(Path);
                 Methods.Clean(true);
             }
             catch (Exception ex)
