@@ -100,35 +100,17 @@ namespace GitHub
 
         private static string[] UploadAll(IReleasesClient client, Release release, IEnumerable<UploadFile> items)
         {
-            return (from item in items select Upload(client, release, item)).ToArray<string>();
+            return (from item in items select Upload(client, release, item)).ToArray();
         }
         
-        private static ICredentialStore CredentialStore
-        {
-            get
-            {
-                return new InPlaceCredentialStore(_oauthToken);
-            }
-        }
-        
+        private static ICredentialStore CredentialStore => new InPlaceCredentialStore(_oauthToken);
+
         internal static int IdRelease { get; private set; }
         
-        private static string Owner
-        {
-            get
-            {
-                return _repository.Split(new char[] { '/' })[0];
-            }
-        }
-        
-        private static string RepositoryName
-        {
-            get
-            {
-                return _repository.Split(new char[] { '/' })[1];
-            }
-        }
-        
+        private static string Owner => _repository.Split('/')[0];
+
+        private static string RepositoryName => _repository.Split('/')[1];
+
         internal static string[] UploadedAssets { get; private set; }
 
 
@@ -140,10 +122,10 @@ namespace GitHub
             {
                 _token = token;
             }
-            
-            public async Task<Credentials> GetCredentials()
+
+            public Task<Credentials> GetCredentials()
             {
-                return new Credentials(_token);
+                return Task.FromResult(new Credentials(_token));
             }
         }
     }

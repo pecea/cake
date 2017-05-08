@@ -30,15 +30,16 @@
         {
             var paths = projectFile.GetFilePaths();
 
-            if (paths == null || !paths.Any()) return false;
+            var enumerable = paths as IList<string> ?? paths.ToList();
+            if (!enumerable.Any()) return false;
 
-            return paths.Aggregate(true,
+            return enumerable.Aggregate(true,
                 (current, path) => current & BuildSingleProject(path, outputPath, configuration, platform));
         }
 
         private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)
         {
-            if (String.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
+            if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
             var projectName = projectFile.Split(new[] { "\\", "/" }, StringSplitOptions.RemoveEmptyEntries).Last();
@@ -50,17 +51,15 @@
 
             if (buildResult.OverallResult == BuildResultCode.Success)
             {
-                Logger.Log(LogLevel.Info, String.Format("{0} built successfully. Output files are located in {1}", projectName, Path.GetFullPath(outputPath)));
+                Logger.Log(LogLevel.Info,
+                    $"{projectName} built successfully. Output files are located in {Path.GetFullPath(outputPath)}");
                 return true;
             }
+            if (buildResult.Exception != null)
+                Logger.LogException(LogLevel.Error, buildResult.Exception, $"Building {projectName} failed.");
             else
-            {
-                if (buildResult.Exception != null)
-                    Logger.LogException(LogLevel.Error, buildResult.Exception, String.Format("Building {0} failed.", projectName));
-                else
-                    Logger.Log(LogLevel.Error, String.Format("Building {0} failed.", projectName));
-                return false;
-            }
+                Logger.Log(LogLevel.Error, $"Building {projectName} failed.");
+            return false;
         }
 
         private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
@@ -82,17 +81,17 @@
                 Logger.Log(LogLevel.Error, "The configuration parameter must be set to \"Debug\" or \"Release\".");
                 return false;
             }
-
+            string fullPath;
             try
             {
-                Path.GetFullPath(outputPath);
+                fullPath = Path.GetFullPath(outputPath);
             }
             catch (Exception)
             {
-                Logger.Log(LogLevel.Error, "The outputPath parameter is not a valid path.");
+                Logger.Log(LogLevel.Error, $"The outputPath {outputPath} parameter is not a valid path.");
                 return false;
             }
-            return true;
+            return !string.IsNullOrEmpty(fullPath);
         }
     }
 }

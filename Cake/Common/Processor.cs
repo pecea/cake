@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 
 namespace Common
@@ -44,9 +43,9 @@ namespace Common
             })
             {
                 process.OutputDataReceived +=
-                    (sender, e) => { if (!String.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Info, e.Data); };
+                    (sender, e) => { if (!string.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Info, e.Data); };
                 process.ErrorDataReceived +=
-                    (sender, e) => { if (!String.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Error, e.Data); };
+                    (sender, e) => { if (!string.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Error, e.Data); };
 
                 process.Start();
 
@@ -75,7 +74,7 @@ namespace Common
         /// <returns>String enclosed with quotes</returns>
         public static string QuoteArgument(string arg)
         {
-            return arg.Contains(" ") ? String.Format(@"""{0}""", arg) : arg;
+            return arg.Contains(" ") ? $@"""{arg}""" : arg;
         }
     }
 }

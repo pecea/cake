@@ -30,7 +30,8 @@
                 var argName = args[i];
                 var argument = Arguments.FirstOrDefault(arg => arg.Names.Contains(argName));
                 if (argument == null)
-                    throw new ArgumentException(String.Format("The argument {0} is invalid. Run the program with /help or /h for help.", argName));
+                    throw new ArgumentException(
+                        $"The argument {argName} is invalid. Run the program with /help or /h for help.");
 
                 if (argument.HasValue)
                 {

@@ -37,7 +37,7 @@
                     LogManager.GetLogger(loggerName).Fatal(message);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("logLevel");
+                    throw new ArgumentOutOfRangeException(nameof(logLevel));
             }
         }
 
@@ -51,7 +51,8 @@
         /// <param name="loggerName">Name of the logger to be used.</param>
         public static void LogException(LogLevel logLevel, Exception e, string message, [CallerMemberName] string loggerName = "Script")
         {
-            Log(logLevel, String.Format("{0} ExceptionType: {1}. Exception source: {2}. Exception message: {3}", message.Trim(), e.GetType(), e.Source, e.Message), loggerName);
+            Log(logLevel,
+                $"{message.Trim()} ExceptionType: {e.GetType()}. Exception source: {e.Source}. Exception message: {e.Message}", loggerName);
             LogInnerException(logLevel, e, loggerName);
         }
 
@@ -64,9 +65,12 @@
         private static void LogInnerException(LogLevel logLevel, Exception e, string loggerName)
         {
             for (e = e.InnerException; e != null; e = e.InnerException)
-                Log(logLevel, String.Format("Inner exception source: {0}. Inner exception message: {1}", e.Source, e.Message), loggerName);
+                Log(logLevel, $"Inner exception source: {e.Source}. Inner exception message: {e.Message}", loggerName);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logLevelName"></param>
         public static void Reconfigure(string logLevelName)
         {
             NLog.LogLevel logLevel;
@@ -76,7 +80,7 @@
             }
             catch (Exception e)
             {
-                Log(LogLevel.Warn, "Invalid log level argument was specified. Valid log levels are: Debug, Info, Warn, Error and Fatal.");
+                Log(LogLevel.Warn, $"Invalid log level argument was specified. Valid log levels are: Debug, Info, Warn, Error and Fatal. Exception: {e}");
                 return;
             }
 

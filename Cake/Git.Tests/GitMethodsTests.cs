@@ -27,37 +27,37 @@ namespace Git.Tests
         public void TagShouldReturnSuccess()
         {
             Directory.SetCurrentDirectory(Path);
-            Assert.AreEqual(true, Methods.Tag("unitTestTagut"));
-            Assert.AreEqual(true, Methods.Tag("-d unitTestTagut"));
+            Assert.IsTrue(Methods.Tag("unitTestTagut"));
+            Assert.IsTrue(Methods.Tag("-d unitTestTagut"));
         }
 
         [TestMethod]
         public void CleanShouldReturnSuccess()
         {
             Directory.SetCurrentDirectory(Path);
-            Assert.AreEqual(true, Methods.Clean());
+            Assert.IsTrue(Methods.Clean());
         }
 
         [TestMethod]
         public void RunShouldReturnSuccess()
         {
             Directory.SetCurrentDirectory(Path);
-            Assert.AreEqual(true, Methods.Run("tag unitTestTagut"));
-            Assert.AreEqual(true, Methods.Run("tag -d unitTestTagut"));
+            Assert.IsTrue(Methods.Run("tag unitTestTagut"));
+            Assert.IsTrue(Methods.Run("tag -d unitTestTagut"));
         }
 
         [TestMethod]
         public void CurrentBranchShouldReturnSuccess()
         {
             Directory.SetCurrentDirectory(Path);
-            Assert.AreEqual(true, Methods.CurrentBranch());
+            Assert.IsTrue(Methods.CurrentBranch());
         }
 
         [TestMethod]
         public void CurrentShaShouldReturnSuccess()
         {
             Directory.SetCurrentDirectory(Path);
-            Assert.AreEqual(true, Methods.CurrentSha());
+            Assert.IsTrue(Methods.CurrentSha());
         }
 
         [TestCleanup]

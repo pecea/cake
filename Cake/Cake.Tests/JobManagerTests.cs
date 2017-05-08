@@ -6,45 +6,45 @@ namespace Cake.Tests
 
 
     [TestClass]
-    public class TaskManagerTests
+    internal class JobManagerTests
     {
         [TestInitialize]
         public void ClearTaskManagersTasks()
         {
-            TaskManager.ClearTasks();
+            JobManager.ClearJobs();
         }
 
         [TestMethod]
-        [ExpectedException(typeof(TaskException), "A dependency on a non existing task was specified.")]
+        [ExpectedException(typeof(JobException), "A dependency on a non existing task was specified.")]
         public void RunTaskWithDependenciesShouldThrowWhenDependencyIsNotFound()
         {
-            new Task("test task").DependsOn("non existing task");
-            TaskManager.SetDefault("test task");
+            new Job("test task").DependsOn("non existing task");
+            JobManager.SetDefault("test task");
         }
 
 
         [TestMethod]
-        [ExpectedException(typeof(TaskException), "Running a non existing task was ordered.")]
+        [ExpectedException(typeof(JobException), "Running a non existing task was ordered.")]
         public void SetDefaultShouldThrowWhenTaskIsNotFound()
         {
-            TaskManager.SetDefault("non existing task");
+            JobManager.SetDefault("non existing task");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(TaskException), "Running a task with a circular dependency was ordered.")]
+        [ExpectedException(typeof(JobException), "Running a task with a circular dependency was ordered.")]
         public void SetDefaultShouldThrowWhenTheresDependencyCycle()
         {
-            new Task("first").DependsOn("second");
-            new Task("second").DependsOn("first");
+            new Job("first").DependsOn("second");
+            new Job("second").DependsOn("first");
 
-            TaskManager.SetDefault("first");
+            JobManager.SetDefault("first");
         }
 
         [TestMethod]
-        [ExpectedException(typeof (TaskException))]
+        [ExpectedException(typeof (JobException))]
         public void SetDefaultShouldThrowWhenTaskIsSelfDependent()
         {
-            TaskManager.SetDefault(new Task("first").DependsOn("first"));
+            JobManager.SetDefault(new Job("first").DependsOn("first"));
         }
 
         [TestMethod]
@@ -52,27 +52,27 @@ namespace Cake.Tests
         {
             var counter = 0;
 
-            var third = new Task("third")
+            var third = new Job("third")
                 .DependsOn("second", "first")
                 .Does(() =>
                 {
                     Assert.AreEqual(3, ++counter);
                 });
 
-            var second = new Task("second")
+            var second = new Job("second")
                 .DependsOn("first")
                 .Does(() =>
                 {
                     Assert.AreEqual(2, ++counter);
                 });
 
-            var first = new Task("first")
+            var first = new Job("first")
                 .Does(() =>
                 {
                     Assert.AreEqual(1, ++counter);
                 });
 
-            TaskManager.SetDefault(third);
+            JobManager.SetDefault(third);
         }
 
         [TestMethod]
@@ -81,36 +81,36 @@ namespace Cake.Tests
             var counter = 0;
             Action counterAdd = () => counter++;
 
-            var top = new Task("top")
+            var top = new Job("top")
                 .DependsOn("middle 1", "middle 2", "middle 3", "middle 4")
                 .Does(() =>
                 {
                     Assert.AreEqual(6, ++counter);
                 });
 
-            new Task("middle 1")
+            new Job("middle 1")
                 .DependsOn("middle 2", "bottom")
                 .Does(counterAdd);            
             
-            new Task("middle 2")
+            new Job("middle 2")
                 .DependsOn("middle 3", "bottom")
                 .Does(counterAdd);            
             
-            new Task("middle 3")
+            new Job("middle 3")
                 .DependsOn("middle 4", "bottom")
                 .Does(counterAdd);            
             
-            new Task("middle 4")
+            new Job("middle 4")
                 .DependsOn("bottom")
                 .Does(counterAdd);
 
-            var bottom = new Task("bottom")
+            var bottom = new Job("bottom")
                 .Does(() =>
                 {
                     Assert.AreEqual(1, ++counter);
                 });
 
-            TaskManager.SetDefault(top);
+            JobManager.SetDefault(top);
         }
     }
 }

@@ -15,8 +15,10 @@
 
             foreach (var file in files)
             {
-                Assert.AreEqual(false, Directory.Exists(file));
-                Assert.AreEqual(true, File.Exists(file));
+                Assert.IsFalse(Directory.Exists(file));
+                Assert.IsTrue(File.Exists(file));
+                //Assert.AreEqual(false, Directory.Exists(file));
+                //Assert.AreEqual(true, File.Exists(file));
             }
         }
 
@@ -27,8 +29,10 @@
 
             foreach (var directory in directories)
             {
-                Assert.AreEqual(false, File.Exists(directory));
-                Assert.AreEqual(true, Directory.Exists(directory));
+                Assert.IsFalse(File.Exists(directory));
+                Assert.IsTrue(Directory.Exists(directory));
+                //Assert.AreEqual(false, File.Exists(directory));
+                //Assert.AreEqual(true, Directory.Exists(directory));
             }
         }
 

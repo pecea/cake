@@ -1,18 +1,16 @@
-﻿namespace Cake
+﻿using System.Linq.Expressions;
+
+namespace Cake
 {
+    using Common;
+    using Roslyn.Scripting;
+    using Roslyn.Scripting.CSharp;
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Text;
     using System.Text.RegularExpressions;
-
-    using Common;
-
-    using Roslyn.Scripting;
-    using Roslyn.Scripting.CSharp;
 
     /// <summary>
     /// Handles Roslyn API and providing access to some of its methods.
@@ -34,11 +32,11 @@
         {
             Session = new ScriptEngine().CreateSession();
 
-            Session.AddReference(Assembly.GetAssembly(typeof(Task)));
+            Session.AddReference(Assembly.GetAssembly(typeof(Job)));
             Session.AddReference(Assembly.GetAssembly(typeof(Logger)));
             
-            Session.ImportNamespace(typeof(Task).Namespace);
-            Session.ImportNamespace(typeof(TaskManager).FullName);
+            Session.ImportNamespace(typeof(Job).Namespace);
+            Session.ImportNamespace(typeof(JobManager).FullName);
             Session.ImportNamespace(typeof(Logger).Namespace);
             Session.ImportNamespace(typeof(Logger).FullName);
         }
@@ -50,7 +48,20 @@
         public static void ExecuteFile(string filePath)
         {
             LoadAssemblies(filePath);
-            Session.ExecuteFile(filePath);
+            //try
+            //{
+                Session.ExecuteFile(filePath);
+            //}
+            //catch (JobException j) // NOT WORKING
+            //{
+            //    Logger.LogException(LogLevel.Error, j, "!!!!!!!!!!!!!!!!!!!!An exception occured while performing a job\n");
+            //    throw new JobException($"Some job did not end succesfully!\n");
+            //}
+            //catch (Exception e)
+            //{
+            //    Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job\n");
+            //    throw new JobException($"Some job did not end succesfully!\n");
+            //}
         }
 
         private static void LoadAssemblies(string filePath)
@@ -69,7 +80,8 @@
                     var assembly = Assembly.LoadFrom(assemblyPath);
 
                     Session.AddReference(assembly);
-                    Logger.Log(LogLevel.Debug, String.Format("Assembly \"{0}\" referenced. Importing namespaces from this assembly.", assembly.FullName));
+                    Logger.Log(LogLevel.Debug,
+                        $"Assembly \"{assembly.FullName}\" referenced. Importing namespaces from this assembly.");
 
                     var namespaces = assembly.GetTypes().Select(type => type.Namespace);
                     var staticTypes = assembly.GetTypes().Where(type => type.IsStatic()).Select(type => type.FullName);
@@ -79,7 +91,7 @@
                     foreach (var ns in namespaces)
                     {
                         Session.ImportNamespace(ns);
-                        Logger.Log(LogLevel.Debug, String.Format("Namespace \"{0}\" imported.", ns));
+                        Logger.Log(LogLevel.Debug, $"Namespace \"{ns}\" imported.");
                     }
                 }
             }
@@ -91,7 +103,7 @@
                     .TrimStart('/')
                     .TrimEnd(';')
                     .Trim()
-                    .Replace("cake using ", String.Empty)
+                    .Replace("cake using ", string.Empty)
                     .TrimStart('"')
                     .TrimEnd('"');
         }

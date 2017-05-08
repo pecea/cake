@@ -1,6 +1,5 @@
 ﻿namespace Common
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -15,7 +14,7 @@
         /// </summary>
         /// <param name="path">Wildcarded path to be converted.</param>
         /// <returns>Enumeration of directories' paths that exist and fit the wildcared path.</returns>
-        public static IEnumerable<string> GetDirectoriesPaths(this String path)
+        public static IEnumerable<string> GetDirectoriesPaths(this string path)
         {
             return GetPaths(path, GetPathsOptions.Directories);
         }
@@ -25,7 +24,7 @@
         /// </summary>
         /// <param name="path">Wildcarded path to be converted.</param>
         /// <returns>Enumeration of files' paths that exist and fit the wildcared path.</returns>
-        public static IEnumerable<string> GetFilePaths(this String path)
+        public static IEnumerable<string> GetFilePaths(this string path)
         {
             return GetPaths(path, GetPathsOptions.Files);
         }
