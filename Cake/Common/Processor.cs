@@ -17,7 +17,6 @@ namespace Common
         /// <returns></returns>
         public static bool RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
-            var pathTODIr = Directory.GetCurrentDirectory();
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
             if (workingDirectory != ".")

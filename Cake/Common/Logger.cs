@@ -52,7 +52,7 @@
         public static void LogException(LogLevel logLevel, Exception e, string message, [CallerMemberName] string loggerName = "Script")
         {
             Log(logLevel,
-                $"{message.Trim()} ExceptionType: {e.GetType()}. Exception source: {e.Source}. Exception message: {e.Message}", loggerName);
+                $"{message}\n ExceptionType: {e.GetType()}. Exception source: {e.Source}.\n Exception message: {e.Message}\n", loggerName);
             LogInnerException(logLevel, e, loggerName);
         }
 
