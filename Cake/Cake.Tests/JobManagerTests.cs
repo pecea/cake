@@ -6,7 +6,7 @@ namespace Cake.Tests
 
 
     [TestClass]
-    internal class JobManagerTests
+    public class JobManagerTests
     {
         [TestInitialize]
         public void ClearTaskManagersTasks()
@@ -14,9 +14,24 @@ namespace Cake.Tests
             JobManager.ClearJobs();
         }
 
+
+        [TestMethod]
+        public void InnerExceptionDebugging()
+        {
+            new Job("t2").Does(() => { System.Console.WriteLine("test"); });
+
+            new Job("t1").DependsOn("t2").Does(() => {
+                var i = 1;
+                var j = 2;
+                System.Console.WriteLine((i + j).ToString());
+            });
+
+            JobManager.SetDefault("t1");
+        }
+
         [TestMethod]
         [ExpectedException(typeof(JobException), "A dependency on a non existing task was specified.")]
-        public void RunTaskWithDependenciesShouldThrowWhenDependencyIsNotFound()
+        public void RunTaskWithDependenciesResultShouldThrowWhenDependencyIsNotFound()
         {
             new Job("test task").DependsOn("non existing task");
             JobManager.SetDefault("test task");

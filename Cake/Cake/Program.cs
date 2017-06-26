@@ -16,6 +16,7 @@
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
         private static void Main(string[] args)
         {
+            //var msTestPath = 
             // Parsing arguments
             Argument[] arguments;
             try
@@ -56,14 +57,15 @@
             {
                 RoslynEngine.ExecuteFile(scriptArgument.Value);
             }
-            //catch (JobException j)
-            //{
-            //    Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job\n");
-            //    return;
-            //}
+            catch (JobException)
+            {
+                //Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job\n");
+
+                return;
+            }
             catch (Exception e)
             {
-                Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
+                Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.\n");
                 return;
             }
 

@@ -15,9 +15,7 @@ namespace Git
         private const string App = "git.exe";
 
         private static readonly string[] Paths = {
-            Path.Combine(@"C:\Program Files (x86)\Git\bin", App),
-            Path.Combine(@"C:\Program Files\Git\bin", App),
-            Path.Combine()
+            "../../../External/git.exe"
         };
 
         private static bool _initialized;

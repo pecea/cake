@@ -17,6 +17,7 @@ namespace Common
         /// <returns></returns>
         public static bool RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
+            var pathTODIr = Directory.GetCurrentDirectory();
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
             if (workingDirectory != ".")
@@ -38,7 +39,8 @@ namespace Common
                     RedirectStandardError = true,
                     CreateNoWindow = true,
                     UseShellExecute = false,
-                    WorkingDirectory = workingDirectory
+                    WorkingDirectory = workingDirectory,
+                    WindowStyle = ProcessWindowStyle.Hidden
                 }
             })
             {
@@ -49,13 +51,19 @@ namespace Common
 
                 process.Start();
 
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
+                var outEnd = process.StandardOutput.ReadToEnd();
+                var errEnd = process.StandardError.ReadToEnd();
+                if(!string.IsNullOrEmpty(outEnd))
+                    Logger.Log(LogLevel.Info, $"Process result: {outEnd}");
+                if(!string.IsNullOrEmpty(errEnd))
+                    Logger.Log(LogLevel.Error, $"Process error: {errEnd}");
+               // process.BeginOutputReadLine();
+               // process.BeginErrorReadLine();
 
                 process.WaitForExit();
 
-                process.CancelOutputRead();
-                process.CancelErrorRead();
+                //process.CancelOutputRead();
+                //process.CancelErrorRead();
                 
                 if (process.ExitCode == 0)
                 {

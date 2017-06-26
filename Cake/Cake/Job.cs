@@ -37,6 +37,17 @@
             JobManager.RegisterJob(this);
         }
 
+
+        public Job DependsOn(string otherJobs)
+        {
+            foreach (var dependency in otherJobs.Split(',').Select(j => j.Trim()).Where(d => Dependencies.All(added => added != d)).ToArray())
+            {
+                Dependencies.Add(dependency);   
+            }
+            //Dependencies.Add(otherJob);
+            return this;
+        }
+
         /// <summary>
         /// Adds one or more Jobs that this job is dependent on.
         /// </summary>

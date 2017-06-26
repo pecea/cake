@@ -293,7 +293,7 @@
         /// </summary>
         /// <param name="directoryPath">Path to folder</param>
         /// <returns>True, if all files and folders were correctly deleted</returns>
-        public static bool CleanDirectory(string directoryPath)
+        public static bool CleanDirectory(string directoryPath) //TODO: check whether files outside directory are also cleaned :)
         {
             if (!Directory.Exists(directoryPath))
             {

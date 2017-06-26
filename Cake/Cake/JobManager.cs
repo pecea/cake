@@ -122,7 +122,8 @@
             if(job.Status == JobStatus.Pending)
                 throw new JobException(
                         $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
-
+            if (job.Status == JobStatus.Failed)
+                return false;
             //switch (job.Status)
             //{
             //    case JobStatus.Failed:
@@ -167,6 +168,7 @@
             catch (Exception e)
             {
                 Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job\n");
+                job.Status = JobStatus.Failed;
                 throw new JobException($"Job {name} did not end succesfully!\n");
             }
             //return job.ExecuteWithResult();

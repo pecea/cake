@@ -48,20 +48,19 @@ namespace Cake
         public static void ExecuteFile(string filePath)
         {
             LoadAssemblies(filePath);
-            //try
-            //{
+            try
+            {
                 Session.ExecuteFile(filePath);
-            //}
-            //catch (JobException j) // NOT WORKING
-            //{
-            //    Logger.LogException(LogLevel.Error, j, "!!!!!!!!!!!!!!!!!!!!An exception occured while performing a job\n");
-            //    throw new JobException($"Some job did not end succesfully!\n");
-            //}
-            //catch (Exception e)
-            //{
-            //    Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job\n");
-            //    throw new JobException($"Some job did not end succesfully!\n");
-            //}
+            }
+            catch (JobException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(LogLevel.Error, e, "An exception occured while executing the script with Roslyn\n");
+                throw;
+            }
         }
 
         private static void LoadAssemblies(string filePath)

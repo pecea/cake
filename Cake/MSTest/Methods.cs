@@ -1,94 +1,236 @@
-﻿namespace MSTest
+﻿using System.Diagnostics;
+using System.Xml;
+using Microsoft.Win32;
+
+namespace MSTest
 {
     using System;
     using System.IO;
     using System.Linq;
 
     using Common;
-
+    
     /// <summary>
     /// Encloses methods used for testing with MSTest
     /// </summary>
     public static class Methods
     {
-        private static readonly string[] Paths =
-            {
-                 Path.Combine(
-                    @"C:\Program Files (x86)\Microsoft Visual Studio 15.0\Common7\IDE",
-                    "MSTest.exe"),
-                Path.Combine(
-                    @"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE",
-                    "MSTest.exe"),
-                Path.Combine(
-                    @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE",
-                    "MSTest.exe"),
-                Path.Combine(
-                    @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE",
-                    "MSTest.exe"),
-                Path.Combine(
-                    @"C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE",
-                    "MSTest.exe"),
-                Path.Combine(
-                    @"C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE",
-                    "MSTest.exe"),
-                Path.Combine(
-                    @"D:\Programs\Microsoft Visual Studio 12.0\Common7\IDE",
-                    "MSTest.exe")
-            };
+        private const string DefaultTestResultsPath = @"TestResults";
+        private static string FullPathExe => "../../../External/MsTest.exe";
+        ///// <summary>
+        ///// Runs mstest.exe with test assemblies.
+        ///// </summary>
+        ///// <param name="testAssembliesPaths">Assemblies of the tests to be run. Paths may contain wildcards.</param>
+        ///// <returns>True if the tests were executed successfully, false otherwise.</returns>
+        //public static bool RunTests(params string[] testAssembliesPaths)
+        //{
+        //    if (!File.Exists(FullPathExe))
+        //    {
+        //        Logger.Log(LogLevel.Error, "MSTest.exe file not found.");
+        //        return false;
+        //    }
+        //    var result = true;
 
-        /// <summary>
-        /// Local path to MSTest.exe
-        /// </summary>
-        public static string PathToExe { get; set; }
+        //    foreach (var path in testAssembliesPaths)
+        //    {
+        //        try
+        //        {
+        //            var paths = path.GetFilePaths()?.ToArray();
+        //            if (paths == null || paths.Length == 0)
+        //            {
+        //                result = false;
+        //                continue;
+        //            }
 
-        private static string FullPathExe => File.Exists(PathToExe) ? PathToExe : Paths.FirstOrDefault(File.Exists) ?? "MSTest.exe";
+        //            foreach (var p in paths)
+        //            {
+        //                var tmp = Processor.RunProcess(FullPathExe,
+        //                            $"/testcontainer:{Processor.QuoteArgument(p)}");
+        //                var res = tmp ? "success" : "failure";
+        //                Logger.Log(LogLevel.Info, $"Running unit tests from {p} resulted in {res}\n");
+        //                result = result && tmp;
+        //            }
+        //            //result = enumeratedPaths.Aggregate(result,
+        //            //    (current, testPath) =>
+        //            //        Processor.RunProcess(FullPathExe,
+        //            //                "/testcontainer:" + Processor.QuoteArgument(testPath))
+        //            //            &&
+        //            //            current);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Logger.LogException(LogLevel.Error, e, "An exception occured while running mstest.exe");
+        //            result = false;
+        //        }
+        //    }
 
-        /// <summary>
-        /// Runs mstest.exe with test assemblies.
-        /// </summary>
-        /// <param name="testAssembliesPaths">Assemblies of the tests to be run. Paths may contain wildcards.</param>
-        /// <returns>True if the tests were executed successfully, false otherwise.</returns>
-        public static bool Test(params string[] testAssembliesPaths)
+        //    return result;
+        //}
+
+        //public static bool RunTests(string testAssemblyPath, string categories)
+        //{
+        //    if (!File.Exists(FullPathExe))
+        //    {
+        //        Logger.Log(LogLevel.Error, "MSTest.exe file not found.");
+        //        return false;
+        //    }
+        //    var result = true;
+        //    try
+        //    {
+        //        var paths = testAssemblyPath.GetFilePaths()?.ToArray();
+        //        if (paths == null || paths.Length == 0)
+        //        {
+        //            Logger.Log(LogLevel.Error, $"Incorrect test assemby path!\n");
+        //            return false;
+        //        }
+
+        //        foreach (var p in paths)
+        //        {
+        //            var tmp = Processor.RunProcess(FullPathExe,
+        //                        $"/testcontainer:{Processor.QuoteArgument(p)} /category:{Processor.QuoteArgument(categories)}");
+        //            var res = tmp ? "success" : "failure";
+        //            Logger.Log(LogLevel.Info, $"Running unit tests from {p} resulted in {res}\n");
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Logger.LogException(LogLevel.Error, e, "An exception occured while running mstest.exe");
+        //        result = false;
+        //    }
+
+        //    return result;
+        //}
+
+
+        public static bool RunTests(string testAssemblyPath, string categories = null, string resultFile = null, string singleTest = null, bool unique = false)
         {
             if (!File.Exists(FullPathExe))
             {
-                Logger.Log(LogLevel.Error, "mstest.exe file not found.");
+                Logger.Log(LogLevel.Error, "MSTest.exe file not found.");
                 return false;
             }
             var result = true;
-
-            foreach (var path in testAssembliesPaths)
+            try
             {
-                try
+                var paths = testAssemblyPath.GetFilePaths()?.ToArray();
+                if (paths == null || paths.Length == 0)
                 {
-                    var paths = path.GetFilePaths();
-                    if (paths == null)
-                    {
-                        result = false;
-                        continue;
-                    }
-
-                    var enumeratedPaths = paths.ToArray();
-
-                    if (enumeratedPaths.Length == 0)
-                    {
-                        result = false;
-                        continue;
-                    }
-
-                    result = enumeratedPaths.Aggregate(result,
-                        (current, testPath) =>
-                            Processor.RunProcess(FullPathExe, "/testcontainer:" + Processor.QuoteArgument(testPath)) &&
-                            current);
+                    Logger.Log(LogLevel.Error, $"Incorrect test assemby path!\n");
+                    return false;
                 }
-                catch (Exception e)
+                foreach (var p in paths)
                 {
-                    Logger.LogException(LogLevel.Error, e, "An exception occured while running mstest.exe");
-                    result = false;
+                    var arguments = $"/testcontainer:{Processor.QuoteArgument(p)}";
+                    if (!string.IsNullOrEmpty(categories))
+                        arguments += $" /category:{Processor.QuoteArgument(categories)}";
+                    if (!string.IsNullOrEmpty(resultFile))
+                        arguments += $" /resultsfile:{resultFile}";
+                    if (!string.IsNullOrEmpty(singleTest))
+                        arguments += $" /test:{singleTest}";
+                    if (unique)
+                        arguments += " /unique";
+                    var defaultTestDir = new DirectoryInfo(DefaultTestResultsPath);
+                    foreach(var dir in defaultTestDir.GetDirectories())
+                        dir.Delete(true);
+                    foreach (var f in defaultTestDir.GetFiles())
+                        f.Delete();
+
+                    var tmp = Processor.RunProcess(FullPathExe, arguments);
+                    var res = tmp ? "success" : "failure";
+                    Logger.Log(LogLevel.Info, $"Running unit tests from {p} resulted in {res}\n");
+                    result &= tmp;
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(LogLevel.Error, e, "An exception occured while running mstest.exe");
+                result = false;
             }
 
             return result;
         }
+
+
+
+        public static bool RunTests(string testAssemblyPath, string resultFile = null, params string[] singleTests)
+        {
+            if (!File.Exists(FullPathExe))
+            {
+                Logger.Log(LogLevel.Error, "MSTest.exe file not found.");
+                return false;
+            }
+            var result = true;
+            try
+            {
+                var paths = testAssemblyPath.GetFilePaths()?.ToArray();
+                if (paths == null || paths.Length == 0)
+                {
+                    Logger.Log(LogLevel.Error, $"Incorrect test assemby path!\n");
+                    return false;
+                }
+
+                foreach (var p in paths)
+                {
+                    var arguments = $"/testcontainer:{Processor.QuoteArgument(p)}";
+                    if (!string.IsNullOrEmpty(resultFile))
+                        arguments += $" /resultsfile:{resultFile}";
+                    arguments = (singleTests ?? new string[0]).Aggregate(arguments, (current, test) => current + $" /test:{test}");
+                    var tmp = Processor.RunProcess(FullPathExe, arguments);
+                    var res = tmp ? "success" : "failure";
+                    Logger.Log(LogLevel.Info, $"Running unit tests from {p} resulted in {res}\n");
+                    result &= tmp;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(LogLevel.Error, e, "An exception occured while running mstest.exe");
+                result = false;
+            }
+
+            return result;
+        }
+
+        //public static bool RunTests(string testAssemblyPath, string resultFile = null, bool unique = false, string singleTest = null)
+        //{
+        //    if (!File.Exists(FullPathExe))
+        //    {
+        //        Logger.Log(LogLevel.Error, "MSTest.exe file not found.");
+        //        return false;
+        //    }
+        //    var result = true;
+        //    try
+        //    {
+        //        var paths = testAssemblyPath.GetFilePaths()?.ToArray();
+        //        if (paths == null || paths.Length == 0)
+        //        {
+        //            Logger.Log(LogLevel.Error, $"Incorrect test assemby path!\n");
+        //            return false;
+        //        }
+
+        //        foreach (var p in paths)
+        //        {
+        //            var arguments = $"/testcontainer:{Processor.QuoteArgument(p)}";
+        //            if (!string.IsNullOrEmpty(resultFile))
+        //                arguments += $" /resultsfile:{resultFile}";
+        //            if (!string.IsNullOrEmpty(singleTest))
+        //                arguments += $" /test:{singleTest}";
+        //            if (unique)
+        //                arguments += $" /unique";
+        //            var tmp = Processor.RunProcess(FullPathExe, arguments);
+        //            var res = tmp ? "success" : "failure";
+        //            Logger.Log(LogLevel.Info, $"Running unit tests from {p} resulted in {res}\n");
+        //            result &= tmp;
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Logger.LogException(LogLevel.Error, e, "An exception occured while running mstest.exe");
+        //        result = false;
+        //    }
+
+        //    return result;
+        //}
+
+        //publish tests?
     }
 }
