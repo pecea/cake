@@ -42,18 +42,18 @@
                         if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path);
                         else zip.AddFile(path,"");
                     }
-                    zip.Save(String.Format("{0}.zip", zipPathAndName));
-                    Logger.Log(LogLevel.Info, String.Format("{0} zipped succesfully.", zipPathAndName));
+                    zip.Save($"{zipPathAndName}.zip");
+                    Logger.Log(LogLevel.Info, $"{zipPathAndName} zipped succesfully.");
                 }
             }
             catch (DirectoryNotFoundException e)
             {
-                Logger.LogException(LogLevel.Error, e, String.Format("Zipping {0}.zip failed.", zipPathAndName));
+                Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
                 return false;
             }
             catch (FileNotFoundException e)
             {
-                Logger.LogException(LogLevel.Error, e, String.Format("Zipping {0}.zip failed.", zipPathAndName));
+                Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
                 return false;
             }
             return true;
@@ -67,20 +67,22 @@
         /// <returns></returns>
         private static bool CheckZipFilesArguments(IEnumerable<string> filePaths, string zipPath)
         {
-            if (!filePaths.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)) || !filePaths.Any())
+            var enumerable = filePaths as IList<string> ?? filePaths.ToList();
+            if (!enumerable.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)) || !enumerable.Any())
                 return false;
 
-            if (String.IsNullOrEmpty(zipPath)) return true;
+            if (string.IsNullOrEmpty(zipPath)) return true;
+            string fullPath;
             try
             {
-                Path.GetFullPath(zipPath);
+                fullPath = Path.GetFullPath(zipPath);
             }
             catch (Exception)
             {
-                Logger.Log(LogLevel.Warn, "The zipPath parameter is not a valid path.");
+                Logger.Log(LogLevel.Warn, $"The zipPath parameter {zipPath} is not a valid path.");
                 return false;
             }
-            return true;
+            return !string.IsNullOrEmpty(fullPath);
         }
 
         #endregion

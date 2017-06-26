@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Build.Tests
 {
-    public class ConfigurationChecker : MarshalByRefObject
+    internal class ConfigurationChecker : MarshalByRefObject
     {
         public bool IsDebug(string assemblyPath)
         {

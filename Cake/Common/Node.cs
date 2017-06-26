@@ -1,6 +1,5 @@
 ﻿namespace Common
 {
-    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -41,7 +40,7 @@
             var result = new List<string>();
             var nextPathPart = SplitPath[pathIndex + 1];
 
-            if (String.IsNullOrEmpty(nextPathPart)) return result;
+            if (string.IsNullOrEmpty(nextPathPart)) return result;
 
             if (pathIndex + 2 == SplitPath.Length && option == GetPathsOptions.Files)
             {
@@ -63,7 +62,7 @@
             }
             else
             {
-                var directory = String.Format("{0}\\{1}", Value, nextPathPart);
+                var directory = $"{Value}\\{nextPathPart}";
                 if (Directory.Exists(directory)) Children.Add(new Node(directory));
             }
 

@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class RoslynEngineFacade : MarshalByRefObject
+    internal class RoslynEngineFacade : MarshalByRefObject
     {
         public void ExecuteFile(string filePath)
         {

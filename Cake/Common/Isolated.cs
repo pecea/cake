@@ -1,34 +1,36 @@
 ﻿namespace Common
 {
     using System;
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Isolated<T> : IDisposable
         where T : MarshalByRefObject
     {
-        private AppDomain domain;
-
-        private readonly T value;
-
+        private AppDomain _domain;
+        /// <summary>
+        /// 
+        /// </summary>
         public Isolated()
         {
-            domain = AppDomain.CreateDomain("Isolated:" + Guid.NewGuid(), AppDomain.CurrentDomain.Evidence, AppDomain.CurrentDomain.SetupInformation);
+            _domain = AppDomain.CreateDomain("Isolated:" + Guid.NewGuid(), AppDomain.CurrentDomain.Evidence, AppDomain.CurrentDomain.SetupInformation);
 
             var type = typeof(T);
-            value = (T)domain.CreateInstanceAndUnwrap(type.Assembly.FullName, type.FullName);
+            Value = (T)_domain.CreateInstanceAndUnwrap(type.Assembly.FullName, type.FullName);
         }
-
-        public T Value
-        {
-            get { return value; }
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public T Value { get; }
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
-            if (domain != null)
-            {
-                AppDomain.Unload(domain);
-                domain = null;
-            }
+            if (_domain == null) return;
+            AppDomain.Unload(_domain);
+            _domain = null;
         }
     }
 }

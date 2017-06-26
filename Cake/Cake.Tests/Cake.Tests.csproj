@@ -53,7 +53,7 @@
   <ItemGroup>
     <Compile Include="RoslynEngineFacade.cs" />
     <Compile Include="RoslynEngineTests.cs" />
-    <Compile Include="TaskManagerTests.cs" />
+    <Compile Include="JobManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -11,19 +11,19 @@
         [TestMethod]
         public void ShouldReturnFailureIfInvalidTestPathIsSpecified()
         {
-            Assert.AreEqual(false, Methods.Test(@"X:\Invalid\Path\To\tests.dll"));
+            Assert.IsFalse(Methods.Test(@"X:\Invalid\Path\To\tests.dll"));
         }
 
         [TestMethod]
         public void ShouldReturnSuccessIfValidTestPathIsSpecified()
         {
-            Assert.AreEqual(true, Methods.Test(PathToTestLibrary));
+            Assert.IsTrue(Methods.Test(PathToTestLibrary));
         }
 
         [TestMethod]
         public void ShouldReturnFailureIfNotPassingTests()
         {
-            Assert.AreEqual(false, Methods.Test(PathToFailingTestLibrary));
+            Assert.IsFalse(Methods.Test(PathToFailingTestLibrary));
         }
     }
 }

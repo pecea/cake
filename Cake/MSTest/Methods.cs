@@ -13,6 +13,12 @@
     {
         private static readonly string[] Paths =
             {
+                 Path.Combine(
+                    @"C:\Program Files (x86)\Microsoft Visual Studio 15.0\Common7\IDE",
+                    "MSTest.exe"),
+                Path.Combine(
+                    @"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE",
+                    "MSTest.exe"),
                 Path.Combine(
                     @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE",
                     "MSTest.exe"),
@@ -35,13 +41,7 @@
         /// </summary>
         public static string PathToExe { get; set; }
 
-        private static string FullPathExe
-        {
-            get
-            {
-                return File.Exists(PathToExe) ? PathToExe : Paths.FirstOrDefault(File.Exists) ?? "MSTest.exe";
-            }
-        }
+        private static string FullPathExe => File.Exists(PathToExe) ? PathToExe : Paths.FirstOrDefault(File.Exists) ?? "MSTest.exe";
 
         /// <summary>
         /// Runs mstest.exe with test assemblies.

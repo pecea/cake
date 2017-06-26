@@ -8,13 +8,13 @@
     /// <summary>
     /// Provides an entry point for the application.
     /// </summary>
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// Entry point of the application.
         /// </summary>
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // Parsing arguments
             Argument[] arguments;
@@ -32,7 +32,7 @@
             // Retrieving whether to show help or not
             var helpArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/help"));
             if(helpArgument != null)
-                Console.Write("\n\nTo use the program run cake.exe with arguments:\n\n1./script (/s) - path to your c# script - necessary\n2./verbosity (/v) - level of output\n    Possible values: debug, info, warn, error, fatal\n3./runtask (/r) - name of the task to run from your c# script\n   Necessary if your c# script does not have SetDefault(taskName) method\n4./help (/h) - show help\n\n");
+                Console.Write("\n\nTo use the program run cake.exe with arguments:\n\n1./script (/s) - path to your c# script - necessary\n2./verbosity (/v) - level of output\n    Possible values: debug, info, warn, error, fatal\n3./runjob (/r) - name of the job to run from your c# script\n   Necessary if your c# script does not have SetDefault(jobName) method\n4./help (/h) - show help\n\n");
 
             // Retrieving user specified logging level
             var logLevelArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/verbosity"));
@@ -45,18 +45,22 @@
                 return;
             }
 
-            // Retrieving user specified task to run
-            var taskToRunArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/runtask"));
-            if (taskToRunArgument != null) TaskManager.TaskToRun = taskToRunArgument.Value;
+            // Retrieving user specified job to run
+            var jobToRunArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/runjob"));
+            if (jobToRunArgument != null) JobManager.JobToRun = jobToRunArgument.Value;
 
-
-            Logger.Log(LogLevel.Info, String.Format("Cake started for script: {0}", scriptArgument.Value));
+            Logger.Log(LogLevel.Info, $"Cake started for script: {scriptArgument.Value}");
 
             // Running the script
             try
             {
                 RoslynEngine.ExecuteFile(scriptArgument.Value);
             }
+            //catch (JobException j)
+            //{
+            //    Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job\n");
+            //    return;
+            //}
             catch (Exception e)
             {
                 Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");

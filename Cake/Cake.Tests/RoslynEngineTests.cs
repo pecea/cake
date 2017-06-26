@@ -8,7 +8,7 @@ namespace Cake.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class RoslynEngineTests
+    internal class RoslynEngineTests
     {
         [TestMethod]
         [ExpectedException(typeof(Exception), AllowDerivedTypes = true)]

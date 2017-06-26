@@ -20,7 +20,7 @@ namespace Git
             Path.Combine()
         };
 
-        private static bool _initialized = false;
+        private static bool _initialized;
 
         public static string PathToExe { get; set; }
         public static string PathToRepository { get; set; }
