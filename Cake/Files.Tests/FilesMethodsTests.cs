@@ -112,9 +112,13 @@ namespace Files.Tests
             //var res = Methods.CopyFolder(PathForTests, PathForTests + "Copied Content");
             Assert.IsTrue(Methods.CopyFolder(PathForTests, PathForTests + "Copied Content"));
             var file = new FileInfo(PathForTests + "Copied Content/FileToCopy.txt");
-            //res = Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content");
-            Assert.IsTrue(Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content"));
-            Assert.AreNotEqual(file, new FileInfo(PathForTests + "Copied Content/FileToCopy.txt"));
+            using (var wr = new StreamWriter(PathForTests + "FileToCopy.txt"))
+            {
+                wr.WriteLine("test");
+            }
+            Assert.IsTrue(Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content" + "/FileToCopy.txt"));
+            Assert.AreNotEqual(file.Length, new FileInfo(PathForTests + "Copied Content/FileToCopy.txt").Length);
+            //Assert.AreNotEqual(file, new FileInfo(PathForTests + "Copied Content/FileToCopy.txt"));
         }
 
         [TestMethod]
@@ -172,7 +176,7 @@ namespace Files.Tests
         [TestMethod]
         public void DeleteFileShouldDeleteFile()
         {
-            Assert.IsTrue(Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content"));
+            Assert.IsTrue(Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content" + "/FileToCopy.txt"));
             Assert.IsTrue(Methods.DeleteFile(PathForTests + "Copied Content/FileToCopy.txt"));
             Assert.IsFalse(File.Exists(PathForTests + "Copied Content/FileToCopy.txt"));
             //Assert.AreEqual(false, File.Exists(PathForTests + "Copied Content/FileToCopy.txt"));
