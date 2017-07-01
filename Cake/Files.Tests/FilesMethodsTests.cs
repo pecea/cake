@@ -109,12 +109,18 @@ namespace Files.Tests
         [TestMethod]
         public void CopyFileShouldOverwritePreviousFile()
         {
+            Assert.IsTrue(Methods.DeleteDirectory(PathForTests + "Copied Content"));
             //var res = Methods.CopyFolder(PathForTests, PathForTests + "Copied Content");
             Assert.IsTrue(Methods.CopyFolder(PathForTests, PathForTests + "Copied Content"));
-            var file = new FileInfo(PathForTests + "Copied Content/FileToCopy.txt");
-            using (var wr = new StreamWriter(PathForTests + "FileToCopy.txt"))
+            using (var wr = new StreamWriter(PathForTests + "Copied Content/FileToCopy.txt"))
             {
                 wr.WriteLine("test");
+            }
+
+            var file = new FileInfo(PathForTests + "Copied Content/FileToCopy.txt");
+            using (var wr2 = new StreamWriter(PathForTests + "FileToCopy.txt"))
+            {
+                wr2.WriteLine("test2");
             }
             Assert.IsTrue(Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content" + "/FileToCopy.txt"));
             Assert.AreNotEqual(file.Length, new FileInfo(PathForTests + "Copied Content/FileToCopy.txt").Length);
