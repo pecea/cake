@@ -33,6 +33,11 @@
         {
             Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "cat == first"));
         }
+        [TestMethod]
+        public void ShouldRunOnlyHighPriorityTests()
+        {
+            Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "Priority == High"));
+        }
         //[TestMethod]
         //public void ShouldRunOnlyFirstCategoryTests()
         //{
