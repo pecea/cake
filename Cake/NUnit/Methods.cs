@@ -93,7 +93,7 @@ namespace NUnit
                 }
                 var parameters = $"--noh {assemblyPaths}";
                 if (!string.IsNullOrEmpty(conditions))
-                    parameters += $" --where={conditions}";
+                    parameters += $" --where \"{conditions}\"";
                 if(!string.IsNullOrEmpty(config))
                     parameters += $" --config={config}";
                 return Processor.RunProcess(FullPathExe, parameters);

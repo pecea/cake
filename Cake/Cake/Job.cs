@@ -37,7 +37,11 @@
             JobManager.RegisterJob(this);
         }
 
-
+        /// <summary>
+        /// Method for describing dependencies between jobs. Dependencies should be comma-separated.
+        /// </summary>
+        /// <param name="otherJobs"></param>
+        /// <returns></returns>
         public Job DependsOn(string otherJobs)
         {
             foreach (var dependency in otherJobs.Split(',').Select(j => j.Trim()).Where(d => Dependencies.All(added => added != d)).ToArray())

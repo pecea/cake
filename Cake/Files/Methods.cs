@@ -140,7 +140,7 @@
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Could not copy {sourceName}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not copy {sourceName}");
                  
                 return false;
             }

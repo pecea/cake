@@ -32,7 +32,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Git.Tests", "Git.Tests\Git.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSTest", "MSTest\MSTest.csproj", "{D8F6C7BE-DC98-4178-977D-EC0618FA4694}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSTest.Tests", "MSTest.Tests\MSTest.Tests.csproj", "{FD6E2A6A-6B89-4A3D-85D0-BAFAFC307BE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnit.Tests", "NUnit.Tests\NUnit.Tests.csproj", "{FD6E2A6A-6B89-4A3D-85D0-BAFAFC307BE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHub", "GitHub\GitHub.csproj", "{7F6E2CA3-5C51-4962-8111-77C024ED08B5}"
 EndProject
@@ -64,6 +64,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnit", "NUnit\NUnit.csproj", "{58C7E6C6-7572-430A-95E6-83E493BD2E2D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fail", "Fail\Fail.csproj", "{41E8BA8D-AA9C-4CAF-A9A6-2C0D48C3D1CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Success", "Success\Success.csproj", "{25A9A168-26EA-4533-9277-DD97B61CE7E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +165,10 @@ Global
 		{41E8BA8D-AA9C-4CAF-A9A6-2C0D48C3D1CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41E8BA8D-AA9C-4CAF-A9A6-2C0D48C3D1CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41E8BA8D-AA9C-4CAF-A9A6-2C0D48C3D1CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25A9A168-26EA-4533-9277-DD97B61CE7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25A9A168-26EA-4533-9277-DD97B61CE7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25A9A168-26EA-4533-9277-DD97B61CE7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25A9A168-26EA-4533-9277-DD97B61CE7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
