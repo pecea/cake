@@ -114,9 +114,6 @@
             }
             catch (KeyNotFoundException e)
             {
-                //var jobException = new JobException($"Could not find the definition of Job \"{name}\".", e.Source);
-                //Logger.LogException(LogLevel.Fatal, jobException, "A fatal error has occured.");
-                //throw jobException;
                 throw new JobException($"Could not find the definition of Job \"{name}\".", e.Source);
             }
             if(job.Status == JobStatus.Pending)
@@ -124,20 +121,6 @@
                         $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
             if (job.Status == JobStatus.Failed)
                 return false;
-            //switch (job.Status)
-            //{
-            //    case JobStatus.Failed:
-            //        return false;
-            //    case JobStatus.Done:
-            //        return true;
-            //    case JobStatus.Pending:
-            //        throw new JobException(
-            //            $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
-            //    case JobStatus.NotVisited:
-            //        break;
-            //    default:
-            //        throw new ArgumentOutOfRangeException();
-            //}
 
             job.Status = JobStatus.Pending;
             foreach (var dependency in job.Dependencies ?? new List<string>())
@@ -146,15 +129,6 @@
                 job.Status = JobStatus.Failed;
                 throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
             }
-            //if ((job.Dependencies ?? new List<string>()).Any(depencency => !PerformJobWithDependenciesResult(depencency)))
-            //{
-            //    return false;
-            //    throw new JobException($"A dependency did not run successfully!");
-            //}
-            //if (job.Dependencies.Any(dependency => !PerformJobWithDependenciesResult(dependency)))
-            //{
-            //    throw new JobException($"Job {job.Name} failed to perform correctly!");
-            //}
             try
             {
                 if (job.Execute())
@@ -171,8 +145,6 @@
                 job.Status = JobStatus.Failed;
                 throw new JobException($"Job {name} did not end succesfully!\n");
             }
-            //return job.ExecuteWithResult();
-            //job.Status = JobStatus.Done;
         }
     }
 }

@@ -67,7 +67,7 @@
         }
 
         /// <summary>
-        /// Adds one or more Jobs that this job is dependent on.
+        /// Adds one or more <see cref="Job"/> that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Jobs that this job will be reliant on.</param>
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>

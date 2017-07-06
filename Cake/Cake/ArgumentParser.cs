@@ -8,19 +8,21 @@
     {
         static ArgumentParser()
         {
-            var args = new List<Argument>
+            Arguments = new List<Argument>
                            {
                                new Argument(new[] { "/runtask", "/r" }, true),
                                new Argument(new[] { "/verbosity", "/v" }, true),
                                new Argument(new[] { "/help", "/h" }, false),
                                new Argument(new[] { "/script", "/s" }, true)
-                           };
-
-            Arguments = args.ToArray();
+                           }.ToArray();
         }
 
         private static readonly Argument[] Arguments;
-
+        /// <summary>
+        /// Parses arguments passed when running Cake.
+        /// </summary>
+        /// <param name="args">Arguments passed to the application</param>
+        /// <returns></returns>
         public static Argument[] Parse(string[] args)
         {
             var result = new List<Argument>();

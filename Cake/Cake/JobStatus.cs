@@ -14,11 +14,11 @@
         /// </summary>
         Pending,
         /// <summary>
-        /// Represents a job which action has been executed.
+        /// Represents a job which action has been executed succesfully.
         /// </summary>
         Done,
         /// <summary>
-        /// 
+        /// Represents a job which action has been executed unsuccesfully.
         /// </summary>
         Failed
     }

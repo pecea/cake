@@ -23,7 +23,7 @@
         /// <returns>True, if copying succedeed</returns>
         public static bool CopyFolder(string sourceDir, string destinationDir, bool copySubDirs = true, bool overwrite = false, bool cleanDestinationDirectory = false)
         {
-
+            var res = true;
             DirectoryInfo dir;
             try
             {
@@ -65,7 +65,7 @@
                 if (cleanDestinationDirectory)
                     try
                     {
-                        CleanDirectory(destinationDir);
+                        res &= CleanDirectory(destinationDir);
                         Logger.Log(LogLevel.Info, $"Directory {destinationDir} cleaned");
                     }
                     catch (Exception)
@@ -96,14 +96,14 @@
             }
 
             // If copying subdirectories, copy them and their contents to new location. 
-            if (!copySubDirs) return true;
+            if (!copySubDirs) return res;
             foreach (var subdir in dirs)
             {
                 try
                 {
                     var tempPath = Path.Combine(destinationDir, subdir.Name);
                     Logger.Log(LogLevel.Info, $"Copying {subdir.Name} from {tempPath}");
-                    CopyFolder(subdir.FullName, tempPath, true, overwrite);
+                    res &= CopyFolder(subdir.FullName, tempPath, true, overwrite);
                 }
                 catch (Exception)
                 {
@@ -113,7 +113,7 @@
                 }
 
             }
-            return true;
+            return res;
         }
 
         /// <summary>
@@ -196,6 +196,7 @@
         /// <returns>True, if files were correctly deleted</returns>
         public static bool DeleteFilesWithPattern(string parentDirectoryPath, string filePattern)
         {
+            var res = true;
             if (!Directory.Exists(parentDirectoryPath))
             {
                 Logger.Log(LogLevel.Error, $"Could not find {parentDirectoryPath}");
@@ -206,7 +207,7 @@
             {
                 try
                 {
-                    DeleteFile(directory);
+                    res &= DeleteFile(directory);
                     Logger.Log(LogLevel.Debug, $"File {directory} deleted");
                 
                 }
@@ -219,7 +220,7 @@
 
             Logger.Log(LogLevel.Info, $"Files from {parentDirectoryPath} deleted");
                 
-            return true;
+            return res;
         }
 
         /// <summary>
@@ -231,6 +232,7 @@
         /// <returns>True, if directories where correctly deleted</returns>
         public static bool DeleteDirectoriesWithPattern(string parentDirectoryPath, string directoryPattern, bool subdirectories = false)
         {
+            var res = true;
             var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             if (!Directory.Exists(parentDirectoryPath))
             {
@@ -242,7 +244,7 @@
             {
                 try
                 {
-                    DeleteDirectory(directory);
+                    res &= DeleteDirectory(directory);
                     Logger.Log(LogLevel.Debug, $"Directory {directory} deleted");
                 
 
@@ -257,7 +259,7 @@
             }
             Logger.Log(LogLevel.Info, $"Directories from {parentDirectoryPath} deleted");
                 
-            return true;
+            return res;
         }
 
         /// <summary>
