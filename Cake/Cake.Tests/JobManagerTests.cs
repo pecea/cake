@@ -16,6 +16,8 @@ namespace Cake.Tests
 
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("JobManagerMethods")]
         public void InnerExceptionDebugging()
         {
             new Job("t2").Does(() => { System.Console.WriteLine("test"); });
@@ -30,6 +32,8 @@ namespace Cake.Tests
         }
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("JobManagerMethods")]
         [ExpectedException(typeof(JobException), "A dependency on a non existing task was specified.")]
         public void RunTaskWithDependenciesResultShouldThrowWhenDependencyIsNotFound()
         {
@@ -39,6 +43,8 @@ namespace Cake.Tests
 
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("JobManagerMethods")]
         [ExpectedException(typeof(JobException), "Running a non existing task was ordered.")]
         public void SetDefaultShouldThrowWhenTaskIsNotFound()
         {
@@ -46,6 +52,8 @@ namespace Cake.Tests
         }
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("JobManagerMethods")]
         [ExpectedException(typeof(JobException), "Running a task with a circular dependency was ordered.")]
         public void SetDefaultShouldThrowWhenTheresDependencyCycle()
         {
@@ -56,6 +64,8 @@ namespace Cake.Tests
         }
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("JobManagerMethods")]
         [ExpectedException(typeof (JobException))]
         public void SetDefaultShouldThrowWhenTaskIsSelfDependent()
         {
@@ -63,6 +73,8 @@ namespace Cake.Tests
         }
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("JobManagerMethods")]
         public void TasksShouldBeExecutedInRightOrderTriangle()
         {
             var counter = 0;
@@ -91,6 +103,8 @@ namespace Cake.Tests
         }
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("JobManagerMethods")]
         public void TasksShouldBeExecutedInRightOrderDiamond()
         {
             var counter = 0;

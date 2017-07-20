@@ -8,9 +8,11 @@ namespace Cake.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    internal class RoslynEngineTests
+    public class RoslynEngineTests
     {
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("RoslynEngineMethods")]
         [ExpectedException(typeof(Exception), AllowDerivedTypes = true)]
         public void ShouldThrowWhenTypeCannotBeFound()
         {
@@ -21,6 +23,8 @@ namespace Cake.Tests
         }
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("RoslynEngineMethods")]
         [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowWhenNonExistingScriptIsSpecified()
         {
@@ -31,6 +35,8 @@ namespace Cake.Tests
         }
 
         [TestMethod]
+        [TestCategory("CakeMethods")]
+        [TestCategory("RoslynEngineMethods")]
         [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript()
         {

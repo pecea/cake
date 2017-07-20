@@ -9,6 +9,7 @@
     public class CommonMethodsTests
     {
         [TestMethod]
+        [TestCategory("CommonMethods")]
         public void PathParserGetFilePathsShouldReturnFilesOnly()
         {
             var files = @"..\..\Test Files\**\*".GetFilePaths();
@@ -17,12 +18,11 @@
             {
                 Assert.IsFalse(Directory.Exists(file));
                 Assert.IsTrue(File.Exists(file));
-                //Assert.AreEqual(false, Directory.Exists(file));
-                //Assert.AreEqual(true, File.Exists(file));
             }
         }
 
         [TestMethod]
+        [TestCategory("CommonMethods")]
         public void PathParserGetDirectoriesPathsShouldReturnDirectoriesOnly()
         {
             var directories = @"..\..\Test Files\**".GetDirectoriesPaths();
@@ -31,12 +31,11 @@
             {
                 Assert.IsFalse(File.Exists(directory));
                 Assert.IsTrue(Directory.Exists(directory));
-                //Assert.AreEqual(false, File.Exists(directory));
-                //Assert.AreEqual(true, Directory.Exists(directory));
             }
         }
 
         [TestMethod]
+        [TestCategory("CommonMethods")]
         public void PathParserGetDirectoriesPathsShouldReturnZeroItemsIfNonExistingPathIsSpecified()
         {
             var result = @"..\..\Test Files\**\Non existing folder\*".GetDirectoriesPaths();
@@ -44,6 +43,7 @@
         }        
         
         [TestMethod]
+        [TestCategory("CommonMethods")]
         public void PathParserGetFilesPathsShouldReturnZeroItemsIfNonExistingPathIsSpecified()
         {
             var result = @"..\..\Test Files\**\Non existing folder\*".GetFilePaths();
@@ -51,6 +51,7 @@
         }
 
         [TestMethod]
+        [TestCategory("CommonMethods")]
         public void PathParserGetDirectoriesPathsShouldReturnZeroItemsIfInvalidPathIsSpecified()
         {
             var result = @":\?.:\**".GetDirectoriesPaths();
@@ -58,6 +59,7 @@
         }
 
         [TestMethod]
+        [TestCategory("CommonMethods")]
         public void PathParserGetFilesPathsShouldReturnZeroItemsIfInvalidPathIsSpecified()
         {
             var result = @":\?.:\*.*".GetFilePaths();

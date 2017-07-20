@@ -116,12 +116,23 @@
             {
                 throw new JobException($"Could not find the definition of Job \"{name}\".", e.Source);
             }
-            if(job.Status == JobStatus.Pending)
-                throw new JobException(
-                        $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
-            if (job.Status == JobStatus.Failed)
-                return false;
-
+            switch(job.Status)
+            {
+                case JobStatus.Pending:
+                    throw new JobException(
+                       $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
+                case JobStatus.Failed:
+                    return false;
+                case JobStatus.Done:
+                    return true;
+            }
+            //if (job.Status == JobStatus.Pending)
+            //    throw new JobException(
+            //            $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
+            //if (job.Status == JobStatus.Failed)
+            //    return false;
+            //if (job.Status == JobStatus.Done)
+            //    return true;
             job.Status = JobStatus.Pending;
             foreach (var dependency in job.Dependencies ?? new List<string>())
             {
