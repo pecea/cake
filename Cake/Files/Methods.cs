@@ -21,7 +21,7 @@
         /// <param name="overwrite">If true, files in destination directory are overwriten. Default value is false.</param>
         /// <param name="cleanDestinationDirectory">If true, all files in destination directory are deleted before the operation. Default value is false.</param>
         /// <returns>True, if copying succedeed</returns>
-        public static bool CopyFolder(string sourceDir, string destinationDir, bool copySubDirs = true, bool overwrite = false, bool cleanDestinationDirectory = false)
+        public static bool CopyDirectory(string sourceDir, string destinationDir, bool copySubDirs = true, bool overwrite = false, bool cleanDestinationDirectory = false)
         {
             var res = true;
             DirectoryInfo dir;
@@ -103,7 +103,7 @@
                 {
                     var tempPath = Path.Combine(destinationDir, subdir.Name);
                     Logger.Log(LogLevel.Info, $"Copying {subdir.Name} from {tempPath}");
-                    res &= CopyFolder(subdir.FullName, tempPath, true, overwrite);
+                    res &= CopyDirectory(subdir.FullName, tempPath, true, overwrite);
                 }
                 catch (Exception)
                 {
@@ -393,13 +393,13 @@
         /// Look for a file in different folders and return the full path where it is found
         /// </summary>
         /// <param name="filename">Filename</param>
-        /// <param name="folders">Path to folders for search</param>
+        /// <param name="directories">Path to folders for search</param>
         /// <returns>Paths to file, if any found, filename otherwise</returns>
-        public static string[] LookForFileInFolders(string filename, params string[] folders)
+        public static string[] LookForFileInDirectories(string filename, params string[] directories)
         {
             try
             {
-                var paths = folders.Select(folder => Path.Combine(folder, filename)).Where(File.Exists).ToList();
+                var paths = directories.Select(directory => Path.Combine(directory, filename)).Where(File.Exists).ToList();
                 return paths.Count > 0 ? paths.ToArray() : new[] { filename };
             }
             catch (Exception)

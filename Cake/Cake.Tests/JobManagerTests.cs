@@ -1,36 +1,24 @@
-﻿using System;
-
-namespace Cake.Tests
+﻿namespace Cake.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
+    /// <summary>
+    /// Test class for JobManager methods
+    /// </summary>
     [TestClass]
     public class JobManagerTests
     {
+        /// <summary>
+        /// Initialize method to clean up jobs
+        /// </summary>
         [TestInitialize]
         public void ClearTaskManagersTasks()
         {
             JobManager.ClearJobs();
         }
-
-
-        [TestMethod]
-        [TestCategory("CakeMethods")]
-        [TestCategory("JobManagerMethods")]
-        public void InnerExceptionDebugging()
-        {
-            new Job("t2").Does(() => { System.Console.WriteLine("test"); });
-
-            new Job("t1").DependsOn("t2").Does(() => {
-                var i = 1;
-                var j = 2;
-                System.Console.WriteLine((i + j).ToString());
-            });
-
-            JobManager.SetDefault("t1");
-        }
-
+        /// <summary>
+        /// Test method for non-existing dependency
+        /// </summary>
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("JobManagerMethods")]
@@ -41,7 +29,9 @@ namespace Cake.Tests
             JobManager.SetDefault("test task");
         }
 
-
+        /// <summary>
+        /// Test method for non-existing task
+        /// </summary>
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("JobManagerMethods")]
@@ -50,7 +40,9 @@ namespace Cake.Tests
         {
             JobManager.SetDefault("non existing task");
         }
-
+        /// <summary>
+        /// Test method for circular dependency
+        /// </summary>
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("JobManagerMethods")]
@@ -62,7 +54,9 @@ namespace Cake.Tests
 
             JobManager.SetDefault("first");
         }
-
+        /// <summary>
+        /// Test method for self-dependency
+        /// </summary>
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("JobManagerMethods")]
@@ -71,7 +65,9 @@ namespace Cake.Tests
         {
             JobManager.SetDefault(new Job("first").DependsOn("first"));
         }
-
+        /// <summary>
+        /// Test method for triangle dependency
+        /// </summary>
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("JobManagerMethods")]
@@ -86,14 +82,14 @@ namespace Cake.Tests
                     Assert.AreEqual(3, ++counter);
                 });
 
-            var second = new Job("second")
+            new Job("second")
                 .DependsOn("first")
                 .Does(() =>
                 {
                     Assert.AreEqual(2, ++counter);
                 });
 
-            var first = new Job("first")
+            new Job("first")
                 .Does(() =>
                 {
                     Assert.AreEqual(1, ++counter);
@@ -101,14 +97,16 @@ namespace Cake.Tests
 
             JobManager.SetDefault(third);
         }
-
+        /// <summary>
+        /// Test method for diamond dependency
+        /// </summary>
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("JobManagerMethods")]
         public void TasksShouldBeExecutedInRightOrderDiamond()
         {
             var counter = 0;
-            Action counterAdd = () => counter++;
+            void CounterAdd() => counter++;
 
             var top = new Job("top")
                 .DependsOn("middle 1", "middle 2", "middle 3", "middle 4")
@@ -119,21 +117,21 @@ namespace Cake.Tests
 
             new Job("middle 1")
                 .DependsOn("middle 2", "bottom")
-                .Does(counterAdd);            
+                .Does(CounterAdd);            
             
             new Job("middle 2")
                 .DependsOn("middle 3", "bottom")
-                .Does(counterAdd);            
+                .Does(CounterAdd);            
             
             new Job("middle 3")
                 .DependsOn("middle 4", "bottom")
-                .Does(counterAdd);            
+                .Does(CounterAdd);            
             
             new Job("middle 4")
                 .DependsOn("bottom")
-                .Does(counterAdd);
+                .Does(CounterAdd);
 
-            var bottom = new Job("bottom")
+            new Job("bottom")
                 .Does(() =>
                 {
                     Assert.AreEqual(1, ++counter);

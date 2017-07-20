@@ -1,4 +1,4 @@
-new Task("t1").Does(() =>
+new Job("t1").Does(() =>
 {
 	UnknownType x;
 });
