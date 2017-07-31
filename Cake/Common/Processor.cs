@@ -15,7 +15,7 @@ namespace Common
         /// <param name="arguments">Arguments to go with command</param>
         /// <param name="workingDirectory">Directory on which command should run</param>
         /// <returns></returns>
-        public static bool RunProcess(string command, string arguments = "", string workingDirectory = ".")
+        public static (bool, string, string) RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
@@ -67,21 +67,21 @@ namespace Common
                 if (process.ExitCode == 0)
                 {
                     Logger.Log(LogLevel.Debug, "Process run successfully!");
-                    return true;
+                    return (true, outEnd, errEnd);
                 }
                 Logger.Log(LogLevel.Debug, "Process exited with an error!");
-                return false;
+                return (false, outEnd, errEnd);
             }
         }
 
         /// <summary>
-        /// Encloses a string with quotes if it contains any whitespace characters.
+        /// Encloses a string with quotes.
         /// </summary>
         /// <param name="arg">String to be modified.</param>
         /// <returns>String enclosed with quotes</returns>
         public static string QuoteArgument(string arg)
         {
-            return arg.Contains(" ") ? $@"""{arg}""" : arg;
+            return $@"""{arg}""";
         }
     }
 }

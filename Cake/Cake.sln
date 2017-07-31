@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5311970D-8E70-4432-BFEC-7418C5E3713E}"
 	ProjectSection(SolutionItems) = preProject
@@ -66,6 +66,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fail", "Fail\Fail.csproj", "{41E8BA8D-AA9C-4CAF-A9A6-2C0D48C3D1CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Success", "Success\Success.csproj", "{25A9A168-26EA-4533-9277-DD97B61CE7E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Success2", "Success2\Success2.csproj", "{39085761-621A-4C27-A5CC-AAF40BCF2AB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit", "XUnit\XUnit.csproj", "{288D7B9C-3A1F-4CA9-8DF1-FDA3AB4FC8BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Tests", "XUnit.Tests\XUnit.Tests.csproj", "{6186F5B5-05D8-4BD5-B541-332534C9DE9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fail2", "Fail2\Fail2.csproj", "{1A9361E4-777A-41C5-9EE3-35A0696E661F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -169,6 +177,22 @@ Global
 		{25A9A168-26EA-4533-9277-DD97B61CE7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25A9A168-26EA-4533-9277-DD97B61CE7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25A9A168-26EA-4533-9277-DD97B61CE7E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39085761-621A-4C27-A5CC-AAF40BCF2AB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39085761-621A-4C27-A5CC-AAF40BCF2AB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39085761-621A-4C27-A5CC-AAF40BCF2AB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39085761-621A-4C27-A5CC-AAF40BCF2AB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{288D7B9C-3A1F-4CA9-8DF1-FDA3AB4FC8BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{288D7B9C-3A1F-4CA9-8DF1-FDA3AB4FC8BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{288D7B9C-3A1F-4CA9-8DF1-FDA3AB4FC8BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{288D7B9C-3A1F-4CA9-8DF1-FDA3AB4FC8BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6186F5B5-05D8-4BD5-B541-332534C9DE9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6186F5B5-05D8-4BD5-B541-332534C9DE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6186F5B5-05D8-4BD5-B541-332534C9DE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6186F5B5-05D8-4BD5-B541-332534C9DE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A9361E4-777A-41C5-9EE3-35A0696E661F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A9361E4-777A-41C5-9EE3-35A0696E661F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A9361E4-777A-41C5-9EE3-35A0696E661F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A9361E4-777A-41C5-9EE3-35A0696E661F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -185,5 +209,6 @@ Global
 		{7FE55F6F-8ABD-4ED0-B409-90BE6D34EFEC} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 		{C236575B-7589-4568-AE44-4E75A93BB79B} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 		{D4FDDA89-1CD5-42CD-BF94-99A10C891D2B} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
+		{6186F5B5-05D8-4BD5-B541-332534C9DE9E} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 	EndGlobalSection
 EndGlobal

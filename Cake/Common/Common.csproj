@@ -61,6 +61,7 @@
     <Compile Include="Node.cs" />
     <Compile Include="PathParser.cs" />
     <Compile Include="Processor.cs" />
+    <Compile Include="ProcessResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
+﻿using Common;
+using System;
 using System.IO;
 
 namespace NUnit
@@ -96,7 +92,14 @@ namespace NUnit
                     parameters += $" --where \"{conditions}\"";
                 if(!string.IsNullOrEmpty(config))
                     parameters += $" --config={config}";
-                return Processor.RunProcess(FullPathExe, parameters);
+                var result = Processor.RunProcess(FullPathExe, parameters);
+                //(bool success, string output, string error) = Processor.RunProcess(FullPathExe, parameters);
+                if (!string.IsNullOrEmpty(result.Item2))
+                    Logger.Log(LogLevel.Debug, "Tests output: \n");
+                if (!string.IsNullOrEmpty(result.Item3))
+                    Logger.Log(LogLevel.Debug, "NUnit process error: \n");
+
+                return result.Item1;
             }
             catch (Exception e)
             {
@@ -175,7 +178,14 @@ namespace NUnit
                     parameters += $" --x86";
                 if (disposeRunners.HasValue)
                     parameters += $" --dispose-runners";
-                return Processor.RunProcess(FullPathExe, parameters);
+                var result = Processor.RunProcess(FullPathExe, parameters);
+                //(bool success, string output, string error) = Processor.RunProcess(FullPathExe, parameters);
+                if (!string.IsNullOrEmpty(result.Item2))
+                    Logger.Log(LogLevel.Debug, "Tests output: \n");
+                if (!string.IsNullOrEmpty(result.Item3))
+                    Logger.Log(LogLevel.Debug, "NUnit process error: \n");
+
+                return result.Item1;
             }
             catch (Exception e)
             {
