@@ -3,4 +3,4 @@ new Job("t1").Does(() => {
     Methods.ZipFiles("NewZipFile", "log.txt");
 });
 
-SetDefault("t1");
+JobManager.SetDefault("t1");

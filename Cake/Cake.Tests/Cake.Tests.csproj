@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Test Files\ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx" />
     <None Include="Test Files\ShouldThrowWhenTypeCannotBeFound.csx" />
   </ItemGroup>
