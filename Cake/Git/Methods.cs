@@ -1,22 +1,54 @@
 ﻿namespace Git
 {
+    using Common;
     using LibGit2Sharp;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using LogLevel = Common.LogLevel;
 
     public static class Methods
     {
         public static string RepositoryPath { get; set; }
+        public static string UserName { get; set; }
+        public static string UserEmail { get; set; }
 
-        public static bool Commit()
+        public static bool CommitAll(string message) => Commit(message, DiffTargets.WorkingDirectory);
+
+        public static bool CommitAdded(string message) => Commit(message, DiffTargets.Index);
+
+        public static bool CommitStaged(string message) => Commit(message, mode: null);
+
+        /// <summary>
+        /// Performs a commit.
+        /// </summary>
+        /// <param name="message">The commit message.</param>
+        /// <param name="mode">
+        /// Commit mode.
+        /// <para>Set to <see cref="DiffTargets.Index"/> to commit all added (to index) and modified files.</para>
+        /// <para>Set to <see cref="DiffTargets.WorkingDirectory"/> to commit all new and modified files.</para>
+        /// <para>Set to null to commit only staged files.</para>
+        /// </param>
+        /// <returns></returns>
+        public static bool Commit(string message, DiffTargets? mode)
         {
             if (string.IsNullOrEmpty(RepositoryPath))
                 throw new InvalidOperationException("Set RepositoryPath before interacting with the repository.");
 
             using (var repo = new Repository(RepositoryPath))
             {
-                throw new NotImplementedException();
+                if (mode.HasValue)
+                    foreach (TreeEntryChanges c in repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, mode.Value))
+                    {
+                        Logger.Log(LogLevel.Info, $"Staging {c.Status} {c.Path}");
+                        Commands.Stage(repo, c.Path);
+                    }
+
+                var author = new Signature(UserName, UserEmail, DateTime.Now);
+                var committer = author;
+
+                var commit = repo.Commit(message, author, committer);
+                Logger.Log(LogLevel.Info, $"Commit {commit.Id} created.");
             }
 
             return true;
@@ -25,13 +57,15 @@
         public static bool Fetch(string username = "", string password = "")
         {
             string logMessage = "";
-            var options = new FetchOptions();
-            options.CredentialsProvider = new LibGit2Sharp.Handlers.CredentialsHandler((url, usernameFromUrl, types) =>
-                new UsernamePasswordCredentials
-                {
-                    Username = username,
-                    Password = password
-                });
+            var options = new FetchOptions
+            {
+                CredentialsProvider = new LibGit2Sharp.Handlers.CredentialsHandler((url, usernameFromUrl, types) =>
+                    new UsernamePasswordCredentials
+                    {
+                        Username = username,
+                        Password = password
+                    })
+            };
 
             using (var repo = new Repository(RepositoryPath))
             {
@@ -43,6 +77,37 @@
             }
 
             Console.WriteLine(logMessage);
+
+            return true;
+        }
+
+        public static bool Reset()
+        {
+            using (var repo = new Repository(RepositoryPath))
+            {
+                repo.Reset(ResetMode.Hard);
+            }
+
+            return true;
+        }
+
+        public static bool Diff()
+        {
+            // https://stackoverflow.com/questions/3689838/difference-between-head-working-tree-index-in-git
+            using (var repo = new Repository(RepositoryPath))
+            {
+                Console.WriteLine("Index vs HEAD:");
+                foreach (TreeEntryChanges c in repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.Index))
+                {
+                    Console.WriteLine($"{c.Path} was {c.Status}");
+                }
+
+                Console.WriteLine("Workspace vs HEAD:");
+                foreach (TreeEntryChanges c in repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.WorkingDirectory))
+                {
+                    Console.WriteLine($"{c.Path} was {c.Status}");
+                }
+            }
 
             return true;
         }
