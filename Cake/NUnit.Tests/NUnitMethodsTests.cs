@@ -1,8 +1,9 @@
 ﻿namespace NUnit.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Microsoft.VisualStudio.QualityTools;
-
+    /// <summary>
+    /// Test class for Nunit methods
+    /// </summary>
     [TestClass]
     public class MsTestMethodsTests
     {
@@ -10,30 +11,47 @@
         //private const string PathToFailingTestLibrary = @"../../../External/Fail.dll";
         private const string PathToTestLibrary = @"../../../Success/bin/debug/Success.dll";
         private const string PathToFailingTestLibrary = @"../../../Fail/bin/debug/Fail.dll";
+        /// <summary>
+        /// Test method for running Nunit tests
+        /// </summary>
         [TestMethod]
+        [TestCategory("NUnitMethods")]
         public void ShouldReturnSuccessIfValidTestPathIsSpecified()
         {
             Assert.IsTrue(Methods.RunTests(PathToTestLibrary));
         }
-
+        /// <summary>
+        /// Test method for running Nunit test with invalid path
+        /// </summary>
         [TestMethod]
+        [TestCategory("NUnitMethods")]
         public void ShouldReturnFailureIfInvalidTestPathIsSpecified()
         {
             Assert.IsFalse(Methods.RunTests(@"X:\Invalid\Path\To\tests.dll"));
         }
-
+        /// <summary>
+        /// Test method for running Nunit tests that are not passing
+        /// </summary>
         [TestMethod]
+        [TestCategory("NUnitMethods")]
         public void ShouldReturnFailureIfNotPassingTests()
         {
             Assert.IsFalse(Methods.RunTests(PathToFailingTestLibrary));
         }
-
+        /// <summary>
+        /// Test method for running only "first" category Nunit tests
+        /// </summary>
         [TestMethod]
+        [TestCategory("NUnitMethods")]
         public void ShouldRunOnlyFirstCategoryTests()
         {
             Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "cat == first"));
         }
+        /// <summary>
+        /// Test method for running only "Priority = High" Nunit tests
+        /// </summary>
         [TestMethod]
+        [TestCategory("NUnitMethods")]
         public void ShouldRunOnlyHighPriorityTests()
         {
             Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "Priority == High"));

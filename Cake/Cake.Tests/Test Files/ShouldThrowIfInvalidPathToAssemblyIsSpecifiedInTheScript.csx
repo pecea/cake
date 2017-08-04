@@ -1,5 +1,5 @@
 // cake using "Invalid path to an assembly";
 
-new Task("t1").Does(() =>
+new Job("t1").Does(() =>
 {
 });
