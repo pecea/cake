@@ -94,22 +94,26 @@
         public static bool Diff()
         {
             // https://stackoverflow.com/questions/3689838/difference-between-head-working-tree-index-in-git
+
             using (var repo = new Repository(RepositoryPath))
             {
-                Console.WriteLine("Index vs HEAD:");
-                foreach (TreeEntryChanges c in repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.Index))
-                {
-                    Console.WriteLine($"{c.Path} was {c.Status}");
-                }
-
-                Console.WriteLine("Workspace vs HEAD:");
-                foreach (TreeEntryChanges c in repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.WorkingDirectory))
-                {
-                    Console.WriteLine($"{c.Path} was {c.Status}");
-                }
+                Diff(repo, DiffTargets.Index);
+                Diff(repo, DiffTargets.WorkingDirectory);
             }
 
             return true;
+        }
+
+        private static void Diff(Repository repo, DiffTargets mode)
+        {
+            Logger.Log(LogLevel.Info, $"{mode} vs HEAD:");
+
+            var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, mode);
+            foreach (TreeEntryChanges c in changes)
+                Logger.Log(LogLevel.Info, $"{c.Path} was {c.Status.ToString().ToLower()}.");
+
+            if (!changes.Any())
+                Logger.Log(LogLevel.Info, "No changes.");
         }
 
         public static bool Tag(string v)
