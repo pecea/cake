@@ -1,6 +1,8 @@
-#load script3.csx
+//cake load "C:\Users\ErnestPrzestrzelski\Desktop\Ernest\priv\Backup\Praca Inzynierska\cake\Cake\scripts\script3.csx"
 
 
 var a = new MyClass();
 
-System.Console.WriteLine(MyClass.PropertyX);
+//a.PrintNumber();
+//a.Print();
+System.Console.WriteLine(a.AccessX());

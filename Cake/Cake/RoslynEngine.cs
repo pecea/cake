@@ -25,8 +25,9 @@ namespace Cake
         {
             try
             {
-                CSharpScript.RunAsync(File.ReadAllText(filePath), LoadAssemblies(filePath)).Wait();
-                //Session.ExecuteFile(filePath);
+                //var script=CSharpScript.Create(File.ReadAllText(@"../../../scripts/script3.csx")).ContinueWith(File.ReadAllText(@"../../../scripts/script4.csx"));
+                //script.RunAsync().Wait();
+                CSharpScript.RunAsync(LoadReferencedScripts(filePath), LoadAssemblies(filePath)).Wait();
             }
             catch (JobException)
             {
@@ -39,6 +40,28 @@ namespace Cake
             }
         }
 
+
+        private static string LoadReferencedScripts(string filePath)
+        {
+            var scriptRegex = new Regex(@"^//\s*cake load ""([a-zA-Z0-9\-\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";*");
+            var otherScripts = string.Empty;
+            using (var streamReader = new StreamReader(filePath, Encoding.GetEncoding("ISO-8859-2")))
+            {
+                string line;
+                while ((line = streamReader.ReadLine()) != null)
+                {
+                    var match2 = scriptRegex.Match(line);
+                    if (!match2.Success)
+                        continue;
+                    var scriptPath = ExtractScriptPath(match2.Groups[0].Value);
+                    otherScripts = string.Concat(otherScripts, $"{File.ReadAllText(scriptPath)}\n");
+
+                    Logger.Log(LogLevel.Debug,
+                        $"Script \"{scriptPath}\" referenced. Adding the code from the referenced script to the main script.");
+                }
+            }
+            return string.Concat(otherScripts, File.ReadAllText(filePath));
+        }
         private static ScriptOptions LoadAssemblies(string filePath)
         {
             var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\-\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";*");
@@ -76,7 +99,6 @@ namespace Cake
                 }
             }
             assemblies.Add(typeof(Job).Assembly);
-            //assemblies.Add(typeof(JobManager).Assembly);
             assemblies.Add(typeof(Logger).Assembly);
             namespaceStrings.Add(typeof(Job).Namespace);
             namespaceStrings.Add(typeof(JobManager).Namespace);
@@ -95,6 +117,19 @@ namespace Cake
                     .TrimStart('"')
                     .TrimEnd('"');
         }
+
+        private static string ExtractScriptPath(string loadDirective)
+        {
+            return loadDirective
+                .TrimStart('/')
+                .TrimEnd(';')
+                .Trim()
+                .Replace("cake load ", string.Empty)
+                .TrimStart('"')
+                .TrimEnd('"');
+        }
+
+
 
         private static bool IsStatic(this Type type)
         {

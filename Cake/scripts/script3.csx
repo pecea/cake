@@ -1,15 +1,13 @@
+
+public static void PrintX(int x) {System.Console.WriteLine(x);}
+
 public class MyClass {
-	public int PropertyX {get;set;}
+	public int PropertyX = 10;
 	
-	public MyClass(){
-		PropertyX = 10;
-	}
+	public void PrintNumber() {PrintX(PropertyX);}
+	
+	public void Print() {System.Console.WriteLine(PropertyX);}
+	
+	public int AccessX() {return PropertyX;}
 
 }
-
-
-
-
-var a = new MyClass();
-
-System.Console.WriteLine(a.PropertyX);

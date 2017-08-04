@@ -44,7 +44,7 @@ namespace XUnit.Tests
         [TestCategory("XUnitMethods")]
         public void ShouldRunOnlyFirstCategoryTests()
         {
-            Assert.IsTrue(Methods.RunTests(PathToTestLibrary));//, "-trait ""Category=first"));
+            Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "Category=first"));//, "-trait ""Category=first"));
         }
     }
 }

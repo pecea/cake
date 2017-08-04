@@ -123,7 +123,7 @@
         /// <param name="destName">Path to destination</param>
         /// <param name="overwrite">If true, file in destination directory is overwritten. Default value is true.</param>
         /// <returns>True, if file was correctly copied</returns>
-        public static bool CopyFile(string sourceName, string destName, bool overwrite = true) 
+        public static bool CopyFile(string sourceName, string destName, bool overwrite = true) //TODO: check whether overwrite works - probably when it's set to false, but there is already a file with the name of source file, we get an exception
         {
             if (!File.Exists(sourceName))
             {
@@ -393,7 +393,7 @@
         /// Look for a file in different folders and return the full path where it is found
         /// </summary>
         /// <param name="filename">Filename</param>
-        /// <param name="directories">Path to folders for search</param>
+        /// <param name="directories">Path to folders to search files in</param>
         /// <returns>Paths to file, if any found, filename otherwise</returns>
         public static string[] LookForFileInDirectories(string filename, params string[] directories)
         {
@@ -404,7 +404,7 @@
             }
             catch (Exception)
             {
-                Logger.Log(LogLevel.Warn, "Incorrect filename or folderPaths");
+                Logger.Log(LogLevel.Warn, "Incorrect filename or directories paths");
                 
                 return new[] {filename};
             }

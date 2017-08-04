@@ -1,6 +1,7 @@
 ﻿using Common;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace NUnit
 {
@@ -65,14 +66,14 @@ namespace NUnit
         //        return false;
         //    }
         //}
-#endregion
+        #endregion
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="assemblyPaths">Paths should be separated by space</param>
+        /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files. Paths should be separated by comma</param>
         /// <param name="conditions">Conditions may specify test names, classes, methods, categories or properties comparing them to actual values with the operators ==, !=, =~ and !~</param>
         /// <param name="config">Name of a project configuration to load (e.g. Debug) </param>
-        /// <returns></returns>
+        /// <returns>True if nunit tests process run successfully, otherwise false</returns>
         public static bool RunTests(string assemblyPaths, string conditions = null, string config = null)
         {
             if (!File.Exists(FullPathExe))
@@ -82,12 +83,13 @@ namespace NUnit
             }
             try
             {
-                if (string.IsNullOrEmpty(assemblyPaths) || !File.Exists(assemblyPaths))
+                var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
+                if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
                     Logger.Log(LogLevel.Error, $"Incorrect test assemby paths!\n");
                     return false;
                 }
-                var parameters = $"--noh {assemblyPaths}";
+                var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
                 if (!string.IsNullOrEmpty(conditions))
                     parameters += $" --where \"{conditions}\"";
                 if(!string.IsNullOrEmpty(config))
@@ -110,7 +112,7 @@ namespace NUnit
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="assemblyPaths">Paths should be separated by space</param>
+        /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files. </param>
         /// <param name="conditions">Conditions may specify test names, classes, methods, categories or properties comparing them to actual values with the operators ==, !=, =~ and !~</param>
         /// <param name="config">Name of a project configuration to load (e.g. Debug) </param>
         /// <param name="workingDirectoryPath">Path of the directory to use for output files.</param>
@@ -128,7 +130,7 @@ namespace NUnit
         /// <param name="frameworkVersion">Framework type/version to use for tests. (e.g.: mono, net-4.5, v4.0, 2.0, mono-4.0)</param>
         /// <param name="runIn32Bit">Run tests in a 32-bit process on 64-bit systems.</param>
         /// <param name="disposeRunners">Dispose each test runner after it has finished running its tests</param>
-        /// <returns></returns>
+        /// <returns>True if nunit tests process run successfully, otherwise false</returns>
         public static bool RunTestsWithOptions(string assemblyPaths, string conditions = null, string config = null, string workingDirectoryPath = null, string outputPath = null, string errorPath = null, bool? stopOnError = null, bool? skipNonAssemblies = null, bool? noResult = null, string verbosity = null, string timeout = null, bool? shadowcopy = null, string processIsolation = null, string numberOfAgents = null, string domainIsolation = null, string frameworkVersion = null, bool? runIn32Bit = null, bool? disposeRunners = null)
         {
             if (!File.Exists(FullPathExe))
@@ -138,12 +140,13 @@ namespace NUnit
             }
             try
             {
-                if (string.IsNullOrEmpty(assemblyPaths) || !File.Exists(assemblyPaths))
+                var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
+                if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
                     Logger.Log(LogLevel.Error, $"Incorrect test assemby paths!\n");
                     return false;
                 }
-                var parameters = $"--noh {assemblyPaths}";
+                var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
                 if (!string.IsNullOrEmpty(conditions))
                     parameters += $" --where={conditions}";
                 if (!string.IsNullOrEmpty(config))
