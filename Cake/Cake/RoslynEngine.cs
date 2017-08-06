@@ -25,8 +25,6 @@ namespace Cake
         {
             try
             {
-                //var script=CSharpScript.Create(File.ReadAllText(@"../../../scripts/script3.csx")).ContinueWith(File.ReadAllText(@"../../../scripts/script4.csx"));
-                //script.RunAsync().Wait();
                 CSharpScript.RunAsync(LoadReferencedScripts(filePath), LoadAssemblies(filePath)).Wait();
             }
             catch (JobException)
