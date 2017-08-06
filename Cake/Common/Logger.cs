@@ -43,7 +43,6 @@
 
         /// <summary>
         /// Logs an exception and its inner exceptions using the loggers specified in the App.config.
-        /// <seealso cref="LogInnerException"/>
         /// </summary>
         /// <param name="e">Exception to be logged.</param>
         /// <param name="logLevel"><see cref="LogLevel"/> of the log.</param>
@@ -51,22 +50,15 @@
         /// <param name="loggerName">Name of the logger to be used.</param>
         public static void LogException(LogLevel logLevel, Exception e, string message, [CallerMemberName] string loggerName = "Script")
         {
-            Log(logLevel,
-                $"{message}\n ExceptionType: {e.GetType()}. Exception source: {e.Source}.\n Exception message: {e.Message}\n", loggerName);
-            LogInnerException(logLevel, e, loggerName);
+            Log(logLevel, $"{message}\nType: {e.GetType()}.\nSource: {e.Source}.\nMessage: {e.Message}\nStack trace: {e.StackTrace}", loggerName);
+
+            if (e.InnerException != null)
+            {
+                var baseException = e.GetBaseException();
+                LogException(logLevel, baseException, "Base exception:");
+            }
         }
 
-        /// <summary>
-        /// Logs an inner exception with a predefined message using the loggers specified in the App.config.
-        /// </summary>
-        /// <param name="logLevel"><see cref="LogLevel"/> of the log.</param>
-        /// <param name="e">Exception to be logged.</param>
-        /// <param name="loggerName">Name of the logger to be used.</param>
-        private static void LogInnerException(LogLevel logLevel, Exception e, string loggerName)
-        {
-            for (e = e.InnerException; e != null; e = e.InnerException)
-                Log(logLevel, $"Inner exception source: {e.Source}. Inner exception message: {e.Message}", loggerName);
-        }
         /// <summary>
         /// 
         /// </summary>
