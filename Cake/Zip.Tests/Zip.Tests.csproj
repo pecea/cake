@@ -61,6 +61,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Files\Files.csproj">
+      <Project>{7530f94d-0387-492e-b784-a1d4eb22b26b}</Project>
+      <Name>Files</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Zip\Zip.csproj">
       <Project>{380c3769-b360-44f5-90a0-b4f1429cf49d}</Project>
       <Name>Zip</Name>

@@ -19,27 +19,28 @@
         /// Adds files and directories to .zip archive
         /// </summary>
         /// <param name="zipPathAndName">Path and name of the zip file</param>
-        /// <param name="filePaths">Paths to files and directories for zipping</param>
+        /// <param name="entriesPaths">Paths to files and directories for zipping</param>
         /// <returns>True, if zipping was successful, false otherwise</returns>
-        public static bool ZipFiles(string zipPathAndName, params string[] filePaths)
+        public static bool ZipFiles(string zipPathAndName, params string[] entriesPaths)
         {
             var paths = new List<string>();
-            foreach (var filePath in filePaths)
+            foreach (var filePath in entriesPaths)
             {
                 paths.AddRange(filePath.GetFilePaths());
                 paths.AddRange(filePath.GetDirectoriesPaths());
             }
-            filePaths = paths.ToArray();
+            //entriesPaths = paths.ToArray();
 
-            if (!CheckZipFilesArguments(filePaths, zipPathAndName)) return false;
+            if (!CheckZipFilesArguments(paths, zipPathAndName)) return false;
             try
             {
                 using (var zip = new ZipFile())
                 {
-                    foreach (var path in filePaths)
+                    foreach (var path in paths)
                     {
                         var attributes = File.GetAttributes(path);
-                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path, path);
+                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+                            zip.AddDirectory(path, (path.LastOrDefault() == '/' || path.LastOrDefault() == '\\') ? path.Remove(path.Length - 1).Replace('/', '\\').Split('\\').LastOrDefault() : path.Replace('/', '\\').Split('\\').LastOrDefault());
                         else zip.AddFile(path, "");
                     }
                     if (!string.IsNullOrEmpty(zipPathAndName) && zipPathAndName.Contains(".zip"))
@@ -62,17 +63,17 @@
             return true;
         }
 
-            /// <summary>
-            /// Adds files and directories to .zip archive
-            /// </summary>
-            /// <param name="zipPathAndName">Path and name of the zip file</param>
-            /// <param name="password">Archive password</param>
-            /// <param name="compression">Compression level. Possible values: none, best, fastest</param>
-            /// <param name="aes256Encryption">Flag indicating whether to use Aes256 encryption for the archive content</param>
-            /// <param name="useZip64">Flag indicating whether to use Zip64 when saving the archive (for large files)</param>
-            /// <param name="filePaths">Paths to files and directories for zipping</param>
-            /// <returns>True, if zipping was successful, false otherwise</returns>
-            public static bool ZipFilesWithOptions(string zipPathAndName, string password = null, string compression = null, bool aes256Encryption = false, bool useZip64 = false, params string[] filePaths)
+        /// <summary>
+        /// Adds files and directories to .zip archive
+        /// </summary>
+        /// <param name="zipPathAndName">Path and name of the zip file</param>
+        /// <param name="password">Archive password</param>
+        /// <param name="compression">Compression level. Possible values: none, best, fastest</param>
+        /// <param name="aes256Encryption">Flag indicating whether to use Aes256 encryption for the archive content</param>
+        /// <param name="useZip64">Flag indicating whether to use Zip64 when saving the archive (for large files)</param>
+        /// <param name="filePaths">Paths to files and directories for zipping</param>
+        /// <returns>True, if zipping was successful, false otherwise</returns>
+        public static bool ZipFilesWithOptions(string zipPathAndName, string password = null, string compression = null, bool aes256Encryption = false, bool useZip64 = false, params string[] filePaths)
         {
             var paths = new List<string>();
             foreach (var filePath in filePaths)
@@ -210,8 +211,22 @@
             {
                 using (var zip = ZipFile.Read(zipPathAndName))
                 {
-                    foreach(var entry in entriesToUpdate)
-                        zip.UpdateItem(entry);
+                    foreach (var entry in entriesToUpdate)
+                    {
+                        var mod = entry;
+                        var attributes = File.GetAttributes(mod);
+                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+                        {
+
+                            if (mod.LastOrDefault() == '/' || mod.LastOrDefault() == '\\')
+                                mod = mod.Remove(mod.Length - 1);
+                            mod = mod.Replace('\\', '/').Split('/').LastOrDefault();
+                            mod += '/';
+                            zip.UpdateItem(entry, mod);
+                        }
+                        else
+                            zip.UpdateItem(entry);
+                    }
                     zip.Save();
                 }
             }
@@ -226,10 +241,10 @@
         /// Renames a file in the arhcive
         /// </summary>
         /// <param name="zipPathAndName">Path and name of the archive</param>
-        /// <param name="oldName">Old name of the file to be renamed</param>
-        /// <param name="newName">New name of the file to be renamed</param>
+        /// <param name="oldName">Old name of the entry to be renamed</param>
+        /// <param name="newName">New name of the entry to be renamed</param>
         /// <returns></returns>
-        public static bool RenameFileInArchive(string zipPathAndName, string oldName, string newName)
+        public static bool RenameEntryInArchive(string zipPathAndName, string oldName, string newName)
         {
             try
             {
@@ -238,6 +253,11 @@
 
                     if(zip[oldName] != null)
                         zip[oldName].FileName = newName;
+                    else
+                    {
+                        
+                        Logger.Log(LogLevel.Warn, $"File {oldName} not found in the archive!");
+                    }
                     zip.Save();
                 }
             }
