@@ -84,12 +84,13 @@
             }
             catch (Exception e)
             {
-                Log(LogLevel.Warn, $"Invalid log level argument was specified. Valid log levels are: Debug, Info, Warn, Error and Fatal. Exception: {e}");
+                Log(LogLevel.Warn, $"Invalid log level argument was specified. Valid log levels are: Trace, Debug, Info, Warn, Error and Fatal. Exception: {e}");
                 return;
             }
 
             var logLevels = new List<NLog.LogLevel>
                                 {
+                                    NLog.LogLevel.Trace,
                                     NLog.LogLevel.Debug,
                                     NLog.LogLevel.Info,
                                     NLog.LogLevel.Warn,

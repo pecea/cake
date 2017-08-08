@@ -10,7 +10,7 @@
         {
             Arguments = new List<Argument>
                            {
-                               new Argument(new[] { "/runtask", "/r" }, true),
+                               new Argument(new[] { "/runjob", "/r" }, true),
                                new Argument(new[] { "/verbosity", "/v" }, true),
                                new Argument(new[] { "/help", "/h" }, false),
                                new Argument(new[] { "/script", "/s" }, true)
