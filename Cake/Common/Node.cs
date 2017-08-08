@@ -37,6 +37,7 @@
         /// <returns>Enumeration of paths found that match the wildcard.</returns>
         public IEnumerable<string> ResolveNode(GetPathsOptions option, int pathIndex = 0)
         {
+            Logger.Log(LogLevel.Trace, "ResolveNode method started");
             var result = new List<string>();
             var nextPathPart = SplitPath[pathIndex + 1];
 

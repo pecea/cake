@@ -118,7 +118,7 @@ namespace Zip.Tests
                 Directory.Delete(unzippedPath, true);
 
             Assert.IsTrue(Methods.ZipFiles(PathForTests, "../../Test Files/testZipFile.txt", "../../Test Files/testZipFile2.txt"));
-            Assert.IsTrue(Methods.DeleteEntriesFromArchive($"{PathForTests}.zip", "testZipFile.txt"));
+            Assert.IsTrue(Methods.DeleteEntries($"{PathForTests}.zip", "testZipFile.txt"));
             Assert.IsTrue(Methods.ExtractFiles($"{PathForTests}.zip", unzippedPath));
             var files = Files.Methods.GetFilesWithPattern(unzippedPath, "*", true);
             Assert.AreEqual(1, files?.Length);
@@ -146,7 +146,7 @@ namespace Zip.Tests
 
             Assert.IsTrue(Files.Methods.CopyFile("../../Test Files/testZipFile2.txt", testDirectory+"testZipFile2.txt"));
 
-            Assert.IsTrue(Methods.UpdateEntriesInArchive(PathForTests+".zip", testDirectory));
+            Assert.IsTrue(Methods.UpdateEntries(PathForTests+".zip", testDirectory));
             Assert.IsTrue(Methods.ExtractFiles(PathForTests + ".zip", unzippedPath, null, true));
             var filesAfterUpdate = Files.Methods.GetFilesWithPattern(unzippedPath, "*", true);
             CollectionAssert.DoesNotContain(filesBeforeUpdate, unzippedPath+"UpdateTest/testZipFile2.txt");
@@ -164,7 +164,7 @@ namespace Zip.Tests
             if(File.Exists(unzippedPath + "newName.txt"))
                 File.Delete(unzippedPath + "newName.txt");
             Assert.IsTrue(Methods.ZipFiles(PathForTests, "../../Test Files/testZipFile.txt"));
-            Assert.IsTrue(Methods.RenameEntryInArchive(PathForTests + ".zip", "testZipFile.txt", "newName.txt"));
+            Assert.IsTrue(Methods.RenameEntry(PathForTests + ".zip", "testZipFile.txt", "newName.txt"));
             Assert.IsTrue(Methods.ExtractFiles(PathForTests + ".zip", unzippedPath));
             var filesAfterRename = Files.Methods.GetFilesWithPattern(unzippedPath, "*");
             CollectionAssert.Contains(filesAfterRename, unzippedPath + "newName.txt");

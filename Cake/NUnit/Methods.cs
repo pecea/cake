@@ -70,26 +70,27 @@ namespace NUnit
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files. Paths should be separated by comma</param>
+        /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files.</param>
         /// <param name="conditions">Conditions may specify test names, classes, methods, categories or properties comparing them to actual values with the operators ==, !=, =~ and !~</param>
         /// <param name="config">Name of a project configuration to load (e.g. Debug) </param>
         /// <returns>True if nunit tests process run successfully, otherwise false</returns>
-        public static bool RunTests(string assemblyPaths, string conditions = null, string config = null)
+        public static bool RunTests(string conditions = null, string config = null, params string[] assemblyPaths)
         {
+            Logger.Log(LogLevel.Trace, "NUnit RunTests method started");
             if (!File.Exists(FullPathExe))
             {
-                Logger.Log(LogLevel.Error, "Nunit3-console.exe file not found.");
+                Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
                 return false;
             }
             try
             {
-                var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
-                if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
+                //var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
+                if (assemblyPaths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
-                    Logger.Log(LogLevel.Error, $"Incorrect test assemby paths!\n");
+                    Logger.Log(LogLevel.Warn, $"Incorrect test assemby paths!\n");
                     return false;
                 }
-                var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
+                var parameters = assemblyPaths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
                 if (!string.IsNullOrEmpty(conditions))
                     parameters += $" --where \"{conditions}\"";
                 if(!string.IsNullOrEmpty(config))
@@ -133,9 +134,10 @@ namespace NUnit
         /// <returns>True if nunit tests process run successfully, otherwise false</returns>
         public static bool RunTestsWithOptions(string assemblyPaths, string conditions = null, string config = null, string workingDirectoryPath = null, string outputPath = null, string errorPath = null, bool? stopOnError = null, bool? skipNonAssemblies = null, bool? noResult = null, string verbosity = null, string timeout = null, bool? shadowcopy = null, string processIsolation = null, string numberOfAgents = null, string domainIsolation = null, string frameworkVersion = null, bool? runIn32Bit = null, bool? disposeRunners = null)
         {
+            Logger.Log(LogLevel.Trace, "NUnit RunTestsWithOptions method started");
             if (!File.Exists(FullPathExe))
             {
-                Logger.Log(LogLevel.Error, "Nunit3-console.exe file not found.");
+                Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
                 return false;
             }
             try
@@ -143,7 +145,7 @@ namespace NUnit
                 var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
                 if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
-                    Logger.Log(LogLevel.Error, $"Incorrect test assemby paths!\n");
+                    Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
                     return false;
                 }
                 var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");

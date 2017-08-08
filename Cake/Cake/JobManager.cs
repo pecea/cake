@@ -24,20 +24,23 @@
         /// <param name="job">A <see cref="Job"/> to be added.</param>
         public static void RegisterJob(Job job)
         {
+            Logger.Log(LogLevel.Trace, "RegisterJob method started");
             _jobs.Add(job.Name, job);
             Logger.Log(LogLevel.Debug, $"Job \"{job.Name}\" registered.");
+            Logger.Log(LogLevel.Trace, "RegisterJob method finished");
         }
 
         /// <summary>
-        /// Runs <see cref="PerformJobWithDependenciesResult"/> recursive function 
+        /// Runs <see cref="PerformJobWithDependencies"/> recursive function 
         /// and resets <see cref="Job.Status"/> property of each <see cref="Job"/> from <see cref="_jobs"/> after it is finished.
         /// </summary>
         /// <param name="name">Name of a <see cref="Job"/> to be executed.</param>
         public static void SetDefault(string name)
         {
+            Logger.Log(LogLevel.Trace, "SetDefault method started");
             if (!string.IsNullOrEmpty(JobToRun)) name = JobToRun;
             //PerformJobWithDependencies(name);
-            var result = PerformJobWithDependenciesResult(name);
+            var result = PerformJobWithDependencies(name);
             foreach (var job in _jobs)
             {
                 job.Value.Status = JobStatus.NotVisited;
@@ -45,10 +48,12 @@
             if (!result)
                 throw new JobException($"Job {name} did not end succesfully!");
 
+            Logger.Log(LogLevel.Trace, "SetDefault method finished");
+
         }
 
         /// <summary>
-        /// Runs <see cref="PerformJobWithDependenciesResult"/> recursive function 
+        /// Runs <see cref="PerformJobWithDependencies"/> recursive function 
         /// and resets <see cref="Job.Status"/> property of each <see cref="Job"/> from <see cref="_jobs"/> after it is finished.
         /// </summary>
         /// <param name="job">A <see cref="Job"/> to be executed.</param>
@@ -63,7 +68,9 @@
         /// </summary>
         public static void ClearJobs()
         {
+            Logger.Log(LogLevel.Trace, "ClearJobs method started");
             _jobs = new Dictionary<string, Job>();
+            Logger.Log(LogLevel.Trace, "ClearJobs method finished");
         }
 
         //private static void PerformJobWithDependencies(string name)
@@ -105,8 +112,9 @@
         //}
 
 
-        private static bool PerformJobWithDependenciesResult(string name)
+        private static bool PerformJobWithDependencies(string name)
         {
+            Logger.Log(LogLevel.Trace, "PerformJobWithDependencies method started");
             Job job;
             try
             {
@@ -136,7 +144,7 @@
             job.Status = JobStatus.Pending;
             foreach (var dependency in job.Dependencies ?? new List<string>())
             {
-                if (PerformJobWithDependenciesResult(dependency)) continue;
+                if (PerformJobWithDependencies(dependency)) continue;
                 job.Status = JobStatus.Failed;
                 throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
             }
@@ -145,9 +153,11 @@
                 if (job.Execute())
                 {
                     job.Status = JobStatus.Done;
+                    Logger.Log(LogLevel.Trace, "PerformJobWithDependencies method finished successfully");
                     return true;
                 }
                 job.Status = JobStatus.Failed;
+                Logger.Log(LogLevel.Trace, "PerformJobWithDependencies method finished unsuccessfully");
                 return false;
             }
             catch (Exception e)

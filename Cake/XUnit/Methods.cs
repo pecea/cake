@@ -11,27 +11,28 @@ namespace XUnit
         /// <summary>
         /// Runs XUnit unit tests from the speciffied assemblyPath
         /// </summary>
-        /// <param name="assemblyPaths">Paths to .dlls with XUnit unit tests separated by commas</param>
+        /// <param name="assemblyPaths">Paths to .dlls with XUnit unit tests</param>
         /// <param name="traits">Attirubtes on test methods in a dictionary form of names and values</param>
         /// <param name="notraits">Attributes on test methods must not be a dictionary in a form of names and values</param>
         /// <returns>True if xunit tests process run successfully, otherwise false</returns>
-        public static bool RunTests(string assemblyPaths, string traits = null, string notraits = null)
+        public static bool RunTests(string traits = null, string notraits = null, params string[] assemblyPaths)
         {
+            Logger.Log(LogLevel.Trace, "XUnit RunTests method started");
             if (!File.Exists(FullPathExe))
             {
-                Logger.Log(LogLevel.Error, "xunit.console.exe file not found.");
+                Logger.Log(LogLevel.Warn, "xunit.console.exe file not found.");
                 return false;
             }
             try
             {
-                var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
-                if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
+                //var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
+                if (assemblyPaths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
-                    Logger.Log(LogLevel.Error, $"Incorrect test assemby paths!\n");
+                    Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
                     return false;
                 }
 
-                var parameters = paths.Aggregate((current, path) => current + $" {Processor.QuoteArgument(path)}");
+                var parameters = assemblyPaths.Aggregate((current, path) => current + $" {Processor.QuoteArgument(path)}");
                 //var parameters = $"{assemblyPath} -nologo";
                 //parameters += " -nologo";
                 if (!string.IsNullOrEmpty(traits))
@@ -73,9 +74,10 @@ namespace XUnit
         public static bool RunTestsWithOptions(string assemblyPaths, string traits = null, string notraits = null, string methodname = null, string classname = null, 
             string parallel = null, int? maxthreads = null, bool? noshadow = null, bool? quiet = null, bool? serialize = null, string outputTypeAndName = null)
         {
+            Logger.Log(LogLevel.Trace, "XUnit RunTests method started");
             if (!File.Exists(FullPathExe))
             {
-                Logger.Log(LogLevel.Error, "xunit.console.exe file not found.");
+                Logger.Log(LogLevel.Warn, "xunit.console.exe file not found.");
                 return false;
             }
             try
@@ -83,7 +85,7 @@ namespace XUnit
                 var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
                 if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
-                    Logger.Log(LogLevel.Error, $"Incorrect test assemby paths!\n");
+                    Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
                     return false;
                 }
                 var parameters = paths.Aggregate((current, path) => current + $" {Processor.QuoteArgument(path)}");

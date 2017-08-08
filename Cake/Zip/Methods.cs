@@ -23,6 +23,7 @@
         /// <returns>True, if zipping was successful, false otherwise</returns>
         public static bool ZipFiles(string zipPathAndName, params string[] entriesPaths)
         {
+            Logger.Log(LogLevel.Trace, "ZipFiles method started");
             var paths = new List<string>();
             foreach (var filePath in entriesPaths)
             {
@@ -75,15 +76,15 @@
         /// <returns>True, if zipping was successful, false otherwise</returns>
         public static bool ZipFilesWithOptions(string zipPathAndName, string password = null, string compression = null, bool aes256Encryption = false, bool useZip64 = false, params string[] filePaths)
         {
+            Logger.Log(LogLevel.Trace, "ZipFilesWithOptions method started");
             var paths = new List<string>();
             foreach (var filePath in filePaths)
             {
                 paths.AddRange(filePath.GetFilePaths());
                 paths.AddRange(filePath.GetDirectoriesPaths());
             }
-            filePaths = paths.ToArray();
 
-            if (!CheckZipFilesArguments(filePaths, zipPathAndName)) return false;
+            if (!CheckZipFilesArguments(paths, zipPathAndName)) return false;
             try
             {
                 using (var zip = new ZipFile())
@@ -109,7 +110,7 @@
                             zip.CompressionLevel = Ionic.Zlib.CompressionLevel.Default;
                             break;
                     }
-                    foreach (var path in filePaths)
+                    foreach (var path in paths)
                     {
                         var attributes = File.GetAttributes(path);
                         if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path, path);
@@ -144,6 +145,12 @@
         /// <returns>True, if unzipping was successful, false otherwise</returns>
         public static bool ExtractFiles(string zipPathAndName, string destination, string password = null, bool overwrite = false)
         {
+            Logger.Log(LogLevel.Trace, "ExtractFiles method started");
+            if (!CheckIfArchiveExists(zipPathAndName))
+            {
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                return false;
+            }
             try
             {
                 using (var zip = ZipFile.Read(zipPathAndName))
@@ -181,8 +188,14 @@
         /// <param name="zipPathAndName">Path and name of the modified archive</param>
         /// <param name="entriesToDelete">Names of entries to be removed</param>
         /// <returns>True, if deleting was successful, false otherwise</returns>
-        public static bool DeleteEntriesFromArchive(string zipPathAndName, params string[] entriesToDelete)
+        public static bool DeleteEntries(string zipPathAndName, params string[] entriesToDelete)
         {
+            Logger.Log(LogLevel.Trace, "DeleteEntries method started");
+            if (!CheckIfArchiveExists(zipPathAndName))
+            {
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                return false;
+            }
             try
             {
                 using (var zip = ZipFile.Read(zipPathAndName))
@@ -205,8 +218,14 @@
         /// <param name="zipPathAndName">Path and name of the modified archive</param>
         /// <param name="entriesToUpdate">Names of entries to be updated</param>
         /// <returns></returns>
-        public static bool UpdateEntriesInArchive(string zipPathAndName, params string[] entriesToUpdate)
+        public static bool UpdateEntries(string zipPathAndName, params string[] entriesToUpdate)
         {
+            Logger.Log(LogLevel.Trace, "UpdateEntries method started");
+            if (!CheckIfArchiveExists(zipPathAndName))
+            {
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                return false;
+            }
             try
             {
                 using (var zip = ZipFile.Read(zipPathAndName))
@@ -244,8 +263,14 @@
         /// <param name="oldName">Old name of the entry to be renamed</param>
         /// <param name="newName">New name of the entry to be renamed</param>
         /// <returns></returns>
-        public static bool RenameEntryInArchive(string zipPathAndName, string oldName, string newName)
+        public static bool RenameEntry(string zipPathAndName, string oldName, string newName)
         {
+            Logger.Log(LogLevel.Trace, "RenameEntry method started");
+            if (!CheckIfArchiveExists(zipPathAndName))
+            {
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                return false;
+            }
             try
             {
                 using (var zip = ZipFile.Read(zipPathAndName))
@@ -269,14 +294,9 @@
             return true;
         }
 
-        /// <summary>
-        /// Checks if arguments passed to ZipFiles methods are valid.
-        /// </summary>
-        /// <param name="filePaths">Paths to files</param>
-        /// <param name="zipPath">Path of the zip to save</param>
-        /// <returns></returns>
         private static bool CheckZipFilesArguments(IEnumerable<string> filePaths, string zipPath)
         {
+            Logger.Log(LogLevel.Trace, "CheckZipFilesArguments method started");
             var enumerable = filePaths as IList<string> ?? filePaths.ToList();
             if (!enumerable.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)) || !enumerable.Any())
                 return false;
@@ -293,6 +313,12 @@
                 return false;
             }
             return !string.IsNullOrEmpty(fullPath);
+        }
+
+        private static bool CheckIfArchiveExists(string archivePath)
+        {
+            Logger.Log(LogLevel.Trace, "CheckIfArchiveExists method started");
+            return File.Exists(archivePath);
         }
 
         #endregion

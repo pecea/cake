@@ -16,6 +16,7 @@
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
         private static void Main(string[] args)
         {
+            Logger.Log(LogLevel.Trace, "Cake program starting ...");
             //var msTestPath = 
             // Parsing arguments
             Argument[] arguments;
@@ -60,9 +61,9 @@
             {
                 RoslynEngine.ExecuteFile(scriptArgument.Value);
             }
-            catch (JobException)
+            catch (JobException j)
             {
-                //Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job\n");
+                Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job\n");
 
                 return;
             }

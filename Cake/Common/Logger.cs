@@ -21,6 +21,9 @@
         {
             switch (logLevel)
             {
+                case LogLevel.Trace:
+                    LogManager.GetLogger(loggerName).Trace(message);
+                    break;
                 case LogLevel.Debug:
                     LogManager.GetLogger(loggerName).Debug(message);
                     break;
@@ -73,6 +76,7 @@
         /// <param name="logLevelName"></param>
         public static void Reconfigure(string logLevelName)
         {
+            Log(LogLevel.Trace, "Reconfigure NLog method started");
             NLog.LogLevel logLevel;
             try
             {
@@ -101,6 +105,8 @@
                     else loggingRule.DisableLoggingForLevel(level);
                 }
             }
+
+            Log(LogLevel.Trace, "Reconfigure NLog method finished");
         }
     }
 }

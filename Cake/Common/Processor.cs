@@ -17,6 +17,7 @@ namespace Common
         /// <returns></returns>
         public static (bool, string, string) RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
+            Logger.Log(LogLevel.Trace, "RunProcess method started");
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
             if (workingDirectory != ".")
@@ -55,7 +56,7 @@ namespace Common
                 if(!string.IsNullOrEmpty(outEnd))
                     Logger.Log(LogLevel.Info, $"Process result: {outEnd}");
                 if(!string.IsNullOrEmpty(errEnd))
-                    Logger.Log(LogLevel.Error, $"Process error: {errEnd}");
+                    Logger.Log(LogLevel.Warn, $"Process error: {errEnd}");
                // process.BeginOutputReadLine();
                // process.BeginErrorReadLine();
 
@@ -81,6 +82,7 @@ namespace Common
         /// <returns>String enclosed with quotes</returns>
         public static string QuoteArgument(string arg)
         {
+            Logger.Log(LogLevel.Trace, "QuoteArgument method started");
             return $@"""{arg}""";
         }
     }

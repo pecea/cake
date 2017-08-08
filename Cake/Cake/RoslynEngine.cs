@@ -41,6 +41,7 @@ namespace Cake
 
         private static string LoadReferencedScripts(string filePath)
         {
+            Logger.Log(LogLevel.Trace, "Loading referenced scripts ...");
             var scriptRegex = new Regex(@"^//\s*cake load ""([a-zA-Z0-9\-\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";*");
             var otherScripts = string.Empty;
             using (var streamReader = new StreamReader(filePath, Encoding.GetEncoding("ISO-8859-2")))
@@ -62,6 +63,7 @@ namespace Cake
         }
         private static ScriptOptions LoadAssemblies(string filePath)
         {
+            Logger.Log(LogLevel.Trace, "Loading referenced assemblies ...");
             var assemblyRegex = new Regex(@"^//\s*cake using ""([a-zA-Z0-9\-\./\\-_:zżźćńółęąśŻŹĆĄŚĘŁÓŃ\s])+"";*");
             var assemblies = new List<Assembly>();
             var namespaceStrings = new List<string>();
@@ -107,6 +109,7 @@ namespace Cake
 
         private static string ExtractAssemblyPath(string usingDirective)
         {
+            Logger.Log(LogLevel.Trace, "ExtractAssemblyPath method started");
             return usingDirective
                     .TrimStart('/')
                     .TrimEnd(';')
@@ -118,6 +121,7 @@ namespace Cake
 
         private static string ExtractScriptPath(string loadDirective)
         {
+            Logger.Log(LogLevel.Trace, "ExtractScriptPath method started");
             return loadDirective
                 .TrimStart('/')
                 .TrimEnd(';')
@@ -131,6 +135,7 @@ namespace Cake
 
         private static bool IsStatic(this Type type)
         {
+            Logger.Log(LogLevel.Trace, "IsStatic method started");
             return type.IsSealed && type.IsAbstract;
         }
     }

@@ -23,20 +23,21 @@
         /// <returns>True, if copying succedeed</returns>
         public static bool CopyDirectory(string sourceDir, string destinationDir, bool copySubDirs = true, bool overwrite = false, bool cleanDestinationDirectory = false)
         {
+            Logger.Log(LogLevel.Trace, "CopyDirectory method started");
             var res = true;
             DirectoryInfo dir;
             try
             {
                 dir = new DirectoryInfo(sourceDir);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Incorrect directory name: {sourceDir}");
+                Logger.LogException(LogLevel.Error, ex, $"Incorrect directory name: {sourceDir}");
                 return false;
             }
             if (!dir.Exists)
             {
-                Logger.Log(LogLevel.Error, $"Directory {sourceDir} not found");
+                Logger.Log(LogLevel.Warn, $"Directory {sourceDir} not found");
                 return false;
             }
             // Get the subdirectories for the specified directory.
@@ -51,9 +52,9 @@
                 {
                     Directory.CreateDirectory(destinationDir);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error, $"Could not create {destinationDir}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not create {destinationDir}");
 
                     return false;
                 }
@@ -68,9 +69,9 @@
                         res &= CleanDirectory(destinationDir);
                         Logger.Log(LogLevel.Info, $"Directory {destinationDir} cleaned");
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Logger.Log(LogLevel.Error, $"Could not clean {destinationDir}");
+                        Logger.LogException(LogLevel.Error, ex, $"Could not clean {destinationDir}");
 
                         return false;
                     }
@@ -89,9 +90,9 @@
                     
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Warn, $"Could not copy {file.Name}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not copy {file.Name}");
                 }
             }
 
@@ -105,9 +106,9 @@
                     Logger.Log(LogLevel.Info, $"Copying {subdir.Name} from {tempPath}");
                     res &= CopyDirectory(subdir.FullName, tempPath, true, overwrite);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Warn, $"Could not copy {subdir.FullName}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not copy {subdir.FullName}");
                     
                     //return false;
                 }
@@ -125,9 +126,10 @@
         /// <returns>True, if file was correctly copied</returns>
         public static bool CopyFile(string sourceName, string destName, bool overwrite = true) //TODO: check whether overwrite works - probably when it's set to false, but there is already a file with the name of source file, we get an exception
         {
+            Logger.Log(LogLevel.Trace, "CopyFile method started");
             if (!File.Exists(sourceName))
             {
-                Logger.Log(LogLevel.Error, $"Could not find {sourceName}");
+                Logger.Log(LogLevel.Warn, $"Could not find {sourceName}");
                 
                 return false;
             }
@@ -154,9 +156,10 @@
         /// <returns>True, if file was correctly deleted</returns>
         public static bool DeleteFile(string filePath)
         {
+            Logger.Log(LogLevel.Trace, "DeleteFile method started");
             if (!File.Exists(filePath))
             {
-                Logger.Log(LogLevel.Error, $"Could not find {filePath}");
+                Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
                 
                 return false;
             }
@@ -167,9 +170,9 @@
                 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Could not delete {filePath}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not delete {filePath}");
                 
                 return false;
             }
@@ -185,6 +188,7 @@
         /// <returns>Names of files that match the pattern</returns>
         public static string[] GetFilesWithPattern(string parentDirectoryPath, string filePattern, bool subdirectories = false)
         {
+            Logger.Log(LogLevel.Trace, "GetFilesWithPattern method started");
             return !Directory.Exists(parentDirectoryPath) ? new string[0] : Directory.GetFiles(parentDirectoryPath, filePattern, subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(path => path.Replace('\\', '/')).ToArray();
         }
 
@@ -196,10 +200,11 @@
         /// <returns>True, if files were correctly deleted</returns>
         public static bool DeleteFilesWithPattern(string parentDirectoryPath, string filePattern)
         {
+            Logger.Log(LogLevel.Trace, "DeleteFilesWithPattern method started");
             var res = true;
             if (!Directory.Exists(parentDirectoryPath))
             {
-                Logger.Log(LogLevel.Error, $"Could not find {parentDirectoryPath}");
+                Logger.Log(LogLevel.Warn, $"Could not find {parentDirectoryPath}");
                 
                 return false;
             }
@@ -211,9 +216,9 @@
                     Logger.Log(LogLevel.Debug, $"File {directory} deleted");
                 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Warn, $"Could not delete {directory}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
                 
                 }
             }
@@ -232,11 +237,12 @@
         /// <returns>True, if directories where correctly deleted</returns>
         public static bool DeleteDirectoriesWithPattern(string parentDirectoryPath, string directoryPattern, bool subdirectories = false)
         {
+            Logger.Log(LogLevel.Trace, "DeleteDirectoriesWithPattern method started");
             var res = true;
             var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             if (!Directory.Exists(parentDirectoryPath))
             {
-                Logger.Log(LogLevel.Error, $"Could not find {parentDirectoryPath}");
+                Logger.Log(LogLevel.Warn, $"Could not find {parentDirectoryPath}");
                 
                 return false;
             }
@@ -249,9 +255,9 @@
                 
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Warn, $"Could not delete {directory}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
                 
                 
                 }
@@ -269,9 +275,10 @@
         /// <returns>True, if folder was correctly deleted</returns>
         public static bool DeleteDirectory(string directoryPath)
         {
+            Logger.Log(LogLevel.Trace, "DeleteDirectory method started");
             if (!Directory.Exists(directoryPath))
             {
-                Logger.Log(LogLevel.Error, $"Could not find {directoryPath}");
+                Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
                 
                 return false;
             }
@@ -282,9 +289,9 @@
                 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Could not delete {directoryPath}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not delete {directoryPath}");
                 
                 return false;
             }
@@ -297,9 +304,10 @@
         /// <returns>True, if all files and folders were correctly deleted</returns>
         public static bool CleanDirectory(string directoryPath) //TODO: check whether files outside directory are also cleaned :)
         {
+            Logger.Log(LogLevel.Trace, "CleanDirectory method started");
             if (!Directory.Exists(directoryPath))
             {
-                Logger.Log(LogLevel.Error, $"Could not find {directoryPath}");
+                Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
                 
                 return false;
             }
@@ -314,15 +322,15 @@
                         Logger.Log(LogLevel.Debug, $"Directory {dir} deleted");
                 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Logger.Log(LogLevel.Warn, $"Could not delete {dir}");
+                        Logger.LogException(LogLevel.Error, ex, $"Could not delete {dir}");
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Could not clean {directoryPath}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not clean {directoryPath}");
                 
                 return false;
             }
@@ -339,18 +347,18 @@
                 
             
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Logger.Log(LogLevel.Warn, $"Could not delete {file}");
+                        Logger.LogException(LogLevel.Error, ex, $"Could not delete {file}");
                 
                         //return false;
                     }
                     
                 }        
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Could not clean {directoryPath}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not clean {directoryPath}");
                 
                 return false;
             }
@@ -368,9 +376,10 @@
         /// <returns>True, if file was correctly overwritten</returns>
         public static bool ReplaceText(string filePath, string regex, string newText)
         {
+            Logger.Log(LogLevel.Trace, "ReplaceText method started");
             if (!File.Exists(filePath))
             {
-                Logger.Log(LogLevel.Error, $"Could not find {filePath}");
+                Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
                 
                 return false;
             }
@@ -381,9 +390,9 @@
                 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, $"Could not overwrite {filePath}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not overwrite {filePath}");
                 
                 return false;
             }
@@ -397,14 +406,15 @@
         /// <returns>Paths to file, if any found, filename otherwise</returns>
         public static string[] LookForFileInDirectories(string filename, params string[] directories)
         {
+            Logger.Log(LogLevel.Trace, "LookForFileInDirectories method started");
             try
             {
                 var paths = directories.Select(directory => Path.Combine(directory, filename)).Where(File.Exists).ToList();
                 return paths.Count > 0 ? paths.ToArray() : new[] { filename };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.Log(LogLevel.Warn, "Incorrect filename or directories paths");
+                Logger.LogException(LogLevel.Error, ex, "Incorrect filename or directories paths");
                 
                 return new[] {filename};
             }

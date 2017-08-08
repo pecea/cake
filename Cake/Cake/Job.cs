@@ -44,6 +44,7 @@
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params string[] dependenciesToAdd)
         {
+            Logger.Log(LogLevel.Trace, "Job DependsOn method started");
             foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
             {
                 Dependencies.Add(dependency);
@@ -58,6 +59,7 @@
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params Job[] dependenciesToAdd)
         {
+            Logger.Log(LogLevel.Trace, "Job DependsOn method started");
             return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
         }
 
@@ -68,6 +70,7 @@
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job Does(Action actionToDo)
         {
+            Logger.Log(LogLevel.Trace, "Job Does method started");
             _action = actionToDo;
             return this;
         }
@@ -94,6 +97,7 @@
         //}
         internal bool Execute()
         {
+            Logger.Log(LogLevel.Trace, "Job Execute method started");
             try
             {
                 _action();

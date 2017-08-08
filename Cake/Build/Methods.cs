@@ -28,6 +28,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
+            Logger.Log(LogLevel.Trace, "BuildProject method started");
             var paths = projectFile.GetFilePaths();
 
             var enumerable = paths as IList<string> ?? paths.ToList();
@@ -39,6 +40,7 @@
 
         private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)
         {
+            Logger.Log(LogLevel.Trace, "BuildSingleProject method started");
             if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
@@ -58,27 +60,29 @@
             if (buildResult.Exception != null)
                 Logger.LogException(LogLevel.Error, buildResult.Exception, $"Building {projectName} failed.");
             else
-                Logger.Log(LogLevel.Error, $"Building {projectName} failed.");
+                Logger.Log(LogLevel.Warn, $"Building {projectName} failed.");
             return false;
         }
 
         private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
         {
+
+            Logger.Log(LogLevel.Trace, "CheckBuildProjectArguments method started");
             if (!File.Exists(projectFile))
             {
-                Logger.Log(LogLevel.Error, "The project file specified is nonexistent.");
+                Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");
                 return false;
             }
 
             if (platform != "Any CPU" && platform != "x86" && platform != "x64")
             {
-                Logger.Log(LogLevel.Error, "The platform parameter must be one of: \"Any CPU\", \"x86\", \"x64\".");
+                Logger.Log(LogLevel.Warn, "The platform parameter must be one of: \"Any CPU\", \"x86\", \"x64\".");
                 return false;
             }
 
             if (configuration != "Debug" && configuration != "Release")
             {
-                Logger.Log(LogLevel.Error, "The configuration parameter must be set to \"Debug\" or \"Release\".");
+                Logger.Log(LogLevel.Warn, "The configuration parameter must be set to \"Debug\" or \"Release\".");
                 return false;
             }
             string fullPath;
