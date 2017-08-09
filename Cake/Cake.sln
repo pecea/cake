@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5311970D-8E70-4432-BFEC-7418C5E3713E}"
 	ProjectSection(SolutionItems) = preProject
@@ -50,8 +50,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build.Tests.TestProject", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3BB5221E-145A-409F-B140-96903C48CB54}"
 	ProjectSection(SolutionItems) = preProject
-		External\git.exe = External\git.exe
 		External\MSTest.exe = External\MSTest.exe
+		script.csx = script.csx
 		Praca.docx = Praca.docx
 		scripts\script1.csx = scripts\script1.csx
 	EndProjectSection
