@@ -14,6 +14,8 @@ namespace Git
 
         private static bool Reset(ResetMode mode, string commitShaHash)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
+
             using (var repo = new Repository(RepositoryPath))
             {
                 Commit commit = string.IsNullOrWhiteSpace(commitShaHash)

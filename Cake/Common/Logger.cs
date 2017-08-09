@@ -1,24 +1,31 @@
 ﻿namespace Common
 {
+    using NLog;
+    using NLog.Config;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.CompilerServices;
-
-    using NLog;
 
     /// <summary>
     /// Provides tools for logging while executing methods from the modules or from the scrip itself.
     /// </summary>
     public static class Logger
     {
+        private const string RoslynCallerMemberName = "<Initialize>";
+        private const string ScriptLoggerName = "Script";
+
         /// <summary>
         /// Logs a message using the loggers specified in the App.config.
         /// </summary>
         /// <param name="logLevel"><see cref="LogLevel"/> of the log.</param>
         /// <param name="message">Message to be logged.</param>
         /// <param name="loggerName">Name of the logger to be used.</param>
-        public static void Log(LogLevel logLevel, string message, [CallerMemberName] string loggerName = "Script")
+        public static void Log(LogLevel logLevel, string message, [CallerMemberName] string loggerName = ScriptLoggerName)
         {
+            if (loggerName == RoslynCallerMemberName)
+                loggerName = ScriptLoggerName;
+
             switch (logLevel)
             {
                 case LogLevel.Trace:
@@ -66,9 +73,10 @@
         /// 
         /// </summary>
         /// <param name="logLevelName"></param>
-        public static void Reconfigure(string logLevelName)
+        /// <param name="targetName"></param>
+        public static void Reconfigure(string logLevelName, string targetName)
         {
-            Log(LogLevel.Trace, "Reconfigure NLog method started");
+            Log(LogLevel.Trace, "Method started");
             NLog.LogLevel logLevel;
             try
             {
@@ -76,30 +84,30 @@
             }
             catch (Exception e)
             {
-                Log(LogLevel.Warn, $"Invalid log level argument was specified. Valid log levels are: Trace, Debug, Info, Warn, Error and Fatal. Exception: {e}");
+                Log(LogLevel.Warn, $"Invalid log level argument was specified. Valid log levels are: Trace, Debug, Info, Warn, Error and Fatal. Exception: {e}.");
                 return;
             }
 
-            var logLevels = new List<NLog.LogLevel>
-                                {
-                                    NLog.LogLevel.Trace,
-                                    NLog.LogLevel.Debug,
-                                    NLog.LogLevel.Info,
-                                    NLog.LogLevel.Warn,
-                                    NLog.LogLevel.Error,
-                                    NLog.LogLevel.Fatal
-                                };
+            IEnumerable<LoggingRule> rules = LogManager.Configuration.LoggingRules
+                .Where(r => r.Targets.Any(t => t.Name.ToLower() == targetName.ToLower()));
 
-            foreach (var loggingRule in LogManager.Configuration.LoggingRules)
+            if (!rules.Any())
             {
-                foreach (var level in logLevels)
+                Log(LogLevel.Warn, $"Couldn't find any rules with the {targetName} target.");
+                return;
+            }
+
+            foreach (LoggingRule rule in rules)
+            {
+                foreach (var level in NLog.LogLevel.AllLoggingLevels)
                 {
-                    if (level.Ordinal >= logLevel.Ordinal) loggingRule.EnableLoggingForLevel(level);
-                    else loggingRule.DisableLoggingForLevel(level);
+                    if (level.Ordinal >= logLevel.Ordinal) rule.EnableLoggingForLevel(level);
+                    else rule.DisableLoggingForLevel(level);
                 }
             }
 
-            Log(LogLevel.Trace, "Reconfigure NLog method finished");
+            LogManager.ReconfigExistingLoggers();
+            Log(LogLevel.Trace, "Method finished");
         }
     }
 }

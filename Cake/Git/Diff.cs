@@ -25,6 +25,8 @@ namespace Git
 
         private static bool Diff(params DiffTargets[] modes)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
+
             using (var repo = new Repository(RepositoryPath))
             {
                 foreach (DiffTargets mode in modes)

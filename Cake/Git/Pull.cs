@@ -8,6 +8,8 @@ namespace Git
     {
         public static bool Pull()
         {
+            Logger.Log(LogLevel.Trace, "Method started");
+
             var options = new PullOptions
             {
                 FetchOptions = new FetchOptions
