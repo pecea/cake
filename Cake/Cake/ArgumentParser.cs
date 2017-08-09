@@ -11,7 +11,8 @@
             Arguments = new List<Argument>
                            {
                                new Argument(new[] { "/runjob", "/r" }, true),
-                               new Argument(new[] { "/verbosity", "/v" }, true),
+                               new Argument(new[] { "/scriptverbosity", "/sv" }, true),
+                               new Argument(new[] {"/appverbosity", "/av" }, true),
                                new Argument(new[] { "/help", "/h" }, false),
                                new Argument(new[] { "/script", "/s" }, true)
                            }.ToArray();
