@@ -17,7 +17,7 @@ namespace Common
         /// <returns></returns>
         public static (bool, string, string) RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
-            Logger.Log(LogLevel.Trace, "RunProcess method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
             if (workingDirectory != ".")
@@ -57,13 +57,8 @@ namespace Common
                     Logger.Log(LogLevel.Info, $"Process result: {outEnd}");
                 if(!string.IsNullOrEmpty(errEnd))
                     Logger.Log(LogLevel.Warn, $"Process error: {errEnd}");
-               // process.BeginOutputReadLine();
-               // process.BeginErrorReadLine();
 
                 process.WaitForExit();
-
-                //process.CancelOutputRead();
-                //process.CancelErrorRead();
                 
                 if (process.ExitCode == 0)
                 {

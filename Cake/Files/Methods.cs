@@ -23,7 +23,7 @@
         /// <returns>True, if copying succedeed</returns>
         public static bool CopyDirectory(string sourceDir, string destinationDir, bool copySubDirs = true, bool overwrite = false, bool cleanDestinationDirectory = false)
         {
-            Logger.Log(LogLevel.Trace, "CopyDirectory method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var res = true;
             DirectoryInfo dir;
             try
@@ -156,7 +156,7 @@
         /// <returns>True, if file was correctly deleted</returns>
         public static bool DeleteFile(string filePath)
         {
-            Logger.Log(LogLevel.Trace, "DeleteFile method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!File.Exists(filePath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
@@ -188,7 +188,7 @@
         /// <returns>Names of files that match the pattern</returns>
         public static string[] GetFilesWithPattern(string parentDirectoryPath, string filePattern, bool subdirectories = false)
         {
-            Logger.Log(LogLevel.Trace, "GetFilesWithPattern method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             return !Directory.Exists(parentDirectoryPath) ? new string[0] : Directory.GetFiles(parentDirectoryPath, filePattern, subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(path => path.Replace('\\', '/')).ToArray();
         }
 
@@ -200,7 +200,7 @@
         /// <returns>True, if files were correctly deleted</returns>
         public static bool DeleteFilesWithPattern(string parentDirectoryPath, string filePattern)
         {
-            Logger.Log(LogLevel.Trace, "DeleteFilesWithPattern method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var res = true;
             if (!Directory.Exists(parentDirectoryPath))
             {
@@ -237,7 +237,7 @@
         /// <returns>True, if directories where correctly deleted</returns>
         public static bool DeleteDirectoriesWithPattern(string parentDirectoryPath, string directoryPattern, bool subdirectories = false)
         {
-            Logger.Log(LogLevel.Trace, "DeleteDirectoriesWithPattern method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var res = true;
             var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             if (!Directory.Exists(parentDirectoryPath))
@@ -275,7 +275,7 @@
         /// <returns>True, if folder was correctly deleted</returns>
         public static bool DeleteDirectory(string directoryPath)
         {
-            Logger.Log(LogLevel.Trace, "DeleteDirectory method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!Directory.Exists(directoryPath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
@@ -304,7 +304,7 @@
         /// <returns>True, if all files and folders were correctly deleted</returns>
         public static bool CleanDirectory(string directoryPath) //TODO: check whether files outside directory are also cleaned :)
         {
-            Logger.Log(LogLevel.Trace, "CleanDirectory method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!Directory.Exists(directoryPath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
@@ -350,8 +350,6 @@
                     catch (Exception ex)
                     {
                         Logger.LogException(LogLevel.Error, ex, $"Could not delete {file}");
-                
-                        //return false;
                     }
                     
                 }        
@@ -376,7 +374,7 @@
         /// <returns>True, if file was correctly overwritten</returns>
         public static bool ReplaceText(string filePath, string regex, string newText)
         {
-            Logger.Log(LogLevel.Trace, "ReplaceText method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!File.Exists(filePath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
@@ -406,7 +404,7 @@
         /// <returns>Paths to file, if any found, filename otherwise</returns>
         public static string[] LookForFileInDirectories(string filename, params string[] directories)
         {
-            Logger.Log(LogLevel.Trace, "LookForFileInDirectories method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             try
             {
                 var paths = directories.Select(directory => Path.Combine(directory, filename)).Where(File.Exists).ToList();

@@ -13,8 +13,6 @@
     {
         private Action _action;
 
-        //private Func<bool> _actionResult;
-
         internal string Name { get; }
 
 
@@ -44,7 +42,7 @@
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params string[] dependenciesToAdd)
         {
-            Logger.Log(LogLevel.Trace, "Job DependsOn method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
             {
                 Dependencies.Add(dependency);
@@ -59,7 +57,7 @@
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params Job[] dependenciesToAdd)
         {
-            Logger.Log(LogLevel.Trace, "Job DependsOn method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
         }
 
@@ -70,34 +68,13 @@
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job Does(Action actionToDo)
         {
-            Logger.Log(LogLevel.Trace, "Job Does method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             _action = actionToDo;
             return this;
         }
-
-        //internal void Execute()
-        //{
-        //    _action();
-        //    Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
-        //}
-
-        //internal bool ExecuteNew()
-        //{
-        //    Logger.Log(LogLevel.Debug, $"Executing job \"{Name}\".");
-        //    try
-        //    {
-        //        return _actionNew();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
-        //        return false;
-        //    }
-        //    return true;
-        //}
         internal bool Execute()
         {
-            Logger.Log(LogLevel.Trace, "Job Execute method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             try
             {
                 _action();
@@ -110,24 +87,5 @@
                 return false;
             }
         }
-
-        //internal bool ExecuteWithResult()
-        //{
-        //    try
-        //    {
-        //        return _actionResult();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Logger.LogException(LogLevel.Error, e, "Exception occured during a job!");
-        //        return false;
-        //    }
-        //}
-
-        //public Job Performs(Func<bool> actionToDo)
-        //{
-        //    _actionResult = actionToDo;
-        //    return this;
-        //}
     }
 }

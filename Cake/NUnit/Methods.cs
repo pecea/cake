@@ -76,7 +76,7 @@ namespace NUnit
         /// <returns>True if nunit tests process run successfully, otherwise false</returns>
         public static bool RunTests(string conditions = null, string config = null, params string[] assemblyPaths)
         {
-            Logger.Log(LogLevel.Trace, "NUnit RunTests method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!File.Exists(FullPathExe))
             {
                 Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
@@ -134,7 +134,7 @@ namespace NUnit
         /// <returns>True if nunit tests process run successfully, otherwise false</returns>
         public static bool RunTestsWithOptions(string assemblyPaths, string conditions = null, string config = null, string workingDirectoryPath = null, string outputPath = null, string errorPath = null, bool? stopOnError = null, bool? skipNonAssemblies = null, bool? noResult = null, string verbosity = null, string timeout = null, bool? shadowcopy = null, string processIsolation = null, string numberOfAgents = null, string domainIsolation = null, string frameworkVersion = null, bool? runIn32Bit = null, bool? disposeRunners = null)
         {
-            Logger.Log(LogLevel.Trace, "NUnit RunTestsWithOptions method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!File.Exists(FullPathExe))
             {
                 Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");

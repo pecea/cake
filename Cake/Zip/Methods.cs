@@ -23,7 +23,7 @@
         /// <returns>True, if zipping was successful, false otherwise</returns>
         public static bool ZipFiles(string zipPathAndName, params string[] entriesPaths)
         {
-            Logger.Log(LogLevel.Trace, "ZipFiles method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var paths = new List<string>();
             foreach (var filePath in entriesPaths)
             {
@@ -76,7 +76,7 @@
         /// <returns>True, if zipping was successful, false otherwise</returns>
         public static bool ZipFilesWithOptions(string zipPathAndName, string password = null, string compression = null, bool aes256Encryption = false, bool useZip64 = false, params string[] filePaths)
         {
-            Logger.Log(LogLevel.Trace, "ZipFilesWithOptions method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var paths = new List<string>();
             foreach (var filePath in filePaths)
             {
@@ -145,7 +145,7 @@
         /// <returns>True, if unzipping was successful, false otherwise</returns>
         public static bool ExtractFiles(string zipPathAndName, string destination, string password = null, bool overwrite = false)
         {
-            Logger.Log(LogLevel.Trace, "ExtractFiles method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
@@ -190,7 +190,7 @@
         /// <returns>True, if deleting was successful, false otherwise</returns>
         public static bool DeleteEntries(string zipPathAndName, params string[] entriesToDelete)
         {
-            Logger.Log(LogLevel.Trace, "DeleteEntries method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
@@ -220,7 +220,7 @@
         /// <returns></returns>
         public static bool UpdateEntries(string zipPathAndName, params string[] entriesToUpdate)
         {
-            Logger.Log(LogLevel.Trace, "UpdateEntries method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
@@ -265,7 +265,7 @@
         /// <returns></returns>
         public static bool RenameEntry(string zipPathAndName, string oldName, string newName)
         {
-            Logger.Log(LogLevel.Trace, "RenameEntry method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
@@ -296,7 +296,7 @@
 
         private static bool CheckZipFilesArguments(IEnumerable<string> filePaths, string zipPath)
         {
-            Logger.Log(LogLevel.Trace, "CheckZipFilesArguments method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var enumerable = filePaths as IList<string> ?? filePaths.ToList();
             if (!enumerable.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)) || !enumerable.Any())
                 return false;

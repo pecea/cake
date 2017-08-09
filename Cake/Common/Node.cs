@@ -25,9 +25,9 @@
 
         private static string[] SplitPath { get; set; }
 
-        private string Value { get; set; }
+        private string Value { get; }
 
-        private List<Node> Children { get; set; }
+        private List<Node> Children { get; }
 
         /// <summary>
         /// Resolves a node by finding all subdirectories or files matching a wildcard.
@@ -37,7 +37,7 @@
         /// <returns>Enumeration of paths found that match the wildcard.</returns>
         public IEnumerable<string> ResolveNode(GetPathsOptions option, int pathIndex = 0)
         {
-            Logger.Log(LogLevel.Trace, "ResolveNode method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var result = new List<string>();
             var nextPathPart = SplitPath[pathIndex + 1];
 
