@@ -28,7 +28,7 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            Logger.Log(LogLevel.Trace, "BuildProject method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             var paths = projectFile.GetFilePaths();
 
             var enumerable = paths as IList<string> ?? paths.ToList();
@@ -40,7 +40,7 @@
 
         private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)
         {
-            Logger.Log(LogLevel.Trace, "BuildSingleProject method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
@@ -66,8 +66,7 @@
 
         private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
         {
-
-            Logger.Log(LogLevel.Trace, "CheckBuildProjectArguments method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!File.Exists(projectFile))
             {
                 Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");

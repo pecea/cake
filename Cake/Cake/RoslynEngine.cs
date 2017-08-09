@@ -80,8 +80,6 @@ namespace Cake
                     var assemblyPath = ExtractAssemblyPath(match.Groups[0].Value);
                     var assembly = Assembly.LoadFrom(assemblyPath);
                     assemblies.Add(assembly);
-                    //Session.AddReference(assembly);
-                    //options.AddReferences(assembly);
                     Logger.Log(LogLevel.Debug,
                         $"Assembly \"{assembly.FullName}\" referenced. Importing namespaces from this assembly.");
 
@@ -92,7 +90,6 @@ namespace Cake
 
                     foreach (var ns in namespaces)
                     {
-                        //Session.ImportNamespace(ns);
                         namespaceStrings.Add(ns);
                         Logger.Log(LogLevel.Debug, $"Namespace \"{ns}\" imported.");
                     }
@@ -109,7 +106,7 @@ namespace Cake
 
         private static string ExtractAssemblyPath(string usingDirective)
         {
-            Logger.Log(LogLevel.Trace, "ExtractAssemblyPath method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             return usingDirective
                     .TrimStart('/')
                     .TrimEnd(';')
@@ -121,7 +118,7 @@ namespace Cake
 
         private static string ExtractScriptPath(string loadDirective)
         {
-            Logger.Log(LogLevel.Trace, "ExtractScriptPath method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             return loadDirective
                 .TrimStart('/')
                 .TrimEnd(';')

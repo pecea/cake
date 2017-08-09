@@ -24,10 +24,10 @@
         /// <param name="job">A <see cref="Job"/> to be added.</param>
         public static void RegisterJob(Job job)
         {
-            Logger.Log(LogLevel.Trace, "RegisterJob method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             _jobs.Add(job.Name, job);
             Logger.Log(LogLevel.Debug, $"Job \"{job.Name}\" registered.");
-            Logger.Log(LogLevel.Trace, "RegisterJob method finished");
+            Logger.Log(LogLevel.Trace, "Method finished");
         }
 
         /// <summary>
@@ -37,7 +37,7 @@
         /// <param name="name">Name of a <see cref="Job"/> to be executed.</param>
         public static void SetDefault(string name)
         {
-            Logger.Log(LogLevel.Trace, "SetDefault method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!string.IsNullOrEmpty(JobToRun)) name = JobToRun;
             //PerformJobWithDependencies(name);
             var result = PerformJobWithDependencies(name);
@@ -48,7 +48,7 @@
             if (!result)
                 throw new JobException($"Job {name} did not end succesfully!");
 
-            Logger.Log(LogLevel.Trace, "SetDefault method finished");
+            Logger.Log(LogLevel.Trace, "Method finished");
 
         }
 
@@ -68,53 +68,14 @@
         /// </summary>
         public static void ClearJobs()
         {
-            Logger.Log(LogLevel.Trace, "ClearJobs method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             _jobs = new Dictionary<string, Job>();
-            Logger.Log(LogLevel.Trace, "ClearJobs method finished");
+            Logger.Log(LogLevel.Trace, "Method finished");
         }
-
-        //private static void PerformJobWithDependencies(string name)
-        //{
-        //    Job job;
-        //    try
-        //    {
-        //        job = _jobs[name];
-        //    }
-        //    catch (KeyNotFoundException e)
-        //    {
-        //        // jobException = new JobException($"Could not find the definition of Job \"{name}\".", e.Source);
-        //        //Logger.LogException(LogLevel.Fatal, jobException, "A fatal error has occured.");
-        //        //throw jobException;
-        //        throw new JobException($"Could not find the definition of Job \"{name}\".", e.Source);
-        //    }
-
-        //    switch (job.Status)
-        //    {
-        //        case JobStatus.Done:
-        //            return;
-        //        case JobStatus.Pending:
-        //            throw new JobException(
-        //                $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
-        //        case JobStatus.NotVisited:
-        //            break;
-        //        default:
-        //            throw new ArgumentOutOfRangeException();
-        //    }
-
-        //    job.Status = JobStatus.Pending;
-        //    foreach (var dependency in job.Dependencies)
-        //    {
-        //        PerformJobWithDependencies(dependency);
-        //    }
-
-        //    job.Execute();
-        //    job.Status = JobStatus.Done;
-        //}
-
-
+        
         private static bool PerformJobWithDependencies(string name)
         {
-            Logger.Log(LogLevel.Trace, "PerformJobWithDependencies method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             Job job;
             try
             {
@@ -134,13 +95,6 @@
                 case JobStatus.Done:
                     return true;
             }
-            //if (job.Status == JobStatus.Pending)
-            //    throw new JobException(
-            //            $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
-            //if (job.Status == JobStatus.Failed)
-            //    return false;
-            //if (job.Status == JobStatus.Done)
-            //    return true;
             job.Status = JobStatus.Pending;
             foreach (var dependency in job.Dependencies ?? new List<string>())
             {
@@ -153,11 +107,11 @@
                 if (job.Execute())
                 {
                     job.Status = JobStatus.Done;
-                    Logger.Log(LogLevel.Trace, "PerformJobWithDependencies method finished successfully");
+                    Logger.Log(LogLevel.Trace, "Method finished successfully");
                     return true;
                 }
                 job.Status = JobStatus.Failed;
-                Logger.Log(LogLevel.Trace, "PerformJobWithDependencies method finished unsuccessfully");
+                Logger.Log(LogLevel.Trace, "Method finished unsuccessfully");
                 return false;
             }
             catch (Exception e)

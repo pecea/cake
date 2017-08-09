@@ -16,7 +16,7 @@
         /// <returns>Enumeration of directories' paths that exist and fit the wildcared path.</returns>
         public static IEnumerable<string> GetDirectoriesPaths(this string path)
         {
-            Logger.Log(LogLevel.Trace, "GetDirectoriesPaths method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             return GetPaths(path, GetPathsOptions.Directories);
         }
 
@@ -27,7 +27,7 @@
         /// <returns>Enumeration of files' paths that exist and fit the wildcared path.</returns>
         public static IEnumerable<string> GetFilePaths(this string path)
         {
-            Logger.Log(LogLevel.Trace, "GetFilePaths method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             return GetPaths(path, GetPathsOptions.Files);
         }
 

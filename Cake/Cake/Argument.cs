@@ -15,8 +15,8 @@
             HasValue = hasValue;
         }
 
-        public string[] Names { get; private set; }
-        public string Value { get; private set; }
-        public bool HasValue { get; private set; }
+        public string[] Names { get; }
+        public string Value { get; }
+        public bool HasValue { get; }
     }
 }
