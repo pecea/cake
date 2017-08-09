@@ -18,9 +18,9 @@ namespace Git
             {
                 branch = repo.Head;
                 repo.Network.Push(branch, options);
+                Logger.Log(LogLevel.Info, $"Successfully pushed to {branch.RemoteName}.");
             }
 
-            Logger.Log(LogLevel.Info, $"Successfully pushed to {branch.RemoteName}.");
             return true;
         }
     }

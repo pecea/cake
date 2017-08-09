@@ -25,6 +25,8 @@ namespace Git
                     .Select(c => c.Path);
             }
 
+            // todo co jak nie ma nic do stejdzowania
+
             Logger.Log(LogLevel.Info, $"Staging files:\n{string.Join("\n", paths)}.");
             Commands.Stage(repo, paths);
 
