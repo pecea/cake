@@ -15,8 +15,9 @@ namespace Common
         /// <param name="arguments">Arguments to go with command</param>
         /// <param name="workingDirectory">Directory on which command should run</param>
         /// <returns></returns>
-        public static (bool, string, string) RunProcess(string command, string arguments = "", string workingDirectory = ".")
+        public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
+            ProcessResult result = new ProcessResult();
             Logger.Log(LogLevel.Trace, "Method started");
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
@@ -51,22 +52,26 @@ namespace Common
 
                 process.Start();
 
-                var outEnd = process.StandardOutput.ReadToEnd();
-                var errEnd = process.StandardError.ReadToEnd();
-                if(!string.IsNullOrEmpty(outEnd))
-                    Logger.Log(LogLevel.Info, $"Process result: {outEnd}");
-                if(!string.IsNullOrEmpty(errEnd))
-                    Logger.Log(LogLevel.Warn, $"Process error: {errEnd}");
+                result.Output = process.StandardOutput.ReadToEnd();
+                result.Error = process.StandardError.ReadToEnd();
+                if(!string.IsNullOrEmpty(result.Output))
+                    Logger.Log(LogLevel.Info, $"Process result: {result.Output}");
+                if(!string.IsNullOrEmpty(result.Error))
+                    Logger.Log(LogLevel.Warn, $"Process error: {result.Error}");
 
                 process.WaitForExit();
-                
+
                 if (process.ExitCode == 0)
                 {
                     Logger.Log(LogLevel.Debug, "Process run successfully!");
-                    return (true, outEnd, errEnd);
+                    result.Success = true;
                 }
-                Logger.Log(LogLevel.Debug, "Process exited with an error!");
-                return (false, outEnd, errEnd);
+                else
+                {
+                    Logger.Log(LogLevel.Debug, "Process exited with an error!");
+                    result.Success = false;
+                }
+                return result;
             }
         }
 

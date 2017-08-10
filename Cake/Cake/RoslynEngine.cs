@@ -31,9 +31,12 @@ namespace Cake
             {
                 throw;
             }
-            catch (Exception e)
+            catch (CompilationErrorException ce)
             {
-                Logger.LogException(LogLevel.Error, e, "An exception occured while executing the script with Roslyn\n");
+                throw new JobException("Error inside the script", ce.Source);
+            }
+            catch (Exception)
+            {
                 throw;
             }
         }
