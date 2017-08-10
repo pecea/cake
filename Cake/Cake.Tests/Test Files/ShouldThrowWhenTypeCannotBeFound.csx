@@ -3,4 +3,4 @@ new Job("t1").Does(() =>
 	UnknownType x;
 });
 
-SetDefault("t1");
+JobManager.SetDefault("t1");

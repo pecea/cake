@@ -19,25 +19,12 @@ namespace Cake.Tests
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("RoslynEngineMethods")]
-        [ExpectedException(typeof(Exception), AllowDerivedTypes = true)]
+        [ExpectedException(typeof(JobException))]
         public void ShouldThrowWhenTypeCannotBeFound()
         {
-            var isolated = new Isolated<RoslynEngineFacade>();
-            try
+            using (var isolated = new Isolated<RoslynEngineFacade>())
             {
-                using (isolated)
-                {
-                    isolated.Value.ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx"); //System.AccessViolationException: 'Attempted to read or write protected memory. This is often an indication that other memory is corrupt.'
-//JA TO CHYBA UBRAŁEM W TRY CATCH (metodę ExecuteFile), może dlatego tak się dzieje, a test przechodzi bo mamy pewnie AllowDerivedTypes na true :)
-                }
-            }
-            //catch (Exception)
-            //{
-                // ignored
-            //}
-            finally
-            {
-                isolated.Dispose();
+                isolated.Value.ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx");
             }
         }
         /// <summary>
@@ -49,22 +36,9 @@ namespace Cake.Tests
         [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowWhenNonExistingScriptIsSpecified()
         {
-            var isolated = new Isolated<RoslynEngineFacade>();
-            try
+            using (var isolated = new Isolated<RoslynEngineFacade>())
             {
-                using (isolated)
-                {
-                    isolated.Value.ExecuteFile(@"../../Test Files/Non existing script.csx");
-                }
-            }
-            //catch (FileNotFoundException ex)
-            //{
-            //    throw;
-            //    // ignored
-            //}
-            finally
-            {
-                isolated.Dispose();
+                isolated.Value.ExecuteFile(@"../../Test Files/Non existing script.csx");
             }
         }
         /// <summary>
@@ -76,22 +50,10 @@ namespace Cake.Tests
         [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript()
         {
-            var isolated = new Isolated<RoslynEngineFacade>();
-            try
+            using (var isolated = new Isolated<RoslynEngineFacade>())
             {
-                using (isolated)
-                {
-                    isolated.Value.ExecuteFile(
-                        @"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx");
-                }
-            }
-            //catch (FileNotFoundException)
-            //{
-            //    // ignored
-            //}
-            finally
-            {
-                isolated.Dispose();
+                isolated.Value.ExecuteFile(
+                    @"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx");
             }
         }
     }
