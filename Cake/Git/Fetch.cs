@@ -10,6 +10,8 @@ namespace Git
     {
         public static bool Fetch()
         {
+            Logger.Log(LogLevel.Trace, "Method started");
+
             string logMessage = "";
             var options = new FetchOptions
             {

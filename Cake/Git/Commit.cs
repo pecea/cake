@@ -17,6 +17,8 @@ namespace Git
         /// <param name="onlyStaged">Whether to commit staged or all changes.</param>
         private static bool Commit(string message, bool onlyStaged)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
+
             using (var repo = new Repository(RepositoryPath))
             {
                 if (!onlyStaged)

@@ -8,7 +8,8 @@ namespace Git
     {
         public static bool Push()
         {
-            Branch branch;
+            Logger.Log(LogLevel.Trace, "Method started");
+
             var options = new PushOptions
             {
                 CredentialsProvider = UserIdentity.CredentialsProvider
@@ -16,7 +17,7 @@ namespace Git
 
             using (var repo = new Repository(RepositoryPath))
             {
-                branch = repo.Head;
+                Branch branch = repo.Head;
                 repo.Network.Push(branch, options);
                 Logger.Log(LogLevel.Info, $"Successfully pushed to {branch.RemoteName}.");
             }

@@ -18,6 +18,8 @@ namespace Git
 
         private static bool Stage(IRepository repo, IEnumerable<string> paths = null)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
+
             if (paths == null)
             {
                 paths = repo.Diff
@@ -25,7 +27,11 @@ namespace Git
                     .Select(c => c.Path);
             }
 
-            // todo co jak nie ma nic do stejdzowania
+            if (!paths.Any())
+            {
+                Logger.Log(LogLevel.Warn, "No files to stage!");
+                return false;
+            }
 
             Logger.Log(LogLevel.Info, $"Staging files:\n{string.Join("\n", paths)}.");
             Commands.Stage(repo, paths);
