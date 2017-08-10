@@ -83,10 +83,10 @@ namespace Cake
                     Logger.Log(LogLevel.Debug,
                         $"Assembly \"{assembly.FullName}\" referenced. Importing namespaces from this assembly.");
 
-                    var namespaces = assembly.GetTypes().Select(type => type.Namespace);
-                    var staticTypes = assembly.GetTypes().Where(type => type.IsStatic()).Select(type => type.FullName);
+                    var namespaces = assembly.GetTypes().Where(t => t.IsPublic).Select(type => type.Namespace);
+                    var staticTypes = assembly.GetTypes().Where(type => type.IsStatic() && type.IsPublic).Select(type => type.FullName);
 
-                    namespaces = namespaces.Union(staticTypes);
+                    namespaces = namespaces.Union(staticTypes).Where(ns => !string.IsNullOrWhiteSpace(ns));
 
                     foreach (var ns in namespaces)
                     {
