@@ -33,7 +33,7 @@ namespace Cake
             }
             catch (CompilationErrorException ce)
             {
-                throw new JobException("Error inside the script", ce.Source);
+                throw new JobException($"Error inside the script: {ce.Message}", ce.Source);
             }
             catch (Exception)
             {

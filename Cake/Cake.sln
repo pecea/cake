@@ -60,7 +60,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PassingTests", "PassingTest
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FailingTests", "FailingTests\FailingTests.csproj", "{D4FDDA89-1CD5-42CD-BF94-99A10C891D2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddRegistryKey", "AddRegistryKey\AddRegistryKey.csproj", "{CC2E8AF0-5322-4E44-8E21-2B91CC6DE074}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{CC2E8AF0-5322-4E44-8E21-2B91CC6DE074}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnit", "NUnit\NUnit.csproj", "{58C7E6C6-7572-430A-95E6-83E493BD2E2D}"
 EndProject

@@ -6,9 +6,9 @@
     using System.Linq;
 
     using Common;
-
-    using Microsoft.Build.Evaluation;
     using Microsoft.Build.Execution;
+    using Microsoft.Build.BuildEngine;
+    using Microsoft.Build.Evaluation;
     using Microsoft.Build.Framework;
 
     /// <summary>
@@ -48,7 +48,17 @@
 
             var globalProperties = new Dictionary<string, string> { { "Configuration", configuration }, { "Platform", platform }, { "OutputPath", outputPath } };
             var buildRequestData = new BuildRequestData(projectFile, globalProperties, null, new[] { "Build" }, null);
-            var buildParameters = new BuildParameters(new ProjectCollection()) { Loggers = new List<ILogger>(new ILogger[] { }) };
+            var buildParameters = new BuildParameters(new ProjectCollection())
+            {
+                Loggers = new[] {
+  new ConsoleLogger
+  {
+      //Parameters = new[]{ "D:/Dane/Ernest/Praca/buildLog.txt" },
+    Verbosity = LoggerVerbosity.Minimal,
+    ShowSummary = true
+  }
+}
+            };
             var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequestData);
 
             if (buildResult.OverallResult == BuildResultCode.Success)
