@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="Extensions.cs" />
     <Compile Include="Glob.cs" />
-    <Compile Include="Js.cs" />
     <Compile Include="Methods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
