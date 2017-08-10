@@ -31,10 +31,10 @@ namespace Cake.Tests
 //JA TO CHYBA UBRAŁEM W TRY CATCH (metodę ExecuteFile), może dlatego tak się dzieje, a test przechodzi bo mamy pewnie AllowDerivedTypes na true :)
                 }
             }
-            catch (Exception)
-            {
+            //catch (Exception)
+            //{
                 // ignored
-            }
+            //}
             finally
             {
                 isolated.Dispose();

@@ -18,7 +18,7 @@
         [TestCategory("NUnitMethods")]
         public void ShouldReturnSuccessIfValidTestPathIsSpecified()
         {
-            Assert.IsTrue(Methods.RunTests(PathToTestLibrary));
+            Assert.IsTrue(Methods.RunTests(null, null, PathToTestLibrary));
         }
         /// <summary>
         /// Test method for running Nunit test with invalid path
@@ -27,7 +27,7 @@
         [TestCategory("NUnitMethods")]
         public void ShouldReturnFailureIfInvalidTestPathIsSpecified()
         {
-            Assert.IsFalse(Methods.RunTests(@"X:\Invalid\Path\To\tests.dll"));
+            Assert.IsFalse(Methods.RunTests(null, null, @"X:\Invalid\Path\To\tests.dll"));
         }
         /// <summary>
         /// Test method for running Nunit tests that are not passing
@@ -36,7 +36,7 @@
         [TestCategory("NUnitMethods")]
         public void ShouldReturnFailureIfNotPassingTests()
         {
-            Assert.IsFalse(Methods.RunTests(PathToFailingTestLibrary));
+            Assert.IsFalse(Methods.RunTests(null, null, PathToFailingTestLibrary));
         }
         /// <summary>
         /// Test method for running only "first" category Nunit tests
@@ -45,7 +45,7 @@
         [TestCategory("NUnitMethods")]
         public void ShouldRunOnlyFirstCategoryTests()
         {
-            Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "cat == first"));
+            Assert.IsTrue(Methods.RunTests("cat == first", null, PathToTestLibrary));
         }
         /// <summary>
         /// Test method for running only "Priority = High" Nunit tests
@@ -54,7 +54,7 @@
         [TestCategory("NUnitMethods")]
         public void ShouldRunOnlyHighPriorityTests()
         {
-            Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "Priority == High"));
+            Assert.IsTrue(Methods.RunTests("Priority == High", null, PathToTestLibrary));
         }
         //[TestMethod]
         //public void ShouldRunOnlyFirstCategoryTests()

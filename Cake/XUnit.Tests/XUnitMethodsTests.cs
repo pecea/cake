@@ -16,7 +16,7 @@ namespace XUnit.Tests
         [TestCategory("XUnitMethods")]
         public void ShouldReturnSuccessIfValidTestPathIsSpecified()
         {
-            Assert.IsTrue(Methods.RunTests(PathToTestLibrary));
+            Assert.IsTrue(Methods.RunTests(null, null, PathToTestLibrary));
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace XUnit.Tests
         [TestCategory("XUnitMethods")]
         public void ShouldReturnFailureIfInvalidTestPathIsSpecified()
         {
-            Assert.IsFalse(Methods.RunTests(@"X:\Invalid\Path\To\tests.dll"));
+            Assert.IsFalse(Methods.RunTests(null, null, @"X:\Invalid\Path\To\tests.dll"));
         }
         /// <summary>
         /// Test method for running Nunit tests that are not passing
@@ -35,7 +35,7 @@ namespace XUnit.Tests
         [TestCategory("XUnitMethods")]
         public void ShouldReturnFailureIfNotPassingTests()
         {
-            Assert.IsFalse(Methods.RunTests(PathToFailingTestLibrary));
+            Assert.IsFalse(Methods.RunTests(null, null, PathToFailingTestLibrary));
         }
         /// <summary>
         /// Test method for running only "first" category Nunit tests
@@ -44,7 +44,7 @@ namespace XUnit.Tests
         [TestCategory("XUnitMethods")]
         public void ShouldRunOnlyFirstCategoryTests()
         {
-            Assert.IsTrue(Methods.RunTests(PathToTestLibrary, "Category=first"));//, "-trait ""Category=first"));
+            Assert.IsTrue(Methods.RunTests("Category=first", null, PathToTestLibrary));//, "-trait ""Category=first"));
         }
     }
 }
