@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnit.Tests", "XUnit.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fail2", "Fail2\Fail2.csproj", "{1A9361E4-777A-41C5-9EE3-35A0696E661F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minify", "Minify\Minify.csproj", "{5EBE98DA-2DFE-4543-9AAD-47867FFAE74E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +166,10 @@ Global
 		{1A9361E4-777A-41C5-9EE3-35A0696E661F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A9361E4-777A-41C5-9EE3-35A0696E661F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A9361E4-777A-41C5-9EE3-35A0696E661F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EBE98DA-2DFE-4543-9AAD-47867FFAE74E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EBE98DA-2DFE-4543-9AAD-47867FFAE74E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EBE98DA-2DFE-4543-9AAD-47867FFAE74E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EBE98DA-2DFE-4543-9AAD-47867FFAE74E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
