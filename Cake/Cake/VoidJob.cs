@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Cake
 {
+    /// <summary>
+    /// Class for
+    /// </summary>
     public class VoidJob : CakeJob
     {
         private Action _action;
@@ -16,11 +19,7 @@ namespace Cake
         /// <param name="name"></param>
         public VoidJob(string name) : base(name)
         {
-            //Name = name;
-            //Status = JobStatus.NotVisited;
-            //Dependencies = new List<string>();
             _action = () => { };
-            //JobManager.RegisterJob(this);
         }
 
         /// <summary>
@@ -28,13 +27,15 @@ namespace Cake
         /// </summary>
         /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="CakeJob.Dependencies"/>.</param>
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
-        public new VoidJob DependsOn(params string[] dependenciesToAdd)
+        public VoidJob DependsOn(params string[] dependenciesToAdd)
         {
             Logger.Log(LogLevel.Trace, "Method started");
             foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
             {
                 Dependencies.Add(dependency);
             }
+
+            Logger.Log(LogLevel.Trace, "Method finished");
             return this;
         }
 
@@ -45,7 +46,6 @@ namespace Cake
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public VoidJob DependsOn(params VoidJob[] dependenciesToAdd)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
             return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
         }
 
@@ -58,6 +58,7 @@ namespace Cake
         {
             Logger.Log(LogLevel.Trace, "Method started");
             _action = actionToDo;
+            Logger.Log(LogLevel.Trace, "Method finished");
             return this;
         }
 
@@ -68,11 +69,13 @@ namespace Cake
             {
                 _action();
                 Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return true;
             }
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return false;
             }
         }

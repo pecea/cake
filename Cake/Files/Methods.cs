@@ -109,11 +109,11 @@
                 catch (Exception ex)
                 {
                     Logger.LogException(LogLevel.Error, ex, $"Could not copy {subdir.FullName}");
-                    
-                    //return false;
+
                 }
 
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return res;
         }
 
@@ -126,7 +126,7 @@
         /// <returns>True, if file was correctly copied</returns>
         public static bool CopyFile(string sourceName, string destName, bool overwrite = true) //TODO: check whether overwrite works - probably when it's set to false, but there is already a file with the name of source file, we get an exception
         {
-            Logger.Log(LogLevel.Trace, "CopyFile method started");
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!File.Exists(sourceName))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {sourceName}");
@@ -137,7 +137,8 @@
             {
                 File.Copy(sourceName, destName, overwrite);
                 Logger.Log(LogLevel.Info, $"File {sourceName} copied");
-                    
+
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return true;
             }
             catch (Exception ex)
@@ -146,7 +147,6 @@
                  
                 return false;
             }
-
         }
 
         /// <summary>
@@ -167,8 +167,9 @@
             {
                 File.Delete(filePath);
                 Logger.Log(LogLevel.Info, $"File {filePath} deleted");
-                
-                return true;
+
+                Logger.Log(LogLevel.Trace, "Method finished");
+                return true; ;
             }
             catch (Exception ex)
             {
@@ -176,7 +177,7 @@
                 
                 return false;
             }
-            
+
         }
 
         /// <summary>
@@ -189,7 +190,10 @@
         public static string[] GetFilesWithPattern(string parentDirectoryPath, string filePattern, bool subdirectories = false)
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            return !Directory.Exists(parentDirectoryPath) ? new string[0] : Directory.GetFiles(parentDirectoryPath, filePattern, subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(path => path.Replace('\\', '/')).ToArray();
+            var result = !Directory.Exists(parentDirectoryPath) ? new string[0] : Directory.GetFiles(parentDirectoryPath, filePattern, subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(path => path.Replace('\\', '/')).ToArray();
+
+            Logger.Log(LogLevel.Trace, "Method finished");
+            return result;
         }
 
         /// <summary>
@@ -224,7 +228,8 @@
             }
 
             Logger.Log(LogLevel.Info, $"Files from {parentDirectoryPath} deleted");
-                
+            Logger.Log(LogLevel.Trace, "Method finished");
+
             return res;
         }
 
@@ -264,7 +269,8 @@
 
             }
             Logger.Log(LogLevel.Info, $"Directories from {parentDirectoryPath} deleted");
-                
+            Logger.Log(LogLevel.Trace, "Method finished");
+
             return res;
         }
 
@@ -286,13 +292,15 @@
             {
                 Directory.Delete(directoryPath, true);
                 Logger.Log(LogLevel.Info, $"Directory {directoryPath} deleted");
-                
+
+                Logger.Log(LogLevel.Trace, "Method finished");
+
                 return true;
             }
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, $"Could not delete {directoryPath}");
-                
+
                 return false;
             }
         }
@@ -361,7 +369,8 @@
                 return false;
             }
             Logger.Log(LogLevel.Info, $"{directoryPath} finished cleaning");
-                
+            Logger.Log(LogLevel.Trace, "Method finished");
+
             return true;
         }
 
@@ -385,7 +394,8 @@
             {
                 File.WriteAllText(filePath, Regex.Replace(File.ReadAllText(filePath), regex, newText));
                 Logger.Log(LogLevel.Info, $"File {filePath} overwritten");
-                
+
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return true;
             }
             catch (Exception ex)
@@ -405,17 +415,23 @@
         public static string[] LookForFileInDirectories(string filename, params string[] directories)
         {
             Logger.Log(LogLevel.Trace, "Method started");
+            string[] res;
             try
             {
                 var paths = directories.Select(directory => Path.Combine(directory, filename)).Where(File.Exists).ToList();
-                return paths.Count > 0 ? paths.ToArray() : new[] { filename };
+                res = paths.Count > 0 ? paths.ToArray() : new[] { filename };
             }
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, "Incorrect filename or directories paths");
                 
-                return new[] {filename};
+                res = new[] {filename};
             }
+
+
+            Logger.Log(LogLevel.Trace, "Method finished");
+
+            return res;
         }
     }
 }

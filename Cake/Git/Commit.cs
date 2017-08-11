@@ -30,6 +30,7 @@ namespace Git
                 var commit = repo.Commit(message, author, committer);
                 Logger.Log(LogLevel.Info, $"Commit {commit.Id} created.");
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
 
             return true;
         }

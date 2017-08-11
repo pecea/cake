@@ -74,6 +74,7 @@
             }
 
             foreach (var child in Children) result.AddRange(child.ResolveNode(option, pathIndex + 1));
+            Logger.Log(LogLevel.Trace, "Method finished");
 
             return result;
         }

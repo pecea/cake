@@ -29,6 +29,7 @@ namespace Git
                     Logger.Log(LogLevel.Info, $"Pull completed. Merge commit: {result.Commit.Id}.");
             }
 
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
     }

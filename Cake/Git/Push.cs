@@ -22,6 +22,7 @@ namespace Git
                 Logger.Log(LogLevel.Info, $"Successfully pushed to {branch.RemoteName}.");
             }
 
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
     }

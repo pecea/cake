@@ -32,6 +32,7 @@ namespace Git
                 Logger.Log(LogLevel.Info, $"Repository reset {mode} to commit {commit.Id}.");
             }
 
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
     }

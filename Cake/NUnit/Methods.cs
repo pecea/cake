@@ -46,6 +46,7 @@ namespace NUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
+                Common.Logger.Log(LogLevel.Trace, "Method finished");
                 return res;
             }
             catch (Exception e)
@@ -134,6 +135,7 @@ namespace NUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
+                Common.Logger.Log(LogLevel.Trace, "Method finished");
                 return res;
             }
             catch (Exception e)

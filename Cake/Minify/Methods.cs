@@ -28,6 +28,7 @@
 
         private static bool MinifyFiles(string pattern, string excludePattern, string destination, bool ignoreCase, Action<Minifier, FileSystemInfo, string> minifyAction)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
             IEnumerable<FileSystemInfo> files = Glob.Expand(pattern, ignoreCase);
 
             if (!ValidateGlob(files, pattern))
@@ -44,11 +45,13 @@
                 minifyAction(minifier, fileInfo, destination);
 
             Logger.Log(LogLevel.Info, $"{files.Count()} files minified.");
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
 
         private static bool ValidateGlob(IEnumerable<FileSystemInfo> files, string pattern)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!files.Any())
             {
                 Logger.Log(LogLevel.Warn, $"Pattern {pattern} did not match any files.");
@@ -65,6 +68,7 @@
                 Logger.Log(LogLevel.Warn, $"Pattern {pattern} matched directories: {directories}.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
 
             return true;
         }

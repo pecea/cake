@@ -43,8 +43,9 @@ namespace XUnit
                 var result = Processor.RunProcess(FullPathExe, parameters);
 
                 if (!string.IsNullOrEmpty(result.Output))
-                    res = result.Output.Contains("Errors: 0, Failed: 0");
+                    res = result.Output.Contains(TestsPassed);
 
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return res;
             }
             catch (Exception e)
@@ -114,8 +115,9 @@ namespace XUnit
                 var result = Processor.RunProcess(FullPathExe, parameters);
 
                 if (!string.IsNullOrEmpty(result.Output))
-                    res = result.Output.Contains("Errors: 0, Failed: 0");
+                    res = result.Output.Contains(TestsPassed);
 
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return res;
             }
             catch (Exception e)

@@ -1,5 +1,6 @@
 ﻿namespace Cake
 {
+    using Common;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -26,6 +27,7 @@
         /// <returns></returns>
         public static Argument[] Parse(string[] args)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
             var result = new List<Argument>();
 
             for (var i = 0; i < args.Length; i++)
@@ -46,7 +48,7 @@
                     result.Add(new Argument(argument.Names, argument.HasValue));
                 }
             }
-
+            Logger.Log(LogLevel.Trace, "Method finished");
             return result.ToArray();
         }
     }

@@ -28,6 +28,7 @@ namespace Git
             }
 
             Logger.Log(LogLevel.Info, $"Fetch completed. {logMessage}");
+            Logger.Log(LogLevel.Trace, "Method finished");
 
             return true;
         }

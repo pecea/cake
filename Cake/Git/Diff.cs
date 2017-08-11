@@ -42,6 +42,7 @@ namespace Git
                 }
             }
 
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
     }

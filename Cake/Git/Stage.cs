@@ -36,6 +36,7 @@ namespace Git
             Logger.Log(LogLevel.Info, $"Staging files:\n{string.Join("\n", paths)}.");
             Commands.Stage(repo, paths);
 
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
     }

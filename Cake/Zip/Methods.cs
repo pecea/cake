@@ -61,6 +61,7 @@
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
 
@@ -133,6 +134,7 @@
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
         /// <summary>
@@ -179,6 +181,7 @@
                 Logger.LogException(LogLevel.Error, ex, $"Unzipping {zipPathAndName}.zip failed.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
 
@@ -209,6 +212,7 @@
                 Logger.LogException(LogLevel.Error, ex, $"Deleting files from {zipPathAndName}.zip failed.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
 
@@ -250,6 +254,7 @@
                 Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
         /// <summary>
@@ -287,6 +292,7 @@
                 Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
 
@@ -308,14 +314,11 @@
                 Logger.Log(LogLevel.Warn, $"The zipPath parameter {zipPath} is not a valid path.");
                 return false;
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return !string.IsNullOrEmpty(fullPath);
         }
 
-        private static bool CheckIfArchiveExists(string archivePath)
-        {
-            Logger.Log(LogLevel.Trace, "CheckIfArchiveExists method started");
-            return File.Exists(archivePath);
-        }
+        private static bool CheckIfArchiveExists(string archivePath) => File.Exists(archivePath);
 
         #endregion
     }

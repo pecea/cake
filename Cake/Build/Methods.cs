@@ -35,19 +35,17 @@
 
         private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
             bool success = true;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
-                //{"Platform", platform } };
-            //MSBuildWorkspace workspace = MSBuildWorkspace.Create(new Dictionary<string, string> {
-            //    { "Configuration", configuration },
-            //    { "Platform", platform}
-            //});
             MSBuildWorkspace workspace = MSBuildWorkspace.Create(options);
             workspace.LoadMetadataForReferencedProjects = true;
             try
             {
                 Project project = workspace.OpenProjectAsync(projectUrl).Result;
                 success = CompileProject(project, outputDir, configuration, platform);
+
+                Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished");
                 workspace.CloseSolution();
             }
             catch(Exception ex)
@@ -56,55 +54,55 @@
                 success = false;
             }
 
+            Logger.Log(LogLevel.Trace, "Method finished");
             return success;
+        }
+
+        private static void WriteStreamToFile(MemoryStream stream, string fileName)
+        {
+            using (FileStream file = File.Create(fileName))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                stream.CopyTo(file);
+            }
+            stream.Close();
         }
 
         private static bool CompileProject(Project project, string outputPath, string configuration, string platform)
         {
-            bool success = true;
-            Compilation projectCompilation = project?.WithCompilationOptions(project?.CompilationOptions?.WithOptimizationLevel(optimizationOptions[configuration])?.WithPlatform(platformOptions[platform]))?.GetCompilationAsync()?.Result;
-            //Compilation projectCompilation = project.GetCompilationAsync().Result;
+            Logger.Log(LogLevel.Trace, "Method started");
+            bool success = false;
+            Compilation projectCompilation = project?.WithCompilationOptions(project?.CompilationOptions?
+                .WithOptimizationLevel(optimizationOptions[configuration])?.WithPlatform(platformOptions[platform]))?
+                .GetCompilationAsync()?.Result;
             if (!string.IsNullOrEmpty(projectCompilation?.AssemblyName))
             {
-                using (var stream = new MemoryStream())
+                
+                MemoryStream stream, stream2, stream3;
+                stream  = stream2 = stream3 = new MemoryStream();
+                EmitResult result = projectCompilation.Emit(stream, stream2, stream3);
+                if (success = result.Success)
                 {
-                    EmitResult result = projectCompilation.Emit(stream);
-                    if (result.Success)
-                    {
-                        string fileName = string.Format("{0}.dll", projectCompilation.AssemblyName);
-
-                        using (FileStream file = File.Create(outputPath + '\\' + fileName))
-                        {
-                            stream.Seek(0, SeekOrigin.Begin);
-                            stream.CopyTo(file);
-                        }
-                    }
-                    else
-                    {
-                        success = false;
-                    }
+                    WriteStreamToFile(stream, $"{outputPath}\\{projectCompilation.AssemblyName}.dll");
+                    WriteStreamToFile(stream2, $"{outputPath}\\{projectCompilation.AssemblyName}.pdb");
+                    WriteStreamToFile(stream3, $"{outputPath}\\{projectCompilation.AssemblyName}.xml");
                 }
             }
-            else
-            {
-                success = false;
-            }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return success;
         }
 
         private static bool CompileSolution(string solutionUrl, string outputDir, string configuration, string platform)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
             bool success = true;
-            MSBuildWorkspace workspace = MSBuildWorkspace.Create(new Dictionary<string, string> {
-                { "Configuration", configuration },
-                { "Platform", platform}
-            });
+            var options = new Dictionary<string, string> { { "Configuration", configuration } };
+            MSBuildWorkspace workspace = MSBuildWorkspace.Create(options);
             workspace.LoadMetadataForReferencedProjects = true;
             try
             {
                 Solution solution = workspace.OpenSolutionAsync(solutionUrl).Result;
                 ProjectDependencyGraph projectGraph = solution.GetProjectDependencyGraph();
-                //Dictionary<string, Stream> assemblies = new Dictionary<string, Stream>();
 
                 foreach (ProjectId projectId in projectGraph.GetTopologicallySortedProjects())
                     success &= CompileProject(solution.GetProject(projectId), outputDir, configuration, platform);
@@ -115,6 +113,8 @@
                 Logger.LogException(LogLevel.Error, ex, $"Could not build solution {solutionUrl}");
                 success = false;
             }
+
+            Logger.Log(LogLevel.Trace, "Method finished");
             return success;
         }
 
@@ -137,8 +137,12 @@
             if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(solutionFile, outputPath, configuration, platform)) return false;
 
-            return enumerable.Aggregate(true,
+            var res = enumerable.Aggregate(true,
                 (current, path) => current & CompileSolution(path, outputPath, configuration, platform));
+
+            Logger.Log(LogLevel.Trace, "Method finished");
+
+            return res;
         }
 
         /// <summary>
@@ -151,7 +155,6 @@
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            //var _ = typeof(Microsoft.CodeAnalysis.CSharp.Formatting.CSharpFormattingOptions);
             Logger.Log(LogLevel.Trace, "Method started");
             var paths = projectFile.GetFilePaths();
 
@@ -161,8 +164,10 @@
             if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
-            return enumerable.Aggregate(true,
+            var res =  enumerable.Aggregate(true,
                 (current, path) => current & CompileProject(path, outputPath, configuration, platform));
+            Logger.Log(LogLevel.Trace, "Method finished");
+            return res;
         }
 
         //private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)
@@ -235,6 +240,7 @@
                     return false;
                 }
             }
+            Logger.Log(LogLevel.Trace, "Method finished");
             return true;
         }
     }

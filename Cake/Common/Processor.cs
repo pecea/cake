@@ -17,8 +17,8 @@ namespace Common
         /// <returns></returns>
         public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
-            ProcessResult result = new ProcessResult();
             Logger.Log(LogLevel.Trace, "Method started");
+            ProcessResult result = new ProcessResult();
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
             if (workingDirectory != ".")
@@ -71,6 +71,7 @@ namespace Common
                     Logger.Log(LogLevel.Debug, "Process exited with an error!");
                     result.Success = false;
                 }
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return result;
             }
         }
@@ -82,7 +83,6 @@ namespace Common
         /// <returns>String enclosed with quotes</returns>
         public static string QuoteArgument(string arg)
         {
-            Logger.Log(LogLevel.Trace, "QuoteArgument method started");
             return $@"""{arg}""";
         }
     }

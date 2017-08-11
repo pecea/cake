@@ -16,7 +16,6 @@
         /// <returns>Enumeration of directories' paths that exist and fit the wildcared path.</returns>
         public static IEnumerable<string> GetDirectoriesPaths(this string path)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
             return GetPaths(path, GetPathsOptions.Directories);
         }
 
@@ -27,12 +26,12 @@
         /// <returns>Enumeration of files' paths that exist and fit the wildcared path.</returns>
         public static IEnumerable<string> GetFilePaths(this string path)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
             return GetPaths(path, GetPathsOptions.Files);
         }
 
         private static IEnumerable<string> GetPaths(string path, GetPathsOptions option)
         {
+            Logger.Log(LogLevel.Trace, "Method started");
             if (!path.Contains("*"))
             {
                 switch (option)
@@ -46,6 +45,7 @@
 
             var splitPath = path.Split('\\', '/');
             var pathsRoot = new Node(splitPath[0], splitPath);
+            Logger.Log(LogLevel.Trace, "Method finished");
             return pathsRoot.ResolveNode(option);
         }
     }
