@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Build.Tests
@@ -10,7 +10,7 @@ namespace Build.Tests
         public bool IsDebug(string assemblyPath)
         {
             var assembly = Assembly.LoadFile(Path.GetFullPath(assemblyPath));
-            return assembly?.GetCustomAttributes(typeof(DebuggableAttribute), false).Length > 0;
+            return assembly.DefinedTypes.Any(t => t.Name == "Debug");
         }
     }
 }

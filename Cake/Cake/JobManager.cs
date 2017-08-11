@@ -9,20 +9,20 @@
     /// </summary>
     public static class JobManager
     {
-        private static Dictionary<string, Job> _jobs;
+        private static Dictionary<string, CakeJob> _jobs;
 
         internal static string JobToRun { get; set; }
 
         static JobManager()
         {
-            _jobs = new Dictionary<string, Job>();
+            _jobs = new Dictionary<string, CakeJob>();
         }
 
         /// <summary>
         /// Registers <see cref="Job"/> by adding it to the <see cref="_jobs"/> dictionary.
         /// </summary>
         /// <param name="job">A <see cref="Job"/> to be added.</param>
-        public static void RegisterJob(Job job)
+        public static void RegisterJob(CakeJob job)
         {
             Logger.Log(LogLevel.Trace, "Method started");
             _jobs.Add(job.Name, job);
@@ -32,9 +32,9 @@
 
         /// <summary>
         /// Runs <see cref="PerformJobWithDependencies"/> recursive function 
-        /// and resets <see cref="Job.Status"/> property of each <see cref="Job"/> from <see cref="_jobs"/> after it is finished.
+        /// and resets <see cref="CakeJob.Status"/> property of each <see cref="CakeJob"/> from <see cref="_jobs"/> after it is finished.
         /// </summary>
-        /// <param name="name">Name of a <see cref="Job"/> to be executed.</param>
+        /// <param name="name">Name of a <see cref="CakeJob"/> to be executed.</param>
         public static void SetDefault(string name)
         {
             Logger.Log(LogLevel.Trace, "Method started");
@@ -54,10 +54,10 @@
 
         /// <summary>
         /// Runs <see cref="PerformJobWithDependencies"/> recursive function 
-        /// and resets <see cref="Job.Status"/> property of each <see cref="Job"/> from <see cref="_jobs"/> after it is finished.
+        /// and resets <see cref="CakeJob.Status"/> property of each <see cref="CakeJob"/> from <see cref="_jobs"/> after it is finished.
         /// </summary>
-        /// <param name="job">A <see cref="Job"/> to be executed.</param>
-        public static void SetDefault(Job job)
+        /// <param name="job">A <see cref="CakeJob"/> to be executed.</param>
+        public static void SetDefault(CakeJob job)
         {
             SetDefault(job.Name);
         }
@@ -69,14 +69,14 @@
         public static void ClearJobs()
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            _jobs = new Dictionary<string, Job>();
+            _jobs = new Dictionary<string, CakeJob>();
             Logger.Log(LogLevel.Trace, "Method finished");
         }
         
         private static bool PerformJobWithDependencies(string name)
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            Job job;
+            CakeJob job;
             try
             {
                 job = _jobs[name];
@@ -100,7 +100,7 @@
             {
                 if (PerformJobWithDependencies(dependency)) continue;
                 job.Status = JobStatus.Failed;
-                throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
+                throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n", "JobManager.RunJobWithDependencies");
             }
             try
             {

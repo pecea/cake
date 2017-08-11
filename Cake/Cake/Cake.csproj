@@ -156,6 +156,7 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentParser.cs" />
+    <Compile Include="CakeJob.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoslynEngine.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="JobException.cs" />
     <Compile Include="JobManager.cs" />
     <Compile Include="JobStatus.cs" />
+    <Compile Include="VoidJob.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

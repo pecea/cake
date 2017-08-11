@@ -1,6 +1,7 @@
 ﻿namespace Cake.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
     /// <summary>
     /// Test class for JobManager methods
@@ -63,7 +64,7 @@
         [ExpectedException(typeof (JobException))]
         public void SetDefaultShouldThrowWhenTaskIsSelfDependent()
         {
-            JobManager.SetDefault(new Job("first").DependsOn("first"));
+            JobManager.SetDefault(new VoidJob("first").DependsOn("first"));
         }
         /// <summary>
         /// Test method for triangle dependency
@@ -75,21 +76,21 @@
         {
             var counter = 0;
 
-            var third = new Job("third")
+            var third = new VoidJob("third")
                 .DependsOn("second", "first")
                 .Does(() =>
                 {
                     Assert.AreEqual(3, ++counter);
                 });
 
-            new Job("second")
+            new VoidJob("second")
                 .DependsOn("first")
                 .Does(() =>
                 {
                     Assert.AreEqual(2, ++counter);
                 });
 
-            new Job("first")
+            new VoidJob("first")
                 .Does(() =>
                 {
                     Assert.AreEqual(1, ++counter);
@@ -106,32 +107,33 @@
         public void TasksShouldBeExecutedInRightOrderDiamond()
         {
             var counter = 0;
-            void CounterAdd() => counter++;
+            Action CounterAdd;
+            CounterAdd = () => counter++;
 
-            var top = new Job("top")
+            var top = new VoidJob("top")
                 .DependsOn("middle 1", "middle 2", "middle 3", "middle 4")
                 .Does(() =>
                 {
                     Assert.AreEqual(6, ++counter);
                 });
 
-            new Job("middle 1")
+            new VoidJob("middle 1")
                 .DependsOn("middle 2", "bottom")
                 .Does(CounterAdd);            
             
-            new Job("middle 2")
+            new VoidJob("middle 2")
                 .DependsOn("middle 3", "bottom")
                 .Does(CounterAdd);            
             
-            new Job("middle 3")
+            new VoidJob("middle 3")
                 .DependsOn("middle 4", "bottom")
                 .Does(CounterAdd);            
             
-            new Job("middle 4")
+            new VoidJob("middle 4")
                 .DependsOn("bottom")
                 .Does(CounterAdd);
 
-            new Job("bottom")
+            new VoidJob("bottom")
                 .Does(() =>
                 {
                     Assert.AreEqual(1, ++counter);

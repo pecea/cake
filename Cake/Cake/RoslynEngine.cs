@@ -35,6 +35,11 @@ namespace Cake
             {
                 throw new JobException($"Error inside the script: {ce.Message}", ce.Source);
             }
+            catch (AggregateException ae)
+            {
+                if (ae.InnerException != null)
+                    throw ae.InnerException;
+            }
             catch (Exception)
             {
                 throw;

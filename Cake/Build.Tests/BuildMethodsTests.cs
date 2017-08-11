@@ -20,6 +20,7 @@ namespace Build.Tests
         public void CleanUpBuiltFiles()
         {
             Files.Methods.CleanDirectory(OutputPathDebug);
+            Files.Methods.CleanDirectory(OutputPathRelease);
         }
         /// <summary>
         /// Test method for empty argument
@@ -106,7 +107,7 @@ namespace Build.Tests
         public void BuildProjectShouldReturnFailureIfOutputPathIsInvalid()
         {
             Assert.IsTrue(Methods.BuildProject(ProjectPath));
-            Assert.IsFalse(Methods.BuildProject(ProjectPath, "invalid output path?"));
+            Assert.IsFalse(Methods.BuildProject(ProjectPath, "invalid: output path?"));
         }
         /// <summary>
         /// test method for reassuring output was created
@@ -115,8 +116,7 @@ namespace Build.Tests
         [TestMethod]
         public void BuildProjectShouldCreateFilesWhenBuildingAProject()
         {
-            Files.Methods.CleanDirectory(OutputPathDebug);
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
+            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathDebug));
 
             Assert.IsTrue((OutputPathDebug + "/*.*").GetFilePaths().Any());
         }
@@ -127,7 +127,7 @@ namespace Build.Tests
         [TestMethod]
         public void BuildProjectShouldBuildAProjectInDebugIfDebugWasSpecified()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
+            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathDebug, configuration: "Debug"));
             using (var isolated = new Isolated<ConfigurationChecker>())
             {
                 Assert.IsTrue(isolated.Value.IsDebug((OutputPathDebug + "/*.dll").GetFilePaths().First()));
@@ -140,7 +140,7 @@ namespace Build.Tests
         [TestMethod]
         public void BuildProjectShouldBuildAProjectInReleaseIfReleaseWasSpecified()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, configuration: "Release"));
+            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathRelease, configuration: "Release"));
             using (var isolated = new Isolated<ConfigurationChecker>())
             {
                 Assert.IsFalse(isolated.Value.IsDebug((OutputPathRelease + "/*.dll").GetFilePaths().First()));

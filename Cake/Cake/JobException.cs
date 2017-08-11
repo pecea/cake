@@ -7,7 +7,7 @@
     /// These exceptions are thrown when there are errors in user written script concerning jobs.
     /// </summary>
     [Serializable]
-    public class JobException : Exception, ISerializable
+    public class JobException : Exception , ISerializable
     {
         /// <summary>
         /// The source of the error

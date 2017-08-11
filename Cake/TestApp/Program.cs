@@ -15,8 +15,8 @@ namespace AddRegistryKey
         {
             JobManager.SetDefault(new Job("BuildSolution").Does(() =>
             {
-                var result = Build.Methods.BuildProject(@"D:\Dane\Ernest\Praca\cake\Cake\Cake.sln", @"D:\Dane\Ernest\Praca\TestOutput\", "Release");
-                System.Console.WriteLine(result.ToString());
+                var res = Build.Methods.BuildProject(@"D:\Dane\Ernest\Praca\cake\Cake\Cake.sln", @"D:\Dane\Ernest\Praca\TestOutput\", "Release");
+                return res;
             }));
             //RoslynEngine.ExecuteFile(@"D:\Dane\Ernest\Praca\cake\Cake\scripts\realScript.csx");
         }

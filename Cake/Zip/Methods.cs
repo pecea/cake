@@ -41,7 +41,7 @@
                     {
                         var attributes = File.GetAttributes(path);
                         if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
-                            zip.AddDirectory(path, (path.LastOrDefault() == '/' || path.LastOrDefault() == '\\') ? path.Remove(path.Length - 1).Replace('/', '\\').Split('\\').LastOrDefault() : path.Replace('/', '\\').Split('\\').LastOrDefault());
+                            zip.AddDirectory(path, path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault());
                         else zip.AddFile(path, "");
                     }
                     if (!string.IsNullOrEmpty(zipPathAndName) && zipPathAndName.Contains(".zip"))
@@ -236,11 +236,7 @@
                         var attributes = File.GetAttributes(mod);
                         if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
                         {
-
-                            if (mod.LastOrDefault() == '/' || mod.LastOrDefault() == '\\')
-                                mod = mod.Remove(mod.Length - 1);
-                            mod = mod.Replace('\\', '/').Split('/').LastOrDefault();
-                            mod += '/';
+                            mod = mod.Replace('\\', '/').Split(new[] { '/'}, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() +'/';
                             zip.UpdateItem(entry, mod);
                         }
                         else
