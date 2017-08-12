@@ -9,6 +9,16 @@ namespace Git.Tests
     public class GitMethodsTests
     {
         const string Path = @"..\..\Test Files\UnitTestRepository\";
+        
+        //Commit
+        //Diff
+        //Fetch
+        //Pull
+        //Push
+        //Reset
+        //Stage
+
+
 
         //[TestInitialize]
         //public void CreateRepository()
