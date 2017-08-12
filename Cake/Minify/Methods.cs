@@ -10,6 +10,14 @@
 
     public static partial class Methods
     {
+        /// <summary>
+        /// Method for minifying .js files.
+        /// </summary>
+        /// <param name="pattern">Pattern for matching files to minify</param>
+        /// <param name="excludePattern">Pattern for not matching files to minify</param>
+        /// <param name="destination">Path and name of the output file</param>
+        /// <param name="ignoreCase">Flag indicating whether to ignore case in files</param>
+        /// <returns>True in case of success, false otherwise</returns>
         public static bool MinifyJs(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
         {
             Logger.Log(LogLevel.Trace, "Method started");
@@ -17,7 +25,14 @@
             Logger.Log(LogLevel.Trace, "Method finished");
             return result;
         }
-
+        /// <summary>
+        /// Method for minifying .css files.
+        /// </summary>
+        /// <param name="pattern">Pattern for matching files to minify</param>
+        /// <param name="excludePattern">Pattern for not matching files to minify</param>
+        /// <param name="destination">Path and name of the output file</param>
+        /// <param name="ignoreCase">Flag indicating whether to ignore case in files</param>
+        /// <returns>True in case of success, false otherwise</returns>
         public static bool MinifyCss(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
         {
             Logger.Log(LogLevel.Trace, "Method started");
@@ -73,6 +88,14 @@
             return true;
         }
 
+        /// <summary>
+        /// Methodd for bundling files into one.
+        /// </summary>
+        /// <param name="pattern">Pattern for matching files to minify</param>
+        /// <param name="excludePattern">Pattern for not matching files to minify</param>
+        /// <param name="destination">Path and name of the output file</param>
+        /// <param name="ignoreCase">Flag indicating whether to ignore case in files</param>
+        /// <returns>True in case of success, false otherwise</returns>
         public static bool BundleFiles(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
         {
             Logger.Log(LogLevel.Trace, "Method started");
@@ -110,23 +133,5 @@
             Logger.Log(LogLevel.Trace, "Method finished");
             return result;
         }
-
-        //private static void CombineMultipleFilesIntoSingleFile(string inputDirectoryPath, string inputFileNamePattern, string outputFilePath)
-        //{
-        //    string[] inputFilePaths = Directory.GetFiles(inputDirectoryPath, inputFileNamePattern);
-        //    Console.WriteLine("Number of files: {0}.", inputFilePaths.Length);
-        //    using (var outputStream = File.Create(outputFilePath))
-        //    {
-        //        foreach (var inputFilePath in inputFilePaths)
-        //        {
-        //            using (var inputStream = File.OpenRead(inputFilePath))
-        //            {
-        //                // Buffer size can be passed as the second argument.
-        //                inputStream.CopyTo(outputStream);
-        //            }
-        //            Console.WriteLine("The file {0} has been processed.", inputFilePath);
-        //        }
-        //    }
-        //}
     }
 }
