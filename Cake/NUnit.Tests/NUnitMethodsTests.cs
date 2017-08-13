@@ -1,6 +1,7 @@
-﻿namespace NUnit.Tests
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace NUnit.Tests
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     /// <summary>
     /// Test class for Nunit methods
     /// </summary>

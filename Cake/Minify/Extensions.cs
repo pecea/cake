@@ -1,6 +1,6 @@
-﻿using Microsoft.Ajax.Utilities;
-using System;
+﻿using System;
 using System.IO;
+using Microsoft.Ajax.Utilities;
 
 namespace Minify
 {
@@ -8,13 +8,13 @@ namespace Minify
     {
         public static string MinFullName(this FileSystemInfo fileInfo, string newPath = null)
         {
-            string fullName = fileInfo.FullName;
-            string extension = fileInfo.Extension;
+            var fullName = fileInfo.FullName;
+            var extension = fileInfo.Extension;
 
             if (newPath != null)
                 fullName = Path.Combine(newPath, fileInfo.Name);
 
-            return fullName.Insert(fullName.LastIndexOf(extension), ".min");
+            return fullName.Insert(fullName.LastIndexOf(extension, StringComparison.Ordinal), ".min");
         }
 
         public static void MinifyCssFile(this Minifier minifier, FileSystemInfo fileInfo, string destination)
@@ -29,11 +29,11 @@ namespace Minify
 
         private static void MinifyFile(FileSystemInfo fileInfo, string destination, Func<string, string> minifyFunc)
         {
-            string contents = File.ReadAllText(fileInfo.FullName);
-            string minifiedContents = minifyFunc(contents);
-            string newFullName = fileInfo.MinFullName(destination);
+            var contents = File.ReadAllText(fileInfo.FullName);
+            var minifiedContents = minifyFunc(contents);
+            var newFullName = fileInfo.MinFullName(destination);
 
-            using (StreamWriter sw = File.CreateText(newFullName))
+            using (var sw = File.CreateText(newFullName))
                 sw.Write(minifiedContents);
         }
     }

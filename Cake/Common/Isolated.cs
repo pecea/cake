@@ -1,6 +1,7 @@
-﻿namespace Common
+﻿using System;
+
+namespace Common
 {
-    using System;
     /// <summary>
     /// 
     /// </summary>

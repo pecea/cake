@@ -1,18 +1,20 @@
-﻿namespace Cake
-{
-    using System;
-    using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
+namespace Cake
+{
     /// <summary>
     /// These exceptions are thrown when there are errors in user written script concerning jobs.
     /// </summary>
     [Serializable]
-    public class JobException : Exception , ISerializable
+    public class JobException : Exception
     {
         /// <summary>
         /// The source of the error
         /// </summary>
-        public sealed override string Source { get { return _source; } set { _source = value; } }
+        public sealed override string Source { get => _source;
+            set => _source = value;
+        }
 
         private string _source;
 

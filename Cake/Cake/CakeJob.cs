@@ -1,9 +1,4 @@
-﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Cake
 {
@@ -23,7 +18,7 @@ namespace Cake
         /// CakeJob constructor that is also registering newly created job to the <see cref="JobManager"/>
         /// </summary>
         /// <param name="name"></param>
-        public CakeJob(string name)
+        protected CakeJob(string name)
         {
             Name = name;
             Status = JobStatus.NotVisited;

@@ -18,7 +18,7 @@ namespace Common
         public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            ProcessResult result = new ProcessResult();
+            var result = new ProcessResult();
             Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
 
             if (workingDirectory != ".")

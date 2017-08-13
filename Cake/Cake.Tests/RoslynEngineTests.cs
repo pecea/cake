@@ -1,12 +1,9 @@
-﻿using Common;
+﻿using System.IO;
+using Common;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Cake.Tests
 {
-    using System;
-    using System.IO;
-
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-
     /// <summary>
     /// Test class for RoslynEngine tests
     /// </summary>

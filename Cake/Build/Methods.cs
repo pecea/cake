@@ -1,22 +1,21 @@
-﻿namespace Build
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Common;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Formatting;
+using Microsoft.CodeAnalysis.MSBuild;
+
+namespace Build
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-
-    using Common;
-    using Microsoft.CodeAnalysis.MSBuild;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Emit;
-
     /// <summary>
     /// Encloses methods used with building projects.
     /// </summary>
     public static class Methods
     {
-        private static Type _ = typeof(Microsoft.CodeAnalysis.CSharp.Formatting.CSharpFormattingOptions); // hack to recognize C# as a valid language in compilation
-        private static Dictionary<string, Platform> platformOptions = new Dictionary<string, Platform>()
+        private static Type _ = typeof(CSharpFormattingOptions); // hack to recognize C# as a valid language in compilation
+        private static readonly Dictionary<string, Platform> PlatformOptions = new Dictionary<string, Platform>
         {
             { "x86", Platform.X86 },
             { "x64", Platform.X64 },
@@ -27,7 +26,7 @@
             //{ "Itanium", Platform.Itanium }
         };
 
-        private static Dictionary<string, OptimizationLevel> optimizationOptions = new Dictionary<string, OptimizationLevel>()
+        private static readonly Dictionary<string, OptimizationLevel> OptimizationOptions = new Dictionary<string, OptimizationLevel>
         {
             { "Debug", OptimizationLevel.Debug },
             { "Release", OptimizationLevel.Release }
@@ -36,19 +35,19 @@
         private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            bool success = true;
+            bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
-            MSBuildWorkspace workspace = MSBuildWorkspace.Create(options);
+            var workspace = MSBuildWorkspace.Create(options);
             workspace.LoadMetadataForReferencedProjects = true;
             try
             {
-                Project project = workspace.OpenProjectAsync(projectUrl).Result;
+                var project = workspace.OpenProjectAsync(projectUrl).Result;
                 success = CompileProject(project, outputDir, configuration, platform);
 
                 Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished");
                 workspace.CloseSolution();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, $"Could not build project {projectUrl}");
                 success = false;
@@ -58,9 +57,9 @@
             return success;
         }
 
-        private static void WriteStreamToFile(MemoryStream stream, string fileName)
+        private static void WriteStreamToFile(Stream stream, string fileName)
         {
-            using (FileStream file = File.Create(fileName))
+            using (var file = File.Create(fileName))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(file);
@@ -71,17 +70,19 @@
         private static bool CompileProject(Project project, string outputPath, string configuration, string platform)
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            bool success = false;
-            Compilation projectCompilation = project?.WithCompilationOptions(project?.CompilationOptions?
-                .WithOptimizationLevel(optimizationOptions[configuration])?.WithPlatform(platformOptions[platform]))?
+            var success = false;
+            var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?
+                    .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
                 .GetCompilationAsync()?.Result;
             if (!string.IsNullOrEmpty(projectCompilation?.AssemblyName))
             {
-                
-                MemoryStream stream, stream2, stream3;
-                stream  = stream2 = stream3 = new MemoryStream();
-                EmitResult result = projectCompilation.Emit(stream, stream2, stream3);
-                if (success = result.Success)
+
+                var stream = new MemoryStream();
+                var stream2 = new MemoryStream();
+                var stream3 = new MemoryStream();
+                var result = projectCompilation.Emit(stream, stream2, stream3);
+                success = result.Success;
+                if (success)
                 {
                     WriteStreamToFile(stream, $"{outputPath}\\{projectCompilation.AssemblyName}.dll");
                     WriteStreamToFile(stream2, $"{outputPath}\\{projectCompilation.AssemblyName}.pdb");
@@ -95,17 +96,16 @@
         private static bool CompileSolution(string solutionUrl, string outputDir, string configuration, string platform)
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            bool success = true;
+            bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
-            MSBuildWorkspace workspace = MSBuildWorkspace.Create(options);
+            var workspace = MSBuildWorkspace.Create(options);
             workspace.LoadMetadataForReferencedProjects = true;
             try
             {
-                Solution solution = workspace.OpenSolutionAsync(solutionUrl).Result;
-                ProjectDependencyGraph projectGraph = solution.GetProjectDependencyGraph();
+                var solution = workspace.OpenSolutionAsync(solutionUrl).Result;
+                var projectGraph = solution.GetProjectDependencyGraph();
 
-                foreach (ProjectId projectId in projectGraph.GetTopologicallySortedProjects())
-                    success &= CompileProject(solution.GetProject(projectId), outputDir, configuration, platform);
+                success = projectGraph.GetTopologicallySortedProjects().Aggregate(true, (current, projectId) => current & CompileProject(solution.GetProject(projectId), outputDir, configuration, platform));
                 workspace.CloseSolution();
             }
             catch (Exception ex)
@@ -164,7 +164,7 @@
             if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
-            var res =  enumerable.Aggregate(true,
+            var res = enumerable.Aggregate(true,
                 (current, path) => current & CompileProject(path, outputPath, configuration, platform));
             Logger.Log(LogLevel.Trace, "Method finished");
             return res;
@@ -217,13 +217,13 @@
                 Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");
                 return false;
             }
-            if(!platformOptions.ContainsKey(platform))
+            if (!PlatformOptions.ContainsKey(platform))
             {
-                Logger.Log(LogLevel.Warn, $"The platform parameter must be one of: {string.Join(", ", platformOptions.Select(k => k.Key))}");
+                Logger.Log(LogLevel.Warn, $"The platform parameter must be one of: {string.Join(", ", PlatformOptions.Select(k => k.Key))}");
                 return false;
             }
 
-            if (!optimizationOptions.ContainsKey(configuration))
+            if (!OptimizationOptions.ContainsKey(configuration))
             {
                 Logger.Log(LogLevel.Warn, "The configuration parameter must be set to \"Debug\" or \"Release\".");
                 return false;
@@ -234,7 +234,7 @@
                 {
                     Directory.CreateDirectory(outputPath);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.LogException(LogLevel.Error, ex, $"Could not create output folder: {outputPath}");
                     return false;

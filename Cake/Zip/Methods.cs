@@ -1,12 +1,13 @@
-﻿namespace Zip
-{
-    using Common;
-    using Ionic.Zip;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Common;
+using Ionic.Zip;
+using Ionic.Zlib;
 
+namespace Zip
+{
     //using Ionic.Zip;
     /// <summary>
     /// Encloses methods used with zipping files.
@@ -99,16 +100,16 @@
                     switch (compression)
                     {
                         case "none":
-                            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.None;
+                            zip.CompressionLevel = CompressionLevel.None;
                             break;
                         case "best":
-                            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                            zip.CompressionLevel = CompressionLevel.BestCompression;
                             break;
                         case "fastest":
-                            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestSpeed;
+                            zip.CompressionLevel = CompressionLevel.BestSpeed;
                             break;
                         default:
-                            zip.CompressionLevel = Ionic.Zlib.CompressionLevel.Default;
+                            zip.CompressionLevel = CompressionLevel.Default;
                             break;
                     }
                     foreach (var path in paths)

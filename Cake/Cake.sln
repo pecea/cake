@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5311970D-8E70-4432-BFEC-7418C5E3713E}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,8 +13,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EE7D900E-5296-4894-988E-421F8EAD75FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cake", "Cake\Cake.csproj", "{9199AA5E-B022-423A-946B-DC6E3683F935}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{189F3E91-4158-420A-9FC4-6A2A75DBD31C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{9AD8621E-E325-47D5-8EE9-CF0F6AAA300B}"
 EndProject
@@ -68,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minify", "Minify\Minify.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minify.Tests", "Minify.Tests\Minify.Tests.csproj", "{871D8A3D-D5E5-4A94-809E-F4D24B400C87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{5F033557-9638-44F1-BD8E-197C2EC76038}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,10 +78,6 @@ Global
 		{9199AA5E-B022-423A-946B-DC6E3683F935}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9199AA5E-B022-423A-946B-DC6E3683F935}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9199AA5E-B022-423A-946B-DC6E3683F935}.Release|Any CPU.Build.0 = Release|Any CPU
-		{189F3E91-4158-420A-9FC4-6A2A75DBD31C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{189F3E91-4158-420A-9FC4-6A2A75DBD31C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{189F3E91-4158-420A-9FC4-6A2A75DBD31C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{189F3E91-4158-420A-9FC4-6A2A75DBD31C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9AD8621E-E325-47D5-8EE9-CF0F6AAA300B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9AD8621E-E325-47D5-8EE9-CF0F6AAA300B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AD8621E-E325-47D5-8EE9-CF0F6AAA300B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -170,6 +166,10 @@ Global
 		{871D8A3D-D5E5-4A94-809E-F4D24B400C87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{871D8A3D-D5E5-4A94-809E-F4D24B400C87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{871D8A3D-D5E5-4A94-809E-F4D24B400C87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F033557-9638-44F1-BD8E-197C2EC76038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F033557-9638-44F1-BD8E-197C2EC76038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F033557-9638-44F1-BD8E-197C2EC76038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F033557-9638-44F1-BD8E-197C2EC76038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

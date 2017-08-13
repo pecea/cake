@@ -1,9 +1,9 @@
-﻿namespace Cake
-{
-    using Common;
-    using System;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Common;
 
+namespace Cake
+{
     /// <summary>
     /// Registers jobs read from the script, figures out job execution order and executes them.
     /// </summary>

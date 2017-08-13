@@ -1,15 +1,24 @@
-﻿using Common;
-using LibGit2Sharp;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Common;
+using LibGit2Sharp;
 using LogLevel = Common.LogLevel;
 
 namespace Git
 {
     public static partial class Methods
     {
-        public static bool Stage(string path) => Stage(new string[] { path });
-
+        /// <summary>
+        /// Informs local repository about changes in a file.
+        /// </summary>
+        /// <param name="path">Path to the file for staging</param>
+        /// <returns>True in case of success, false otherwise.</returns>
+        public static bool Stage(string path) => Stage(new[] { path });
+        /// <summary>
+        /// Informs local repository about changes in files.
+        /// </summary>
+        /// <param name="paths">Paths to files for staging</param>
+        /// <returns>True in case of success, false otherwise.</returns>
         public static bool Stage(IEnumerable<string> paths = null)
         {
             using (var repo = new Repository(RepositoryPath))
@@ -27,14 +36,15 @@ namespace Git
                     .Select(c => c.Path);
             }
 
-            if (!paths.Any())
+            var enumerable = paths as string[] ?? paths.ToArray();
+            if (!enumerable.Any())
             {
                 Logger.Log(LogLevel.Warn, "No files to stage!");
                 return false;
             }
 
-            Logger.Log(LogLevel.Info, $"Staging files:\n{string.Join("\n", paths)}.");
-            Commands.Stage(repo, paths);
+            Logger.Log(LogLevel.Info, $"Staging files:\n{string.Join("\n", enumerable)}.");
+            Commands.Stage(repo, enumerable);
 
             Logger.Log(LogLevel.Trace, "Method finished");
             return true;

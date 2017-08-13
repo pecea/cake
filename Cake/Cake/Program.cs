@@ -1,10 +1,9 @@
-﻿namespace Cake
+﻿using System;
+using System.Linq;
+using Common;
+
+namespace Cake
 {
-    using System;
-    using System.Linq;
-
-    using Common;
-
     /// <summary>
     /// Provides an entry point for the application.
     /// </summary>

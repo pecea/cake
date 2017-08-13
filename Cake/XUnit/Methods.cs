@@ -1,13 +1,14 @@
-﻿using Common;
-using System;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
+using Common;
 
 namespace XUnit
 {
     public class Methods
     {
-        private static string FullPathExe => System.Configuration.ConfigurationManager.AppSettings?["XUnitPath"];
+        private static string FullPathExe => ConfigurationManager.AppSettings["XUnitPath"];
         private const string TestsPassed = "Errors: 0, Failed: 0";
         /// <summary>
         /// Runs XUnit unit tests from the speciffied assemblyPath
@@ -19,7 +20,7 @@ namespace XUnit
         public static bool RunTests(string traits = null, string notraits = null, params string[] assemblyPaths)
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            bool res = true;
+            var res = true;
             if (!File.Exists(FullPathExe))
             {
                 Logger.Log(LogLevel.Warn, "xunit.console.exe file not found.");
@@ -74,7 +75,7 @@ namespace XUnit
             string parallel = null, int? maxthreads = null, bool? noshadow = null, bool? quiet = null, bool? serialize = null, string outputTypeAndName = null)
         {
             Logger.Log(LogLevel.Trace, "Method started");
-            bool res = true;
+            var res = true;
             if (!File.Exists(FullPathExe))
             {
                 Logger.Log(LogLevel.Warn, "xunit.console.exe file not found.");

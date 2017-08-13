@@ -1,9 +1,9 @@
-﻿using LibGit2Sharp;
-using LibGit2Sharp.Handlers;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using LibGit2Sharp;
+using LibGit2Sharp.Handlers;
+using Newtonsoft.Json;
 
 namespace Git
 {
@@ -16,26 +16,26 @@ namespace Git
 
         public string Name
         {
-            get { return (_name = AskIfNull(_name, nameof(Name))); }
-            set { _name = value; }
+            get => (_name = AskIfNull(_name, nameof(Name)));
+            set => _name = value;
         }
 
         public string Email
         {
-            get { return (_email = AskIfNull(_email, nameof(Email))); }
-            set { _email = value; }
+            get => (_email = AskIfNull(_email, nameof(Email)));
+            set => _email = value;
         }
 
         public string Username
         {
-            get { return (_username = AskIfNull(_username, nameof(Username))); }
-            set { _username = value; }
+            get => (_username = AskIfNull(_username, nameof(Username)));
+            set => _username = value;
         }
 
         public string Password
         {
-            get { return (_password = AskIfNull(_password, nameof(Password))); }
-            set { _password = value; }
+            get => (_password = AskIfNull(_password, nameof(Password)));
+            set => _password = value;
         }
 
         private string AskIfNull(string value, string name)
@@ -49,9 +49,9 @@ namespace Git
             return value;
         }
 
-        public CredentialsHandler CredentialsProvider => new CredentialsHandler(GetCredentials);
+        public CredentialsHandler CredentialsProvider => GetCredentials;
 
-        public Signature GetSignature() => new Signature(this.Name, this.Email, DateTime.Now);
+        public Signature GetSignature() => new Signature(Name, Email, DateTime.Now);
 
         private Credentials GetCredentials(string url, string usernameFromUrl, SupportedCredentialTypes types)
         {
@@ -66,7 +66,7 @@ namespace Git
 
         public static Identity FromJsonFile(string path)
         {
-            string content = File.ReadAllText(path);
+            var content = File.ReadAllText(path);
 
             return JsonConvert.DeserializeObject<Identity>(content);
         }

@@ -1,12 +1,10 @@
-﻿namespace Common
-{
-    using NLog;
-    using NLog.Config;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Runtime.CompilerServices;
+﻿using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using NLog;
 
+namespace Common
+{
     /// <summary>
     /// Provides tools for logging while executing methods from the modules or from the scrip itself.
     /// </summary>
@@ -88,8 +86,8 @@
                 return;
             }
 
-            IEnumerable<LoggingRule> rules = LogManager.Configuration.LoggingRules
-                .Where(r => r.Targets.Any(t => t.Name.ToLower() == targetName.ToLower()));
+            var rules = LogManager.Configuration.LoggingRules
+                .Where(r => r.Targets.Any(t => string.Equals(t.Name, targetName, StringComparison.CurrentCultureIgnoreCase))).ToArray();
 
             if (!rules.Any())
             {
@@ -97,7 +95,7 @@
                 return;
             }
 
-            foreach (LoggingRule rule in rules)
+            foreach (var rule in rules)
             {
                 foreach (var level in NLog.LogLevel.AllLoggingLevels)
                 {

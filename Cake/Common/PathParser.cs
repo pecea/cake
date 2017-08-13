@@ -1,8 +1,8 @@
-﻿namespace Common
-{
-    using System.Collections.Generic;
-    using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
+namespace Common
+{
     /// <summary>
     /// Contains methods used to retrieve file or directory paths from a wildcarded path.
     /// </summary>

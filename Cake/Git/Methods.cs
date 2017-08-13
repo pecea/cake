@@ -1,7 +1,7 @@
-﻿namespace Git
-{
-    using System;
+﻿using System;
 
+namespace Git
+{
     public static partial class Methods
     {
         private static string _repositoryPath;
@@ -10,15 +10,13 @@
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(_repositoryPath))
-                {
-                    Console.WriteLine("Please provide the path to your repository:");
-                    _repositoryPath = Console.ReadLine();
-                }
+                if (!string.IsNullOrWhiteSpace(_repositoryPath)) return _repositoryPath;
+                Console.WriteLine("Please provide the path to your repository:");
+                _repositoryPath = Console.ReadLine();
 
                 return _repositoryPath;
             }
-            set { _repositoryPath = value; }
+            set => _repositoryPath = value;
         }
 
         public static Identity UserIdentity { get; set; } = new Identity();

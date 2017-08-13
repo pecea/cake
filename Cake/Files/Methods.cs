@@ -1,10 +1,11 @@
-﻿namespace Files
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Common;
+
+namespace Files
 {
-    using Common;
-    using System;
-    using System.IO;
-    using System.Linq;
-    using System.Text.RegularExpressions;
     /// <summary>
     /// Encloses methods used with operations on files.
     /// </summary>
@@ -169,7 +170,7 @@
                 Logger.Log(LogLevel.Info, $"File {filePath} deleted");
 
                 Logger.Log(LogLevel.Trace, "Method finished");
-                return true; ;
+                return true;
             }
             catch (Exception ex)
             {

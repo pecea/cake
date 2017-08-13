@@ -199,7 +199,7 @@ namespace Glob
             if (IgnoreCase && path.IndexOfAny(GlobCharacters) < 0)
             {
                 FileSystemInfo fsi = null;
-                bool exists = false;
+                var exists = false;
 
                 try
                 {
@@ -339,8 +339,8 @@ namespace Glob
 
         private static string GlobToRegex(string glob)
         {
-            StringBuilder regex = new StringBuilder();
-            bool characterClass = false;
+            var regex = new StringBuilder();
+            var characterClass = false;
 
             regex.Append("^");
 
@@ -387,13 +387,13 @@ namespace Glob
                 yield break;
             }
 
-            int level = 0;
-            string option = "";
-            string prefix = "";
-            string postfix = "";
-            List<string> options = new List<string>();
+            var level = 0;
+            var option = "";
+            var prefix = "";
+            var postfix = "";
+            var options = new List<string>();
 
-            for (int i = 0; i < path.Length; i++)
+            for (var i = 0; i < path.Length; i++)
             {
                 var c = path[i];
 
@@ -513,7 +513,7 @@ namespace Glob
             //Check for null and compare run-time types.
             if (obj == null || GetType() != obj.GetType()) return false;
 
-            Glob g = (Glob)obj;
+            var g = (Glob)obj;
             return Pattern == g.Pattern;
         }
 
@@ -530,7 +530,7 @@ namespace Glob
                 yield break;
             }
 
-            foreach (DirectoryInfo dirInfo in subDirs)
+            foreach (var dirInfo in subDirs)
             {
                 yield return dirInfo;
 
@@ -547,8 +547,8 @@ namespace Glob
         internal static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source,
             Func<TSource, TKey> keySelector)
         {
-            HashSet<TKey> knownKeys = new HashSet<TKey>();
-            foreach (TSource element in source)
+            var knownKeys = new HashSet<TKey>();
+            foreach (var element in source)
             {
                 if (knownKeys.Add(keySelector(element)))
                 {

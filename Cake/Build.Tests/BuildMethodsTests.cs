@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using Common;
+﻿using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace Build.Tests
 {
@@ -127,7 +127,7 @@ namespace Build.Tests
         [TestMethod]
         public void BuildProjectShouldBuildAProjectInDebugIfDebugWasSpecified()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathDebug, configuration: "Debug"));
+            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathDebug));
             using (var isolated = new Isolated<ConfigurationChecker>())
             {
                 Assert.IsTrue(isolated.Value.IsDebug((OutputPathDebug + "/*.dll").GetFilePaths().First()));
@@ -140,7 +140,7 @@ namespace Build.Tests
         [TestMethod]
         public void BuildProjectShouldBuildAProjectInReleaseIfReleaseWasSpecified()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathRelease, configuration: "Release"));
+            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathRelease, "Release"));
             using (var isolated = new Isolated<ConfigurationChecker>())
             {
                 Assert.IsFalse(isolated.Value.IsDebug((OutputPathRelease + "/*.dll").GetFilePaths().First()));

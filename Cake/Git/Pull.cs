@@ -6,6 +6,10 @@ namespace Git
 {
     public static partial class Methods
     {
+        /// <summary>
+        /// Performs a pull of remote changes to your local repository with automatic merge.
+        /// </summary>
+        /// <returns>True in case of success, false otherwise</returns>
         public static bool Pull()
         {
             Logger.Log(LogLevel.Trace, "Method started");

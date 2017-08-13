@@ -6,9 +6,18 @@ namespace Git
 {
     public static partial class Methods
     {
-        public static bool CommitAllChanges(string message) => Commit(message, onlyStaged: false);
-
-        public static bool CommitStagedChanges(string message) => Commit(message, onlyStaged: true);
+        /// <summary>
+        /// Performs a commit with all changes.
+        /// </summary>
+        /// <param name="message">The commit message</param>
+        /// <returns>True in case of success, otherwise false</returns>
+        public static bool CommitAllChanges(string message) => Commit(message, false);
+        /// <summary>
+        /// Performs a commit with staged changes.
+        /// </summary>
+        /// <param name="message">The commit message</param>
+        /// <returns>True in case of success, otherwise false</returns>
+        public static bool CommitStagedChanges(string message) => Commit(message, true);
 
         /// <summary>
         /// Performs a commit.

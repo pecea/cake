@@ -1,11 +1,9 @@
-﻿namespace Cake
+﻿using System;
+using System.Linq;
+using Common;
+
+namespace Cake
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using Common;
-
     /// <summary>
     /// Represents a job to be executed at some point.
     /// </summary>
@@ -66,7 +64,7 @@
             Logger.Log(LogLevel.Trace, "Method started");
             try
             {
-                bool res = _actionWithResult();
+                var res = _actionWithResult();
                 Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
                 return res;
             }

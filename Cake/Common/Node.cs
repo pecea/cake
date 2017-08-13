@@ -1,9 +1,9 @@
-﻿namespace Common
-{
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
+namespace Common
+{
     internal class Node
     {
         private Node(string value)

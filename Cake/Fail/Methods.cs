@@ -1,7 +1,7 @@
-﻿namespace Fail
-{
-    using NUnit.Framework;
+﻿using NUnit.Framework;
 
+namespace Fail
+{
     [TestFixture]
     public class Tests
     {

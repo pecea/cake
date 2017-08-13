@@ -1,6 +1,6 @@
-﻿using Common;
+﻿using System.Linq;
+using Common;
 using LibGit2Sharp;
-using System.Linq;
 using LogLevel = Common.LogLevel;
 
 namespace Git
@@ -29,12 +29,12 @@ namespace Git
 
             using (var repo = new Repository(RepositoryPath))
             {
-                foreach (DiffTargets mode in modes)
+                foreach (var mode in modes)
                 {
                     Logger.Log(LogLevel.Info, $"{mode} vs HEAD:");
 
                     var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, mode);
-                    foreach (TreeEntryChanges c in changes)
+                    foreach (var c in changes)
                         Logger.Log(LogLevel.Info, $"{c.Path} was {c.Status.ToString().ToLower()}.");
 
                     if (!changes.Any())

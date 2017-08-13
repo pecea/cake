@@ -84,7 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Build\Build.csproj">
-      <Project>{189f3e91-4158-420a-9fc4-6a2a75dbd31c}</Project>
+      <Project>{5f033557-9638-44f1-bd8e-197c2ec76038}</Project>
       <Name>Build</Name>
     </ProjectReference>
     <ProjectReference Include="..\Cake\Cake.csproj">

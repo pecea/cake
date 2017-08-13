@@ -1,17 +1,16 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using Common;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
 namespace Cake
 {
-    using Common;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
-    using System.Text.RegularExpressions;
-
     /// <summary>
     /// Handles Roslyn API and providing access to some of its methods.
     /// </summary>
@@ -27,10 +26,6 @@ namespace Cake
             {
                 CSharpScript.RunAsync(LoadReferencedScripts(filePath), LoadAssemblies(filePath)).Wait();
             }
-            catch (JobException)
-            {
-                throw;
-            }
             catch (CompilationErrorException ce)
             {
                 throw new JobException($"Error inside the script: {ce.Message}", ce.Source);
@@ -39,10 +34,6 @@ namespace Cake
             {
                 if (ae.InnerException != null)
                     throw ae.InnerException;
-            }
-            catch (Exception)
-            {
-                throw;
             }
         }
 

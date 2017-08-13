@@ -1,15 +1,14 @@
-﻿using Common;
-using System;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Linq;
-using NUnit.Core;
-using NUnit.Core.Filters;
+using Common;
 
 namespace NUnit
 {
     public class Methods
     {
-        private static string FullPathExe => System.Configuration.ConfigurationManager.AppSettings?["NUnitPath"];
+        private static string FullPathExe => ConfigurationManager.AppSettings["NUnitPath"];
         private const string TestsPassed = "Overall result: Passed";
 
         /// <summary>
@@ -21,18 +20,18 @@ namespace NUnit
         /// <returns>True if nunit tests run successfully, otherwise false</returns>
         public static bool RunTests(string conditions = null, string config = null, params string[] assemblyPaths)
         {
-            Common.Logger.Log(LogLevel.Trace, "Method started");
-            bool res = true;
+            Logger.Log(LogLevel.Trace, "Method started");
+            var res = true;
             if (!File.Exists(FullPathExe))
             {
-                Common.Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
+                Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
                 return false;
             }
             try
             {
                 if (assemblyPaths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
-                    Common.Logger.Log(LogLevel.Warn, $"Incorrect test assemby paths!\n");
+                    Logger.Log(LogLevel.Warn, $"Incorrect test assemby paths!\n");
                     return false;
                 }
                 var parameters = assemblyPaths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
@@ -46,12 +45,12 @@ namespace NUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Common.Logger.Log(LogLevel.Trace, "Method finished");
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return res;
             }
             catch (Exception e)
             {
-                Common.Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe");
+                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe");
                 return false;
             }
         }
@@ -79,11 +78,11 @@ namespace NUnit
         /// <returns>True if nunit tests run successfully, otherwise false</returns>
         public static bool RunTestsWithOptions(string assemblyPaths, string conditions = null, string config = null, string workingDirectoryPath = null, string outputPath = null, string errorPath = null, bool? stopOnError = null, bool? skipNonAssemblies = null, bool? noResult = null, string verbosity = null, string timeout = null, bool? shadowcopy = null, string processIsolation = null, string numberOfAgents = null, string domainIsolation = null, string frameworkVersion = null, bool? runIn32Bit = null, bool? disposeRunners = null)
         {
-            Common.Logger.Log(LogLevel.Trace, "Method started");
-            bool res = true;
+            Logger.Log(LogLevel.Trace, "Method started");
+            var res = true;
             if (!File.Exists(FullPathExe))
             {
-                Common.Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
+                Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
                 return false;
             }
             try
@@ -91,7 +90,7 @@ namespace NUnit
                 var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
                 if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
                 {
-                    Common.Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
+                    Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
                     return false;
                 }
                 var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
@@ -135,12 +134,12 @@ namespace NUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Common.Logger.Log(LogLevel.Trace, "Method finished");
+                Logger.Log(LogLevel.Trace, "Method finished");
                 return res;
             }
             catch (Exception e)
             {
-                Common.Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe");
+                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe");
                 return false;
             }
         }

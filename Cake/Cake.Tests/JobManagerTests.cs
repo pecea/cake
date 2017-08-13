@@ -1,8 +1,8 @@
-﻿namespace Cake.Tests
-{
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+namespace Cake.Tests
+{
     /// <summary>
     /// Test class for JobManager methods
     /// </summary>
@@ -107,8 +107,8 @@
         public void TasksShouldBeExecutedInRightOrderDiamond()
         {
             var counter = 0;
-            Action CounterAdd;
-            CounterAdd = () => counter++;
+            Action counterAdd;
+            counterAdd = () => counter++;
 
             var top = new VoidJob("top")
                 .DependsOn("middle 1", "middle 2", "middle 3", "middle 4")
@@ -119,19 +119,19 @@
 
             new VoidJob("middle 1")
                 .DependsOn("middle 2", "bottom")
-                .Does(CounterAdd);            
+                .Does(counterAdd);            
             
             new VoidJob("middle 2")
                 .DependsOn("middle 3", "bottom")
-                .Does(CounterAdd);            
+                .Does(counterAdd);            
             
             new VoidJob("middle 3")
                 .DependsOn("middle 4", "bottom")
-                .Does(CounterAdd);            
+                .Does(counterAdd);            
             
             new VoidJob("middle 4")
                 .DependsOn("bottom")
-                .Does(CounterAdd);
+                .Does(counterAdd);
 
             new VoidJob("bottom")
                 .Does(() =>
