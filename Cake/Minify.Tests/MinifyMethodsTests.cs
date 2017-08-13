@@ -12,5 +12,6 @@ namespace Minify.Tests
 
         //MinifyCss
         //MinifyJs
+        //BundleFiles
     }
 }

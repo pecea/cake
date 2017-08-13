@@ -1,9 +1,9 @@
-﻿namespace Common.Tests
-{
-    using System.IO;
-    using System.Linq;
+﻿using System.IO;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+namespace Common.Tests
+{
     /// <summary>
     /// Test class for Common methods
     /// </summary>
