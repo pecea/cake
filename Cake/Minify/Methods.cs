@@ -117,7 +117,7 @@ namespace Minify
 
             using (var outputStream = File.Create(destination))
             {
-                foreach (var fileName in files.Select(s => s.FullName))
+                foreach (var fileName in files.Select(s => $"{s.FullName}{s.Extension}"))
                 {
                     using (var inputStream = File.OpenRead(fileName))
                     {

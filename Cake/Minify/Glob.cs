@@ -27,11 +27,11 @@ namespace Glob
         /// </item>
         /// <item>
         /// <term>**</term>
-        /// <description>Matches zero or more recursve directories.</description>
+        /// <description>Matches zero or more recursive directories.</description>
         /// </item>
         /// <item>
         /// <term>[...]</term>
-        /// <description>Matches a set of characters in a name. Syntax is equivalent to character groups in <see cref="System.Text.RegularExpressions.Regex"/>.</description>
+        /// <description>Matches a set of characters in a name. Syntax is equivalent to character groups in <see cref="Regex"/>.</description>
         /// </item>
         /// <item>
         /// <term>{group1,group2,...}</term>
@@ -75,7 +75,7 @@ namespace Glob
 
         private void Log(string s, params object[] args)
         {
-            if (ErrorLog != null) ErrorLog(string.Format(s, args));
+            ErrorLog?.Invoke(string.Format(s, args));
         }
 
         /// <summary>
@@ -172,9 +172,8 @@ namespace Glob
         {
             if (!CacheRegexes) return new RegexOrString(GlobToRegex(pattern), pattern, IgnoreCase, compileRegex: false);
 
-            RegexOrString regexOrString;
 
-            if (!RegexOrStringCache.TryGetValue(pattern, out regexOrString))
+            if (!RegexOrStringCache.TryGetValue(pattern, out RegexOrString regexOrString))
             {
                 regexOrString = new RegexOrString(GlobToRegex(pattern), pattern, IgnoreCase, compileRegex: true);
                 RegexOrStringCache[pattern] = regexOrString;
@@ -480,10 +479,10 @@ namespace Glob
         }
 
         /// <summary>
-        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// Returns a <see cref="string" /> that represents this instance.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String" /> that represents this instance.
+        /// A <see cref="string" /> that represents this instance.
         /// </returns>
         public override string ToString()
         {
@@ -502,11 +501,11 @@ namespace Glob
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object" />, is equal to this instance.
+        /// Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
