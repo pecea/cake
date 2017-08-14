@@ -6,6 +6,8 @@ using Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.Build.Execution;
+using System.Collections.Immutable;
 
 namespace Build
 {
@@ -15,6 +17,17 @@ namespace Build
     public static class Methods
     {
         private static Type _ = typeof(CSharpFormattingOptions); // hack to recognize C# as a valid language in compilation
+
+        private static readonly Dictionary<OutputKind, string> ProjectOutputs = new Dictionary<OutputKind, string>
+        {
+            {OutputKind.DynamicallyLinkedLibrary, ".dll"},
+            {OutputKind.ConsoleApplication,".exe" },
+            {OutputKind.WindowsApplication, ".exe"},
+            {OutputKind.WindowsRuntimeApplication, ".exe"},
+            {OutputKind.NetModule, ".netmodule"},
+            {OutputKind.WindowsRuntimeMetadata, ".winmdobj"}
+        };
+
         private static readonly Dictionary<string, Platform> PlatformOptions = new Dictionary<string, Platform>
         {
             { "x86", Platform.X86 },
@@ -32,16 +45,43 @@ namespace Build
             { "Release", OptimizationLevel.Release }
         };
 
+        private static IEnumerable<string> GetReferences(string projectFileName)
+        {
+            var projectInstance = new ProjectInstance(projectFileName);
+            var result = BuildManager.DefaultBuildManager.Build(
+                new BuildParameters(),
+                new BuildRequestData(projectInstance, new[]
+                {
+            "ResolveProjectReferences"
+                }));
+
+            IEnumerable<string> GetResultItems(string targetName)
+            {
+                var buildResult = result.ResultsByTarget[targetName];
+                var buildResultItems = buildResult.Items;
+
+                return buildResultItems.Select(item => item.ItemSpec);
+            }
+
+            //var res1 = GetResultItems("ResolveProjectReferences");
+            var res2 = GetResultItems("ResolveProjectReferences");
+            return res2;
+        }
+
+
         private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
         {
             Logger.Log(LogLevel.Trace, "Method started");
             bool success;
-            var options = new Dictionary<string, string> { { "Configuration", configuration } };
+            var options = new Dictionary<string, string> { { "Configuration", configuration }
+            };
             var workspace = MSBuildWorkspace.Create(options);
             workspace.LoadMetadataForReferencedProjects = true;
             try
             {
                 var project = workspace.OpenProjectAsync(projectUrl).Result;
+                var references = GetReferences(projectUrl);
+
                 success = CompileProject(project, outputDir, configuration, platform);
 
                 Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished");
@@ -57,36 +97,63 @@ namespace Build
             return success;
         }
 
-        private static void WriteStreamToFile(Stream stream, string fileName)
+        private static void WriteStreamToFile(Stream stream, string fileName, ProjectId projectId = null, Dictionary<ProjectId, FileStream> dllLibrary = null)
         {
             using (var file = File.Create(fileName))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(file);
+                if (projectId != null && dllLibrary != null)
+                    dllLibrary[projectId] = file;
             }
             stream.Close();
         }
 
-        private static bool CompileProject(Project project, string outputPath, string configuration, string platform)
+        private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, FileStream> dllLibrary = null)
         {
             Logger.Log(LogLevel.Trace, "Method started");
             var success = false;
             var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?
                     .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
                 .GetCompilationAsync()?.Result;
+            if (string.IsNullOrEmpty(outputPath))
+                outputPath = $"{Path.GetDirectoryName(project.OutputFilePath)}\\";
+            outputPath = outputPath.Replace('/', '\\');
+            if (!outputPath.EndsWith("\\"))
+                outputPath += '\\';
+            else if(graph != null)
+            {
+                outputPath += $"{project.Name}\\";
+                if (!Directory.Exists(outputPath))
+                    Directory.CreateDirectory(outputPath);
+            }
             if (!string.IsNullOrEmpty(projectCompilation?.AssemblyName))
             {
-
                 var stream = new MemoryStream();
                 var stream2 = new MemoryStream();
                 var stream3 = new MemoryStream();
+                var stream4 = new MemoryStream();
+                //var newResult = projectCompilation.Emit("test.exe", "test.pdb", "test");
                 var result = projectCompilation.Emit(stream, stream2, stream3);
+                foreach(var diagnostic in result?.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error))
+                {
+                    Logger.Log(LogLevel.Error, $"{diagnostic.ToString()}\n");
+                }
                 success = result.Success;
                 if (success)
                 {
-                    WriteStreamToFile(stream, $"{outputPath}\\{projectCompilation.AssemblyName}.dll");
-                    WriteStreamToFile(stream2, $"{outputPath}\\{projectCompilation.AssemblyName}.pdb");
-                    WriteStreamToFile(stream3, $"{outputPath}\\{projectCompilation.AssemblyName}.xml");
+                    Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully.");
+                    var extension = ProjectOutputs[project.CompilationOptions.OutputKind];
+                    WriteStreamToFile(stream, $"{outputPath}{projectCompilation.AssemblyName}{extension}", project?.Id, dllLibrary);
+                    WriteStreamToFile(stream2, $"{outputPath}{projectCompilation.AssemblyName}.pdb");
+                    WriteStreamToFile(stream3, $"{outputPath}{projectCompilation.AssemblyName}.xml");
+                    foreach(var dependency in graph?.GetProjectsThatThisProjectTransitivelyDependsOn(project.Id)?.ToArray() ?? new ProjectId[0])
+                    {
+                        //TODO: first open stream of dll
+                        //using(dllLibrary[dependency].)
+                        //using(var file = File.OpenRead(dllLibrary[dependency].))
+                        dllLibrary[dependency].CopyTo(File.Create($"{outputPath}{projectCompilation.AssemblyName}{extension}"));
+                    }
                 }
             }
             Logger.Log(LogLevel.Trace, "Method finished");
@@ -99,13 +166,14 @@ namespace Build
             bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
+
             workspace.LoadMetadataForReferencedProjects = true;
             try
             {
                 var solution = workspace.OpenSolutionAsync(solutionUrl).Result;
                 var projectGraph = solution.GetProjectDependencyGraph();
-
-                success = projectGraph.GetTopologicallySortedProjects().Aggregate(true, (current, projectId) => current & CompileProject(solution.GetProject(projectId), outputDir, configuration, platform));
+                var dllLibrary = new Dictionary<ProjectId, FileStream>();
+                success = projectGraph.GetTopologicallySortedProjects().Aggregate(true, (current, projectId) => current & CompileProject(solution.GetProject(projectId), outputDir, configuration, platform, projectGraph, dllLibrary));
                 workspace.CloseSolution();
             }
             catch (Exception ex)
@@ -134,7 +202,7 @@ namespace Build
             var enumerable = paths as IList<string> ?? paths.ToList();
             if (!enumerable.Any()) return false;
 
-            if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
+            //if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(solutionFile, outputPath, configuration, platform)) return false;
 
             var res = enumerable.Aggregate(true,
@@ -161,7 +229,7 @@ namespace Build
             var enumerable = paths as IList<string> ?? paths.ToList();
             if (!enumerable.Any()) return false;
 
-            if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
+            //if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
             var res = enumerable.Aggregate(true,
@@ -228,7 +296,7 @@ namespace Build
                 Logger.Log(LogLevel.Warn, "The configuration parameter must be set to \"Debug\" or \"Release\".");
                 return false;
             }
-            if (!Directory.Exists(outputPath))
+            if (!string.IsNullOrEmpty(outputPath) && !Directory.Exists(outputPath))
             {
                 try
                 {
