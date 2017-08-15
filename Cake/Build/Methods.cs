@@ -45,74 +45,48 @@ namespace Build
             { "Release", OptimizationLevel.Release }
         };
 
-        private static IEnumerable<string> GetReferences(string projectFileName)
-        {
-            var projectInstance = new ProjectInstance(projectFileName);
-            var result = BuildManager.DefaultBuildManager.Build(
-                new BuildParameters(),
-                new BuildRequestData(projectInstance, new[]
-                {
-            "ResolveProjectReferences"
-                }));
-
-            IEnumerable<string> GetResultItems(string targetName)
-            {
-                var buildResult = result.ResultsByTarget[targetName];
-                var buildResultItems = buildResult.Items;
-
-                return buildResultItems.Select(item => item.ItemSpec);
-            }
-
-            //var res1 = GetResultItems("ResolveProjectReferences");
-            var res2 = GetResultItems("ResolveProjectReferences");
-            return res2;
-        }
-
 
         private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration }
             };
             var workspace = MSBuildWorkspace.Create(options);
-            workspace.LoadMetadataForReferencedProjects = true;
             try
             {
                 var project = workspace.OpenProjectAsync(projectUrl).Result;
-                var references = GetReferences(projectUrl);
 
                 success = CompileProject(project, outputDir, configuration, platform);
 
-                Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished");
+                Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished.");
                 workspace.CloseSolution();
             }
             catch (Exception ex)
             {
-                Logger.LogException(LogLevel.Error, ex, $"Could not build project {projectUrl}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not build project {projectUrl}.");
                 success = false;
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return success;
         }
 
-        private static void WriteStreamToFile(Stream stream, string fileName, ProjectId projectId = null, Dictionary<ProjectId, FileStream> dllLibrary = null)
+        private static void WriteStreamToFile(Stream stream, string fileName)
         {
             using (var file = File.Create(fileName))
             {
                 stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(file);
-                if (projectId != null && dllLibrary != null)
-                    dllLibrary[projectId] = file;
             }
             stream.Close();
         }
 
-        private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, FileStream> dllLibrary = null)
+        private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var success = false;
+            
             var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?
                     .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
                 .GetCompilationAsync()?.Result;
@@ -121,7 +95,7 @@ namespace Build
             outputPath = outputPath.Replace('/', '\\');
             if (!outputPath.EndsWith("\\"))
                 outputPath += '\\';
-            else if(graph != null)
+            if(graph != null)
             {
                 outputPath += $"{project.Name}\\";
                 if (!Directory.Exists(outputPath))
@@ -132,57 +106,70 @@ namespace Build
                 var stream = new MemoryStream();
                 var stream2 = new MemoryStream();
                 var stream3 = new MemoryStream();
-                var stream4 = new MemoryStream();
                 //var newResult = projectCompilation.Emit("test.exe", "test.pdb", "test");
                 var result = projectCompilation.Emit(stream, stream2, stream3);
                 foreach(var diagnostic in result?.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error))
                 {
-                    Logger.Log(LogLevel.Error, $"{diagnostic.ToString()}\n");
+                    Logger.Log(LogLevel.Error, $"{diagnostic.ToString()}\n.");
                 }
                 success = result.Success;
                 if (success)
                 {
                     Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully.");
                     var extension = ProjectOutputs[project.CompilationOptions.OutputKind];
-                    WriteStreamToFile(stream, $"{outputPath}{projectCompilation.AssemblyName}{extension}", project?.Id, dllLibrary);
-                    WriteStreamToFile(stream2, $"{outputPath}{projectCompilation.AssemblyName}.pdb");
-                    WriteStreamToFile(stream3, $"{outputPath}{projectCompilation.AssemblyName}.xml");
-                    foreach(var dependency in graph?.GetProjectsThatThisProjectTransitivelyDependsOn(project.Id)?.ToArray() ?? new ProjectId[0])
+                    var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{ProjectOutputs[project.CompilationOptions.OutputKind]}";
+                    var pathTwo = $"{outputPath}{projectCompilation.AssemblyName}.pdb";
+                    var pathThree = $"{outputPath}{projectCompilation.AssemblyName}.xml";
+                    WriteStreamToFile(stream, pathOne);
+                    WriteStreamToFile(stream2, pathTwo);
+                    WriteStreamToFile(stream3, pathThree);
+                    if(library != null)
+                        library[project.Id] = new BuildResult
+                        {
+                            OutputPath = pathOne,
+                            PdbPath = pathTwo,
+                            XmlPath = pathThree
+                        };
+                    foreach(var met in project.MetadataReferences)
                     {
-                        //TODO: first open stream of dll
-                        //using(dllLibrary[dependency].)
-                        //using(var file = File.OpenRead(dllLibrary[dependency].))
-                        dllLibrary[dependency].CopyTo(File.Create($"{outputPath}{projectCompilation.AssemblyName}{extension}"));
+                        File.Copy(met.Display, $"{outputPath}{met.Display?.Split('\\')?.LastOrDefault()}", true);
+                    }
+                    foreach (var dependency in graph?.GetProjectsThatThisProjectTransitivelyDependsOn(project.Id)?.ToArray() ?? new ProjectId[0])
+                    {
+                        File.Copy(library[dependency].OutputPath, $"{outputPath}{library[dependency]?.OutputPath?.Split('\\')?.LastOrDefault()}", true);
+                        File.Copy(library[dependency].PdbPath, $"{outputPath}{library[dependency]?.PdbPath?.Split('\\')?.LastOrDefault()}", true);
+                        File.Copy(library[dependency].XmlPath, $"{outputPath}{library[dependency]?.XmlPath?.Split('\\')?.LastOrDefault()}", true);
                     }
                 }
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return success;
         }
 
         private static bool CompileSolution(string solutionUrl, string outputDir, string configuration, string platform)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
 
-            workspace.LoadMetadataForReferencedProjects = true;
+            //workspace.LoadMetadataForReferencedProjects = true;
             try
             {
                 var solution = workspace.OpenSolutionAsync(solutionUrl).Result;
                 var projectGraph = solution.GetProjectDependencyGraph();
-                var dllLibrary = new Dictionary<ProjectId, FileStream>();
-                success = projectGraph.GetTopologicallySortedProjects().Aggregate(true, (current, projectId) => current & CompileProject(solution.GetProject(projectId), outputDir, configuration, platform, projectGraph, dllLibrary));
+                //var dllLibrary = new Dictionary<ProjectId, FileStream>();
+                var library = new Dictionary<ProjectId, BuildResult>();
+                success = projectGraph.GetTopologicallySortedProjects().Aggregate(true, (current, projectId) => current & CompileProject(solution.GetProject(projectId), outputDir, configuration, platform, projectGraph, library));
                 workspace.CloseSolution();
             }
             catch (Exception ex)
             {
-                Logger.LogException(LogLevel.Error, ex, $"Could not build solution {solutionUrl}");
+                Logger.LogException(LogLevel.Error, ex, $"Could not build solution {solutionUrl}.");
                 success = false;
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return success;
         }
 
@@ -196,7 +183,7 @@ namespace Build
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildSolution(string solutionFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
 
             var paths = solutionFile.GetFilePaths();
             var enumerable = paths as IList<string> ?? paths.ToList();
@@ -208,7 +195,7 @@ namespace Build
             var res = enumerable.Aggregate(true,
                 (current, path) => current & CompileSolution(path, outputPath, configuration, platform));
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
 
             return res;
         }
@@ -223,7 +210,7 @@ namespace Build
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var paths = projectFile.GetFilePaths();
 
             var enumerable = paths as IList<string> ?? paths.ToList();
@@ -234,13 +221,13 @@ namespace Build
 
             var res = enumerable.Aggregate(true,
                 (current, path) => current & CompileProject(path, outputPath, configuration, platform));
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return res;
         }
 
         //private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)
         //{
-        //    Logger.Log(LogLevel.Trace, "Method started");
+        //    Logger.Log(LogLevel.Trace, "Method started.");
         //    if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
         //    if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
@@ -279,7 +266,7 @@ namespace Build
 
         private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             if (!File.Exists(projectFile))
             {
                 Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");
@@ -287,7 +274,7 @@ namespace Build
             }
             if (!PlatformOptions.ContainsKey(platform))
             {
-                Logger.Log(LogLevel.Warn, $"The platform parameter must be one of: {string.Join(", ", PlatformOptions.Select(k => k.Key))}");
+                Logger.Log(LogLevel.Warn, $"The platform parameter must be one of: {string.Join(", ", PlatformOptions.Select(k => k.Key))}.");
                 return false;
             }
 
@@ -304,11 +291,11 @@ namespace Build
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogException(LogLevel.Error, ex, $"Could not create output folder: {outputPath}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not create output folder: {outputPath}.");
                     return false;
                 }
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
     }

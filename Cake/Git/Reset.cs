@@ -27,7 +27,7 @@ namespace Git
 
         private static bool Reset(ResetMode mode, string commitShaHash)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
 
             using (var repo = new Repository(RepositoryPath))
             {
@@ -45,7 +45,7 @@ namespace Git
                 Logger.Log(LogLevel.Info, $"Repository reset {mode} to commit {commit.Id}.");
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
     }

@@ -12,7 +12,7 @@ namespace Git
         /// <returns>True in case of success, false otherwise</returns>
         public static bool Push()
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
 
             var options = new PushOptions
             {
@@ -26,7 +26,7 @@ namespace Git
                 Logger.Log(LogLevel.Info, $"Successfully pushed to {branch.RemoteName}.");
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
     }

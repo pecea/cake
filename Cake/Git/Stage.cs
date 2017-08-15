@@ -27,7 +27,7 @@ namespace Git
 
         private static bool Stage(IRepository repo, IEnumerable<string> paths = null)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
 
             if (paths == null)
             {
@@ -46,7 +46,7 @@ namespace Git
             Logger.Log(LogLevel.Info, $"Staging files:\n{string.Join("\n", enumerable)}.");
             Commands.Stage(repo, enumerable);
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
     }

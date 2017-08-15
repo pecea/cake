@@ -19,9 +19,9 @@ namespace Minify
         /// <returns>True in case of success, false otherwise</returns>
         public static bool MinifyJs(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var result = MinifyFiles(pattern, excludePattern, destination, ignoreCase, (minifier, file, dest) => minifier.MinifyJavaScriptFile(file, dest));
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return result;
         }
         /// <summary>
@@ -34,15 +34,15 @@ namespace Minify
         /// <returns>True in case of success, false otherwise</returns>
         public static bool MinifyCss(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var result = MinifyFiles(pattern, excludePattern, destination, ignoreCase, (minifier, file, dest) => minifier.MinifyCssFile(file, dest));
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return result;
         }
 
         private static bool MinifyFiles(string pattern, string excludePattern, string destination, bool ignoreCase, Action<Minifier, FileSystemInfo, string> minifyAction)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
 
             if (!ValidateGlob(files, pattern))
@@ -59,13 +59,13 @@ namespace Minify
                 minifyAction(minifier, fileInfo, destination);
 
             Logger.Log(LogLevel.Info, $"{files.Count()} files minified.");
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
 
         private static bool ValidateGlob(IEnumerable<FileSystemInfo> files, string pattern)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             files = files.ToArray();
             if (!files.Any())
             {
@@ -83,7 +83,7 @@ namespace Minify
                 Logger.Log(LogLevel.Warn, $"Pattern {pattern} matched directories: {directories}.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
 
             return true;
         }
@@ -98,7 +98,7 @@ namespace Minify
         /// <returns>True in case of success, false otherwise</returns>
         public static bool BundleFiles(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
 
             if (!ValidateGlob(files, pattern))
@@ -129,7 +129,7 @@ namespace Minify
             }
 
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
     }

@@ -20,7 +20,7 @@ namespace NUnit
         /// <returns>True if nunit tests run successfully, otherwise false</returns>
         public static bool RunTests(string conditions = null, string config = null, params string[] assemblyPaths)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var res = true;
             if (!File.Exists(FullPathExe))
             {
@@ -45,19 +45,19 @@ namespace NUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Logger.Log(LogLevel.Trace, "Method finished");
+                Logger.Log(LogLevel.Trace, "Method finished.");
                 return res;
             }
             catch (Exception e)
             {
-                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe");
+                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe.");
                 return false;
             }
         }
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files. </param>
+        /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files, separated by commas. </param>
         /// <param name="conditions">Conditions may specify test names, classes, methods, categories or properties comparing them to actual values with the operators ==, !=, =~ and !~</param>
         /// <param name="config">Name of a project configuration to load (e.g. Debug) </param>
         /// <param name="workingDirectoryPath">Path of the directory to use for output files.</param>
@@ -74,11 +74,10 @@ namespace NUnit
         /// <param name="domainIsolation">Domain isolation for test assemblies. Possible values: None, Single, Multiple. If not specified, defaults to Single for a single assembly or Multiple for more than one.</param>
         /// <param name="frameworkVersion">Framework type/version to use for tests. (e.g.: mono, net-4.5, v4.0, 2.0, mono-4.0)</param>
         /// <param name="runIn32Bit">Run tests in a 32-bit process on 64-bit systems.</param>
-        /// <param name="disposeRunners">Dispose each test runner after it has finished running its tests</param>
         /// <returns>True if nunit tests run successfully, otherwise false</returns>
-        public static bool RunTestsWithOptions(string assemblyPaths, string conditions = null, string config = null, string workingDirectoryPath = null, string outputPath = null, string errorPath = null, bool? stopOnError = null, bool? skipNonAssemblies = null, bool? noResult = null, string verbosity = null, string timeout = null, bool? shadowcopy = null, string processIsolation = null, string numberOfAgents = null, string domainIsolation = null, string frameworkVersion = null, bool? runIn32Bit = null, bool? disposeRunners = null)
+        public static bool RunTestsWithOptions(string assemblyPaths, string conditions = null, string config = null, string workingDirectoryPath = null, string outputPath = null, string errorPath = null, bool? stopOnError = null, bool? skipNonAssemblies = null, bool? noResult = null, string verbosity = null, string timeout = null, bool? shadowcopy = null, string processIsolation = null, string numberOfAgents = null, string domainIsolation = null, string frameworkVersion = null, bool? runIn32Bit = null)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var res = true;
             if (!File.Exists(FullPathExe))
             {
@@ -95,15 +94,15 @@ namespace NUnit
                 }
                 var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
                 if (!string.IsNullOrEmpty(conditions))
-                    parameters += $" --where={conditions}";
+                    parameters += $" --where {Processor.QuoteArgument(conditions)}";
                 if (!string.IsNullOrEmpty(config))
-                    parameters += $" --config={config}";
+                    parameters += $" --config {config}";
                 if (!string.IsNullOrEmpty(workingDirectoryPath))
-                    parameters += $" --work={workingDirectoryPath}";
+                    parameters += $" --work {workingDirectoryPath}";
                 if (!string.IsNullOrEmpty(outputPath))
-                    parameters += $" --out={outputPath}";
+                    parameters += $" --out {outputPath}";
                 if (!string.IsNullOrEmpty(errorPath))
-                    parameters += $" --err={errorPath}";
+                    parameters += $" --err {errorPath}";
                 if (stopOnError.HasValue)
                     parameters += $" --stoponerror";
                 if (skipNonAssemblies.HasValue)
@@ -111,35 +110,33 @@ namespace NUnit
                 if (noResult.HasValue)
                     parameters += $" --noresult";
                 if (!string.IsNullOrEmpty(verbosity))
-                    parameters += $" --trace={verbosity}";
+                    parameters += $" --trace {Processor.QuoteArgument(verbosity)}";
                 if (!string.IsNullOrEmpty(timeout))
-                    parameters += $" --timeout={timeout}";
+                    parameters += $" --timeout {timeout}";
                 if (shadowcopy.HasValue)
                     parameters += $" --shadowcopy";
                 if (!string.IsNullOrEmpty(processIsolation))
-                    parameters += $" --process={processIsolation}";
+                    parameters += $" --process {Processor.QuoteArgument(processIsolation)}";
                 if (!string.IsNullOrEmpty(numberOfAgents))
-                    parameters += $" --agents={numberOfAgents}";
+                    parameters += $" --agents {numberOfAgents}";
                 if (!string.IsNullOrEmpty(domainIsolation))
-                    parameters += $" --domain={domainIsolation}";
+                    parameters += $" --domain {Processor.QuoteArgument(domainIsolation)}";
                 if (!string.IsNullOrEmpty(frameworkVersion))
-                    parameters += $" --framework={frameworkVersion}";
+                    parameters += $" --framework {Processor.QuoteArgument(frameworkVersion)}";
                 if (runIn32Bit.HasValue)
                     parameters += $" --x86";
-                if (disposeRunners.HasValue)
-                    parameters += $" --dispose-runners";
 
                 var result = Processor.RunProcess(FullPathExe, parameters);
 
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Logger.Log(LogLevel.Trace, "Method finished");
+                Logger.Log(LogLevel.Trace, "Method finished.");
                 return res;
             }
             catch (Exception e)
             {
-                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe");
+                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe.");
                 return false;
             }
         }

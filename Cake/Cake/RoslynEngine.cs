@@ -28,7 +28,7 @@ namespace Cake
             }
             catch (CompilationErrorException ce)
             {
-                throw new JobException($"Error inside the script: {ce.Message}", ce.Source);
+                throw new JobException($"Error inside the script: {ce.Message}.", ce.Source);
             }
             catch (AggregateException ae)
             {
@@ -105,7 +105,7 @@ namespace Cake
 
         private static string ExtractAssemblyPath(string usingDirective)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             return usingDirective
                     .TrimStart('/')
                     .TrimEnd(';')
@@ -117,7 +117,7 @@ namespace Cake
 
         private static string ExtractScriptPath(string loadDirective)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             return loadDirective
                 .TrimStart('/')
                 .TrimEnd(';')
@@ -131,7 +131,7 @@ namespace Cake
 
         private static bool IsStatic(this Type type)
         {
-            Logger.Log(LogLevel.Trace, "IsStatic method started");
+            Logger.Log(LogLevel.Trace, "IsStatic method started.");
             return type.IsSealed && type.IsAbstract;
         }
     }

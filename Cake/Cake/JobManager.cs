@@ -24,10 +24,10 @@ namespace Cake
         /// <param name="job">A <see cref="Job"/> to be added.</param>
         public static void RegisterJob(CakeJob job)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             _jobs.Add(job.Name, job);
             Logger.Log(LogLevel.Debug, $"Job \"{job.Name}\" registered.");
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Cake
         /// <param name="name">Name of a <see cref="CakeJob"/> to be executed.</param>
         public static void SetDefault(string name)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             if (!string.IsNullOrEmpty(JobToRun)) name = JobToRun;
             //PerformJobWithDependencies(name);
             var result = PerformJobWithDependencies(name);
@@ -46,9 +46,9 @@ namespace Cake
                 job.Value.Status = JobStatus.NotVisited;
             }
             if (!result)
-                throw new JobException($"Job {name} did not end succesfully!");
+                Logger.Log(LogLevel.Warn, $"Job {name} did not end succesfully!");
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
 
         }
 
@@ -68,14 +68,14 @@ namespace Cake
         /// </summary>
         public static void ClearJobs()
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             _jobs = new Dictionary<string, CakeJob>();
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
         }
         
         private static bool PerformJobWithDependencies(string name)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             CakeJob job;
             try
             {
@@ -107,16 +107,16 @@ namespace Cake
                 if (job.Execute())
                 {
                     job.Status = JobStatus.Done;
-                    Logger.Log(LogLevel.Trace, "Method finished successfully");
+                    Logger.Log(LogLevel.Trace, "Method finished successfully.");
                     return true;
                 }
                 job.Status = JobStatus.Failed;
-                Logger.Log(LogLevel.Trace, "Method finished unsuccessfully");
+                Logger.Log(LogLevel.Trace, "Method finished unsuccessfully.");
                 return false;
             }
             catch (Exception e)
             {
-                Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job\n");
+                Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job.\n");
                 job.Status = JobStatus.Failed;
                 throw new JobException($"Job {name} did not end succesfully!\n");
             }

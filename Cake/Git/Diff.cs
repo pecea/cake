@@ -25,7 +25,7 @@ namespace Git
 
         private static bool Diff(params DiffTargets[] modes)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
 
             using (var repo = new Repository(RepositoryPath))
             {
@@ -42,7 +42,7 @@ namespace Git
                 }
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
     }

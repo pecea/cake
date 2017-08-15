@@ -23,7 +23,6 @@ namespace Common
         {
             if (loggerName == RoslynCallerMemberName)
                 loggerName = ScriptLoggerName;
-
             switch (logLevel)
             {
                 case LogLevel.Trace:
@@ -74,7 +73,7 @@ namespace Common
         /// <param name="targetName"></param>
         public static void Reconfigure(string logLevelName, string targetName)
         {
-            Log(LogLevel.Trace, "Method started");
+            Log(LogLevel.Trace, "Method started.");
             NLog.LogLevel logLevel;
             try
             {
@@ -86,15 +85,14 @@ namespace Common
                 return;
             }
 
-            var rules = LogManager.Configuration.LoggingRules
-                .Where(r => r.Targets.Any(t => string.Equals(t.Name, targetName, StringComparison.CurrentCultureIgnoreCase))).ToArray();
+            var rules = LogManager.Configuration.LoggingRules;
+                //.Where(r => r.Targets.Any(t => string.Equals(t.Name, targetName, StringComparison.CurrentCultureIgnoreCase))).ToArray();
 
             if (!rules.Any())
             {
                 Log(LogLevel.Warn, $"Couldn't find any rules with the {targetName} target.");
                 return;
             }
-
             foreach (var rule in rules)
             {
                 foreach (var level in NLog.LogLevel.AllLoggingLevels)
@@ -104,8 +102,10 @@ namespace Common
                 }
             }
 
+
             LogManager.ReconfigExistingLoggers();
-            Log(LogLevel.Trace, "Method finished");
+            //LogManager.Configuration.Reload();
+            Log(LogLevel.Trace, "Method finished.");
         }
     }
 }

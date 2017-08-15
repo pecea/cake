@@ -12,7 +12,7 @@ namespace Git
         /// <returns>True in case of success, false otherwise</returns>
         public static bool Pull()
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
 
             var options = new PullOptions
             {
@@ -33,7 +33,7 @@ namespace Git
                     Logger.Log(LogLevel.Info, $"Pull completed. Merge commit: {result.Commit.Id}.");
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
     }

@@ -27,7 +27,7 @@ namespace Cake
         /// <returns></returns>
         public static Argument[] Parse(string[] args)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var result = new List<Argument>();
 
             for (var i = 0; i < args.Length; i++)
@@ -48,7 +48,7 @@ namespace Cake
                     result.Add(new Argument(argument.Names, argument.HasValue));
                 }
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return result.ToArray();
         }
     }

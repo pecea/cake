@@ -24,7 +24,7 @@ namespace Zip
         /// <returns>True, if zipping was successful, false otherwise</returns>
         public static bool ZipFiles(string zipPathAndName, params string[] entriesPaths)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var paths = new List<string>();
             foreach (var filePath in entriesPaths)
             {
@@ -62,7 +62,7 @@ namespace Zip
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
 
@@ -78,7 +78,7 @@ namespace Zip
         /// <returns>True, if zipping was successful, false otherwise</returns>
         public static bool ZipFilesWithOptions(string zipPathAndName, string password = null, string compression = null, bool aes256Encryption = false, bool useZip64 = false, params string[] filePaths)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var paths = new List<string>();
             foreach (var filePath in filePaths)
             {
@@ -135,7 +135,7 @@ namespace Zip
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
         /// <summary>
@@ -148,10 +148,10 @@ namespace Zip
         /// <returns>True, if unzipping was successful, false otherwise</returns>
         public static bool ExtractFiles(string zipPathAndName, string destination, string password = null, bool overwrite = false)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
-                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
             try
@@ -175,6 +175,7 @@ namespace Zip
                                 entry.Extract(destination);
                         }
                     }
+                    Logger.Log(LogLevel.Info, $"{zipPathAndName} unzipped succesfully.");
                 }
             }
             catch (Exception ex)
@@ -182,7 +183,7 @@ namespace Zip
                 Logger.LogException(LogLevel.Error, ex, $"Unzipping {zipPathAndName}.zip failed.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
 
@@ -194,10 +195,10 @@ namespace Zip
         /// <returns>True, if deleting was successful, false otherwise</returns>
         public static bool DeleteEntries(string zipPathAndName, params string[] entriesToDelete)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
-                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
             try
@@ -213,7 +214,7 @@ namespace Zip
                 Logger.LogException(LogLevel.Error, ex, $"Deleting files from {zipPathAndName}.zip failed.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
 
@@ -225,10 +226,10 @@ namespace Zip
         /// <returns></returns>
         public static bool UpdateEntries(string zipPathAndName, params string[] entriesToUpdate)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
-                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
             try
@@ -255,7 +256,7 @@ namespace Zip
                 Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
         /// <summary>
@@ -267,10 +268,10 @@ namespace Zip
         /// <returns></returns>
         public static bool RenameEntry(string zipPathAndName, string oldName, string newName)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             if (!CheckIfArchiveExists(zipPathAndName))
             {
-                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}");
+                Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
             try
@@ -293,13 +294,13 @@ namespace Zip
                 Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
 
         private static bool CheckZipFilesArguments(IEnumerable<string> filePaths, string zipPath)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var enumerable = filePaths as IList<string> ?? filePaths.ToList();
             if (!enumerable.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)) || !enumerable.Any())
                 return false;
@@ -315,7 +316,7 @@ namespace Zip
                 Logger.Log(LogLevel.Warn, $"The zipPath parameter {zipPath} is not a valid path.");
                 return false;
             }
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
             return !string.IsNullOrEmpty(fullPath);
         }
 

@@ -27,7 +27,7 @@ namespace Cake
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params string[] dependenciesToAdd)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
             {
                 Dependencies.Add(dependency);
@@ -42,7 +42,7 @@ namespace Cake
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params Job[] dependenciesToAdd)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
         }
 
@@ -53,7 +53,6 @@ namespace Cake
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public Job Does(Func<bool> actionWithResultToDo)
         {
-            Logger.Log(LogLevel.Trace, "Method started");
             _actionWithResult = actionWithResultToDo;
             return this;
         }
@@ -61,7 +60,7 @@ namespace Cake
         
         internal override bool Execute()
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             try
             {
                 var res = _actionWithResult();

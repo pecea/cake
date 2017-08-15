@@ -40,13 +40,14 @@ namespace Cake
             }
 
             // Retrieving user specified logging levels
-            var scriptLogLevelArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/scriptverbosity"));
-            if (scriptLogLevelArgument != null)
-                Logger.Reconfigure(scriptLogLevelArgument.Value, "script");
 
             var appLogLevelArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/appverbosity"));
             if (appLogLevelArgument != null)
                 Logger.Reconfigure(appLogLevelArgument.Value, "coloredConsole");
+
+            var scriptLogLevelArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/scriptverbosity"));
+            if (scriptLogLevelArgument != null)
+                Logger.Reconfigure(scriptLogLevelArgument.Value, "script");
 
             // Retrieving script path
             var scriptArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/script"));
@@ -60,7 +61,7 @@ namespace Cake
             var jobToRunArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/runjob"));
             if (jobToRunArgument != null) JobManager.JobToRun = jobToRunArgument.Value;
 
-            Logger.Log(LogLevel.Info, $"Cake started for script: {scriptArgument.Value}");
+            Logger.Log(LogLevel.Info, $"Cake started for script: {scriptArgument.Value}.");
 
             // Running the script
             try
@@ -69,7 +70,7 @@ namespace Cake
             }
             catch (JobException j)
             {
-                Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job\n");
+                Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job.\n");
 
                 return;
             }

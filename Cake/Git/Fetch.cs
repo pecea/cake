@@ -13,7 +13,7 @@ namespace Git
         /// <returns>True in case of success, false otherwise</returns>
         public static bool Fetch()
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
 
             const string logMessage = "";
             var options = new FetchOptions
@@ -31,7 +31,7 @@ namespace Git
             }
 
             Logger.Log(LogLevel.Info, $"Fetch completed. {logMessage}");
-            Logger.Log(LogLevel.Trace, "Method finished");
+            Logger.Log(LogLevel.Trace, "Method finished.");
 
             return true;
         }

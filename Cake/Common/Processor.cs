@@ -17,16 +17,16 @@ namespace Common
         /// <returns></returns>
         public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
-            Logger.Log(LogLevel.Trace, "Method started");
+            Logger.Log(LogLevel.Trace, "Method started.");
             var result = new ProcessResult();
-            Logger.Log(LogLevel.Debug, "Running command:" + command + " " + arguments);
+            Logger.Log(LogLevel.Debug, $"Running command: {command} {arguments}.");
 
             if (workingDirectory != ".")
             {
                 if (!Directory.Exists(workingDirectory))
                 {
                     workingDirectory = ".";
-                    Logger.Log(LogLevel.Warn, "Working directory path does not exist! Changed path to " + Directory.GetCurrentDirectory());
+                    Logger.Log(LogLevel.Warn, $"Working directory path does not exist! Changed path to {Directory.GetCurrentDirectory()}.");
                 }
             }
 
@@ -55,23 +55,23 @@ namespace Common
                 result.Output = process.StandardOutput.ReadToEnd();
                 result.Error = process.StandardError.ReadToEnd();
                 if(!string.IsNullOrEmpty(result.Output))
-                    Logger.Log(LogLevel.Info, $"Process result: {result.Output}");
+                    Logger.Log(LogLevel.Info, $"Process result: {result.Output}.");
                 if(!string.IsNullOrEmpty(result.Error))
-                    Logger.Log(LogLevel.Warn, $"Process error: {result.Error}");
+                    Logger.Log(LogLevel.Warn, $"Process error: {result.Error}.");
 
                 process.WaitForExit();
 
                 if (process.ExitCode == 0)
                 {
-                    Logger.Log(LogLevel.Debug, "Process run successfully!");
+                    Logger.Log(LogLevel.Info, "Process run successfully!");
                     result.Success = true;
                 }
                 else
                 {
-                    Logger.Log(LogLevel.Debug, "Process exited with an error!");
+                    Logger.Log(LogLevel.Warn, "Process exited with an error!");
                     result.Success = false;
                 }
-                Logger.Log(LogLevel.Trace, "Method finished");
+                Logger.Log(LogLevel.Trace, "Method finished.");
                 return result;
             }
         }
