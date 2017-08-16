@@ -23,6 +23,7 @@ namespace Common
         {
             if (loggerName == RoslynCallerMemberName)
                 loggerName = ScriptLoggerName;
+
             switch (logLevel)
             {
                 case LogLevel.Trace:
@@ -85,8 +86,8 @@ namespace Common
                 return;
             }
 
-            var rules = LogManager.Configuration.LoggingRules;
-                //.Where(r => r.Targets.Any(t => string.Equals(t.Name, targetName, StringComparison.CurrentCultureIgnoreCase))).ToArray();
+            var rules = LogManager.Configuration.LoggingRules
+                .Where(r => r.Targets.Any(t => string.Equals(t.Name, targetName, StringComparison.CurrentCultureIgnoreCase))).ToArray();
 
             if (!rules.Any())
             {
