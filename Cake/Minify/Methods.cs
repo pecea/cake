@@ -117,12 +117,15 @@ namespace Minify
 
             using (var outputStream = File.Create(destination))
             {
-                foreach (var fileName in files.Select(s => $"{s.FullName}{s.Extension}"))
+                var offset = 0;
+                foreach (var fileName in files.Select(s => $"{s.FullName}"))
                 {
                     using (var inputStream = File.OpenRead(fileName))
                     {
+                        var length =
                         // Buffer size can be passed as the second argument.
                         inputStream.CopyTo(outputStream);
+                        outputStream.
                     }
                     Logger.Log(LogLevel.Info, $"The file {fileName} has been processed.");
                 }

@@ -2,11 +2,18 @@
 // cake using "../../../NUnit/bin/Debug/NUnit.dll";
 // cake using "../../../Zip/bin/Debug/Zip.dll";
 // cake using "../../../Files/bin/Debug/Files.dll";
+// cake using "../../../Minify/bin/Debug/Minify.dll";
 
 new Job("BuildSolution").Does(() => {
     return Build.Methods.BuildSolution(@"D:\Dane\Ernest\Praca\cake\Cake\Cake.sln", @"D:\Dane\Ernest\Praca\TestOutput\", "Release");
 });
-new Job("RunUnitTests").DependsOn("BuildSolution").Does(() => {
+new Job("MinifyJs").DependsOn("BuildSolution").Does(() => {
+    return Minify.Methods.MinifyJs(@"D:\Dane\Ernest\Praca\cake\Cake\scripts\js*", null, @"D:\Dane\Ernest\Praca\TestOutput\");
+});
+new Job("BundleJs").DependsOn("MinifyJs").Does(() => {
+    return Minify.Methods.BundleFiles(@"D:\Dane\Ernest\Praca\TestOutput\*min.js", null, @"D:\Dane\Ernest\Praca\TestOutput\bundled.min.js");
+});
+new Job("RunUnitTests").DependsOn("BundleJs").Does(() => {
     return NUnit.Methods.RunTests(null, null, @"D:\Dane\Ernest\Praca\cake\Cake\Success\bin\Debug\Success.dll");
 });
 new Job("ZipOutput").DependsOn("RunUnitTests").Does(() => {

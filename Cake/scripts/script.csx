@@ -1,6 +1,6 @@
-// cake using "../../../NUnit/bin/Debug/NUnit.dll";
+// cake using "../../../Minify/bin/Debug/Minify.dll";
 
-new Job("t3").Does(() => {
-    Methods.RunTests("test");
+new Job("Minification").Does(() => {
+    return Methods.MinifyJs(@"D:\Dane\Ernest\js*", null, @"D:\Dane\Ernest\Praca\");
 });
-JobManager.SetDefault("t3");
+JobManager.SetDefault("Minification");
