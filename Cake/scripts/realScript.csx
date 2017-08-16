@@ -11,7 +11,10 @@ new Job("MinifyJs").DependsOn("BuildSolution").Does(() => {
     return Minify.Methods.MinifyJs(@"D:\Dane\Ernest\Praca\cake\Cake\scripts\js*", null, @"D:\Dane\Ernest\Praca\TestOutput\");
 });
 new Job("BundleJs").DependsOn("MinifyJs").Does(() => {
-    return Minify.Methods.BundleFiles(@"D:\Dane\Ernest\Praca\TestOutput\*min.js", null, @"D:\Dane\Ernest\Praca\TestOutput\bundled.min.js");
+    return Minify.Methods.BundleFiles(@"D:\Dane\Ernest\Praca\TestOutput\*min.js", @"D:\Dane\Ernest\Praca\TestOutput\bundled.min.js", ';');
+});
+new Job("BundleHtml").DependsOn("BundleJs").Does(() => {
+    return Minify.Methods.BundleFiles(@"D:\Dane\Ernest\Praca\cake\Cake\scripts\*html", @"D:\Dane\Ernest\Praca\TestOutput\bundled.html", '\n');
 });
 new Job("RunUnitTests").DependsOn("BundleJs").Does(() => {
     return NUnit.Methods.RunTests(null, null, @"D:\Dane\Ernest\Praca\cake\Cake\Success\bin\Debug\Success.dll");

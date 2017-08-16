@@ -1,6 +1,7 @@
-// cake using "../../../MsTest/bin/Debug/MsTest.dll";
-new Job("t1").Does(() => {
-    Methods.RunTests("../../Test Files/PassingTests.dll", null, null, null, null);
+// cake using "../../../Minify/bin/Debug/Minify.dll";
+
+new Job("BundleHtml").Does(() => {
+    return Minify.Methods.BundleFiles(@"D:\Dane\Ernest\Praca\cake\Cake\scripts\*.html", @"D:\Dane\Ernest\Praca\TestOutput\bundled.html", '\n');
 });
 
-SetDefault("t1");
+JobManager.SetDefault("BundleHtml");

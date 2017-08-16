@@ -43,22 +43,30 @@ namespace Minify
         private static bool MinifyFiles(string pattern, string excludePattern, string destination, bool ignoreCase, Action<Minifier, FileSystemInfo, string> minifyAction)
         {
             Logger.Log(LogLevel.Trace, "Method started.");
-            var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
-
-            if (!ValidateGlob(files, pattern))
-                return false;
-
-            if (!string.IsNullOrWhiteSpace(excludePattern))
+            try
             {
-                var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
-                files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
+                var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
+
+                if (!ValidateGlob(files, pattern))
+                    return false;
+
+                if (!string.IsNullOrWhiteSpace(excludePattern))
+                {
+                    var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
+                    files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
+                }
+
+                var minifier = new Minifier();
+                foreach (var fileInfo in files)
+                    minifyAction(minifier, fileInfo, destination);
+
+                Logger.Log(LogLevel.Info, $"{files.Count()} files minified.");
             }
-
-            var minifier = new Minifier();
-            foreach (var fileInfo in files)
-                minifyAction(minifier, fileInfo, destination);
-
-            Logger.Log(LogLevel.Info, $"{files.Count()} files minified.");
+            catch(Exception ex)
+            {
+                Logger.LogException(LogLevel.Error, ex, "Could not minify files!");
+                return false;
+            }
             Logger.Log(LogLevel.Trace, "Method finished.");
             return true;
         }
@@ -96,41 +104,44 @@ namespace Minify
         /// <param name="destination">Path and name of the output file</param>
         /// <param name="ignoreCase">Flag indicating whether to ignore case in files</param>
         /// <returns>True in case of success, false otherwise</returns>
-        public static bool BundleFiles(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
+        public static bool BundleFiles(string pattern, string destination, char? separator = null, string excludePattern = null, bool ignoreCase = true)
         {
             Logger.Log(LogLevel.Trace, "Method started.");
-            var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
-
-            if (!ValidateGlob(files, pattern))
-                return false;
-
-            if (!string.IsNullOrWhiteSpace(excludePattern))
+            try
             {
-                var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
-                files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
-            }
-            if (string.IsNullOrEmpty(destination))
-            {
-                Logger.Log(LogLevel.Warn, "You have to specify the output file!");
-                return false;
-            }
+                var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
 
-            using (var outputStream = File.Create(destination))
-            {
-                var offset = 0;
-                foreach (var fileName in files.Select(s => $"{s.FullName}"))
+                if (!ValidateGlob(files, pattern))
+                    return false;
+
+                if (!string.IsNullOrWhiteSpace(excludePattern))
                 {
-                    using (var inputStream = File.OpenRead(fileName))
+                    var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
+                    files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
+                }
+                if (string.IsNullOrEmpty(destination))
+                {
+                    Logger.Log(LogLevel.Warn, "You have to specify the output file!");
+                    return false;
+                }
+
+                using (var outputStream = File.AppendText(destination)) //File.OpenRead(destination)
+                {
+                    foreach (var fileName in files.Select(s => $"{s.FullName}"))
                     {
-                        var length =
-                        // Buffer size can be passed as the second argument.
-                        inputStream.CopyTo(outputStream);
-                        outputStream.
+                        outputStream.Write(File.ReadAllText(fileName));
+                        if(separator != null)
+                            outputStream.Write(separator);
+
+                        Logger.Log(LogLevel.Info, $"The file {fileName} has been processed.");
                     }
-                    Logger.Log(LogLevel.Info, $"The file {fileName} has been processed.");
                 }
             }
-
+            catch(Exception ex)
+            {
+                Logger.LogException(LogLevel.Error, ex, "Could not bundle files!");
+                return false;
+            }
 
             Logger.Log(LogLevel.Trace, "Method finished.");
             return true;

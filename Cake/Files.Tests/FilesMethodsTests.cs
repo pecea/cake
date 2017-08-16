@@ -477,6 +477,19 @@ namespace Files.Tests
             }
         }
 
+        [TestMethod]
+        [TestCategory("FilesMethods")]
+        public void WriteFileToOutputReturnsSuccessIfFileIsValid() {
+            Assert.IsTrue(Methods.WriteFile($"{PathForTests}FileToCopy.txt"));
+        }
+
+        [TestMethod]
+        [TestCategory("FilesMethods")]
+        public void WriteFileToOutputReturnsFailureIfPathIsInvalid()
+        {
+            Assert.IsFalse(Methods.WriteFile($"nonexisting^&21"));
+        }
+
         private static string GetFileText(string name)
         {
             var fileContents = string.Empty;

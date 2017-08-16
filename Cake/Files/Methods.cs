@@ -439,5 +439,30 @@ namespace Files
                 Logger.Log(LogLevel.Info, $"{path}");
             return res;
         }
+        /// <summary>
+        /// Writes content of a file to the standard output.
+        /// </summary>
+        /// <param name="fileName">Path and name of the file</param>
+        /// <returns>True in case of success, otherwise false.</returns>
+        public static bool WriteFile(string fileName)
+        {
+            Logger.Log(LogLevel.Trace, "Method started.");
+            if (!File.Exists(fileName))
+            {
+                Logger.Log(LogLevel.Warn, $"Could not find {fileName}.");
+                return false;
+            }
+            try
+            {
+                Logger.Log(LogLevel.Info, File.ReadAllText(fileName));
+            }
+            catch(Exception ex)
+            {
+                Logger.LogException(LogLevel.Error, ex, $"Could not read content of {fileName}");
+                return false;
+            }
+            Logger.Log(LogLevel.Trace, "Method finished.");
+            return true;
+        }
     }
 }
