@@ -27,7 +27,7 @@ namespace Git
         /// <param name="onlyStaged">Whether to commit staged or all changes.</param>
         private static bool Commit(string message, bool onlyStaged)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
 
             if (string.IsNullOrWhiteSpace(message))
             {
@@ -46,7 +46,7 @@ namespace Git
                 var commit = repo.Commit(message, author, committer);
                 Logger.Log(LogLevel.Info, $"Commit {commit.Id} created.");
             }
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
 
             return true;
         }

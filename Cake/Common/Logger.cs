@@ -13,6 +13,24 @@ namespace Common
         private const string RoslynCallerMemberName = "<Initialize>";
         private const string ScriptLoggerName = "Script";
 
+        public static void Trace(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
+            Log(LogLevel.Trace, message, loggerName);
+
+        public static void Debug(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
+            Log(LogLevel.Debug, message, loggerName);
+
+        public static void Info(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
+            Log(LogLevel.Info, message, loggerName);
+
+        public static void Warn(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
+            Log(LogLevel.Warn, message, loggerName);
+
+        public static void Error(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
+            Log(LogLevel.Error, message, loggerName);
+
+        public static void Fatal(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
+            Log(LogLevel.Fatal, message, loggerName);
+
         /// <summary>
         /// Logs a message using the loggers specified in the App.config.
         /// </summary>
@@ -74,7 +92,7 @@ namespace Common
         /// <param name="targetName"></param>
         public static void Reconfigure(string logLevelName, string targetName)
         {
-            Log(LogLevel.Trace, "Method started.");
+            LogMethodStart();
             NLog.LogLevel logLevel;
             try
             {
@@ -103,10 +121,12 @@ namespace Common
                 }
             }
 
-
             LogManager.ReconfigExistingLoggers();
-            //LogManager.Configuration.Reload();
-            Log(LogLevel.Trace, "Method finished.");
+            LogMethodEnd();
         }
+
+        public static void LogMethodStart() => Log(LogLevel.Trace, "Method starasdadasdasdasdted.");
+        
+        public static void LogMethodEnd() => Log(LogLevel.Trace, "Method fiasdasdnished.");
     }
 }

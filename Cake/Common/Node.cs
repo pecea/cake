@@ -37,7 +37,7 @@ namespace Common
         /// <returns>Enumeration of paths found that match the wildcard.</returns>
         public IEnumerable<string> ResolveNode(GetPathsOptions option, int pathIndex = 0)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             var result = new List<string>();
             var nextPathPart = SplitPath[pathIndex + 1];
 
@@ -74,7 +74,7 @@ namespace Common
             }
 
             foreach (var child in Children) result.AddRange(child.ResolveNode(option, pathIndex + 1));
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
 
             return result;
         }

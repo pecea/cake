@@ -24,10 +24,10 @@ namespace Cake
         /// <param name="job">A <see cref="Job"/> to be added.</param>
         public static void RegisterJob(CakeJob job)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             _jobs.Add(job.Name, job);
             Logger.Log(LogLevel.Debug, $"Job \"{job.Name}\" registered.");
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Cake
         /// <param name="name">Name of a <see cref="CakeJob"/> to be executed.</param>
         public static void SetDefault(string name)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             if (!string.IsNullOrEmpty(JobToRun)) name = JobToRun;
             //PerformJobWithDependencies(name);
             var result = PerformJobWithDependencies(name);
@@ -48,7 +48,7 @@ namespace Cake
             if (!result)
                 Logger.Log(LogLevel.Warn, $"Job {name} did not end succesfully!");
 
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
 
         }
 
@@ -68,14 +68,14 @@ namespace Cake
         /// </summary>
         public static void ClearJobs()
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             _jobs = new Dictionary<string, CakeJob>();
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
         }
         
         private static bool PerformJobWithDependencies(string name)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             CakeJob job;
             try
             {

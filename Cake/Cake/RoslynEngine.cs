@@ -105,7 +105,7 @@ namespace Cake
 
         private static string ExtractAssemblyPath(string usingDirective)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             return usingDirective
                     .TrimStart('/')
                     .TrimEnd(';')
@@ -117,7 +117,7 @@ namespace Cake
 
         private static string ExtractScriptPath(string loadDirective)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             return loadDirective
                 .TrimStart('/')
                 .TrimEnd(';')

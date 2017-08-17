@@ -19,7 +19,7 @@ namespace XUnit
         /// <returns>True if xunit tests run successfully, otherwise false</returns>
         public static bool RunTests(string traits = null, string notraits = null, params string[] assemblyPaths)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             var res = true;
             if (!File.Exists(FullPathExe))
             {
@@ -46,7 +46,7 @@ namespace XUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Logger.Log(LogLevel.Trace, "Method finished.");
+                Logger.LogMethodEnd();
                 return res;
             }
             catch (Exception e)
@@ -74,7 +74,7 @@ namespace XUnit
         public static bool RunTestsWithOptions(string assemblyPaths, string traits = null, string notraits = null, string methodname = null, string classname = null, 
             string parallel = null, int? maxthreads = null, bool? noshadow = null, bool? quiet = null, bool? serialize = null, string outputTypeAndName = null)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             var res = true;
             if (!File.Exists(FullPathExe))
             {
@@ -118,7 +118,7 @@ namespace XUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Logger.Log(LogLevel.Trace, "Method finished.");
+                Logger.LogMethodEnd();
                 return res;
             }
             catch (Exception e)

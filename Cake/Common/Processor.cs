@@ -17,7 +17,7 @@ namespace Common
         /// <returns></returns>
         public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             var result = new ProcessResult();
             Logger.Log(LogLevel.Debug, $"Running command: {command} {arguments}.");
 
@@ -71,7 +71,7 @@ namespace Common
                     Logger.Log(LogLevel.Warn, "Process exited with an error!");
                     result.Success = false;
                 }
-                Logger.Log(LogLevel.Trace, "Method finished.");
+                Logger.LogMethodEnd();
                 return result;
             }
         }

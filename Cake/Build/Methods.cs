@@ -46,7 +46,7 @@ namespace Build
 
         private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration }
             };
@@ -66,7 +66,7 @@ namespace Build
                 success = false;
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return success;
         }
 
@@ -82,7 +82,7 @@ namespace Build
 
         private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             
             var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?
                     .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
@@ -143,13 +143,13 @@ namespace Build
                     
                 }
             }
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return true;
         }
 
         private static bool CompileSolution(string solutionUrl, string outputDir, string configuration, string platform)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
@@ -170,7 +170,7 @@ namespace Build
                 success = false;
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return success;
         }
 
@@ -184,7 +184,7 @@ namespace Build
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildSolution(string solutionFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
 
             var paths = solutionFile.GetFilePaths();
             var enumerable = paths as IList<string> ?? paths.ToList();
@@ -196,7 +196,7 @@ namespace Build
             var res = enumerable.Aggregate(true,
                 (current, path) => current & CompileSolution(path, outputPath, configuration, platform));
 
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
 
             return res;
         }
@@ -211,7 +211,7 @@ namespace Build
         /// <returns>true in case of success, false otherwise.</returns>
         public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             var paths = projectFile.GetFilePaths();
 
             var enumerable = paths as IList<string> ?? paths.ToList();
@@ -222,13 +222,13 @@ namespace Build
 
             var res = enumerable.Aggregate(true,
                 (current, path) => current & CompileProject(path, outputPath, configuration, platform));
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return res;
         }
 
         //private static bool BuildSingleProject(string projectFile, string outputPath, string configuration, string platform)
         //{
-        //    Logger.Log(LogLevel.Trace, "Method started.");
+        //    Logger.LogMethodStart();
         //    if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
         //    if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
 
@@ -267,7 +267,7 @@ namespace Build
 
         private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             if (!File.Exists(projectFile))
             {
                 Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");
@@ -296,7 +296,7 @@ namespace Build
                     return false;
                 }
             }
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return true;
         }
     }

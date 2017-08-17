@@ -13,7 +13,7 @@ namespace Git
         public static bool Pull()
         {
             MergeResult result = null;
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
 
             var options = new PullOptions
             {
@@ -36,7 +36,7 @@ namespace Git
                     Logger.Log(LogLevel.Info, $"Pull completed. Merge commit: {result.Commit.Id}.");
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return result.Status != MergeStatus.Conflicts;
         }
     }

@@ -26,13 +26,13 @@ namespace Cake
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
         public VoidJob DependsOn(params string[] dependenciesToAdd)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
             {
                 Dependencies.Add(dependency);
             }
 
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return this;
         }
 
@@ -59,18 +59,18 @@ namespace Cake
 
         internal override bool Execute()
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             try
             {
                 _action();
                 Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
-                Logger.Log(LogLevel.Trace, "Method finished.");
+                Logger.LogMethodEnd();
                 return true;
             }
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
-                Logger.Log(LogLevel.Trace, "Method finished.");
+                Logger.LogMethodEnd();
                 return false;
             }
         }

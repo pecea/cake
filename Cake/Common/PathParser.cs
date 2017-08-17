@@ -31,7 +31,7 @@ namespace Common
 
         private static IEnumerable<string> GetPaths(string path, GetPathsOptions option)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             if (!path.Contains("*"))
             {
                 switch (option)
@@ -45,7 +45,7 @@ namespace Common
 
             var splitPath = path.Split('\\', '/');
             var pathsRoot = new Node(splitPath[0], splitPath);
-            Logger.Log(LogLevel.Trace, "Method finished.");
+            Logger.LogMethodEnd();
             return pathsRoot.ResolveNode(option);
         }
     }

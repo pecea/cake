@@ -20,7 +20,7 @@ namespace NUnit
         /// <returns>True if nunit tests run successfully, otherwise false</returns>
         public static bool RunTests(string conditions = null, string config = null, params string[] assemblyPaths)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             var res = true;
             if (!File.Exists(FullPathExe))
             {
@@ -45,7 +45,7 @@ namespace NUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Logger.Log(LogLevel.Trace, "Method finished.");
+                Logger.LogMethodEnd();
                 return res;
             }
             catch (Exception e)
@@ -77,7 +77,7 @@ namespace NUnit
         /// <returns>True if nunit tests run successfully, otherwise false</returns>
         public static bool RunTestsWithOptions(string assemblyPaths, string conditions = null, string config = null, string workingDirectoryPath = null, string outputPath = null, string errorPath = null, bool? stopOnError = null, bool? skipNonAssemblies = null, bool? noResult = null, string verbosity = null, string timeout = null, bool? shadowcopy = null, string processIsolation = null, string numberOfAgents = null, string domainIsolation = null, string frameworkVersion = null, bool? runIn32Bit = null)
         {
-            Logger.Log(LogLevel.Trace, "Method started.");
+            Logger.LogMethodStart();
             var res = true;
             if (!File.Exists(FullPathExe))
             {
@@ -131,7 +131,7 @@ namespace NUnit
                 if (!string.IsNullOrEmpty(result.Output))
                     res = result.Output.Contains(TestsPassed);
 
-                Logger.Log(LogLevel.Trace, "Method finished.");
+                Logger.LogMethodEnd();
                 return res;
             }
             catch (Exception e)
