@@ -125,8 +125,8 @@ namespace Common
             LogMethodEnd();
         }
 
-        public static void LogMethodStart() => Log(LogLevel.Trace, "Method starasdadasdasdasdted.");
+        public static void LogMethodStart([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, "Method started.", methodName);
         
-        public static void LogMethodEnd() => Log(LogLevel.Trace, "Method fiasdasdnished.");
+        public static void LogMethodEnd([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, "Method finished.", methodName);
     }
 }
