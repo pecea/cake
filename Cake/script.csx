@@ -10,7 +10,7 @@ new Job("diff").Does(() =>
     ////Methods.UserName = "Piotr Szyperski";
     ////Methods.UserEmail = "szyperski.p@gmail.com";
     //////Methods.Commit("Test message!");
-    //Logger.Log(LogLevel.Info, "elo");
+    Logger.Log(LogLevel.Info, "elo");
     //DiffAll();
     ////Methods.Stage();
     ////Methods.Reset();
@@ -28,6 +28,8 @@ new Job("diff").Does(() =>
 
     MinifyJs(jsFilesGlob, jsExcludedGlob);
     MinifyCss(cssFilesGlob, cssExcludedGlob);
+
+    return true;
 });
 
 JobManager.SetDefault("diff");
