@@ -1,5 +1,6 @@
 ﻿using Common;
 using LibGit2Sharp;
+using System;
 using LogLevel = Common.LogLevel;
 
 namespace Git
@@ -11,13 +12,13 @@ namespace Git
         /// </summary>
         /// <param name="message">The commit message</param>
         /// <returns>True in case of success, otherwise false</returns>
-        public static bool CommitAllChanges(string message) => Commit(message, false);
+        public static bool CommitAllChanges(string message = null) => Commit(message, false);
         /// <summary>
         /// Performs a commit with staged changes.
         /// </summary>
         /// <param name="message">The commit message</param>
         /// <returns>True in case of success, otherwise false</returns>
-        public static bool CommitStagedChanges(string message) => Commit(message, true);
+        public static bool CommitStagedChanges(string message = null) => Commit(message, true);
 
         /// <summary>
         /// Performs a commit.
@@ -27,6 +28,12 @@ namespace Git
         private static bool Commit(string message, bool onlyStaged)
         {
             Logger.Log(LogLevel.Trace, "Method started.");
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                Logger.Log(LogLevel.Warn, "Please enter commit message:");
+                message = Console.ReadLine();
+            }
 
             using (var repo = new Repository(RepositoryPath))
             {

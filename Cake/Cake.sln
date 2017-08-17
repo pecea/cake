@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5311970D-8E70-4432-BFEC-7418C5E3713E}"
 	ProjectSection(SolutionItems) = preProject
@@ -67,6 +67,18 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minify.Tests", "Minify.Tests\Minify.Tests.csproj", "{871D8A3D-D5E5-4A94-809E-F4D24B400C87}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{5F033557-9638-44F1-BD8E-197C2EC76038}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{70E5F872-FB05-4193-8C57-0ED47EAFA749}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{E58A5907-4AC8-473A-B1BD-944FAF5DA7BC}"
+	ProjectSection(SolutionItems) = preProject
+		git_sample1.csx = git_sample1.csx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{8B607D5B-458C-489D-9F72-5A2F5A913FBE}"
+	ProjectSection(SolutionItems) = preProject
+		general_sample1.csx = general_sample1.csx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -185,5 +197,8 @@ Global
 		{7FE55F6F-8ABD-4ED0-B409-90BE6D34EFEC} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 		{6186F5B5-05D8-4BD5-B541-332534C9DE9E} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
 		{871D8A3D-D5E5-4A94-809E-F4D24B400C87} = {EE7D900E-5296-4894-988E-421F8EAD75FE}
+		{70E5F872-FB05-4193-8C57-0ED47EAFA749} = {3BB5221E-145A-409F-B140-96903C48CB54}
+		{E58A5907-4AC8-473A-B1BD-944FAF5DA7BC} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
+		{8B607D5B-458C-489D-9F72-5A2F5A913FBE} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
 	EndGlobalSection
 EndGlobal

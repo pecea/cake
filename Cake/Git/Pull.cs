@@ -12,6 +12,7 @@ namespace Git
         /// <returns>True in case of success, false otherwise</returns>
         public static bool Pull()
         {
+            MergeResult result = null;
             Logger.Log(LogLevel.Trace, "Method started.");
 
             var options = new PullOptions
@@ -25,16 +26,18 @@ namespace Git
             using (var repo = new Repository(RepositoryPath))
             {
                 var signature = UserIdentity.GetSignature();
-                var result = Commands.Pull(repo, signature, options);
+                result = Commands.Pull(repo, signature, options);
 
                 if (result.Status == MergeStatus.Conflicts)
                     Logger.Log(LogLevel.Warn, $"Pull completed. Merge unsuccessful due to conflicts.");
+                else if (result.Status == MergeStatus.UpToDate)
+                    Logger.Log(LogLevel.Info, $"Pull completed, your repository was up to date.");
                 else
                     Logger.Log(LogLevel.Info, $"Pull completed. Merge commit: {result.Commit.Id}.");
             }
 
             Logger.Log(LogLevel.Trace, "Method finished.");
-            return true;
+            return result.Status != MergeStatus.Conflicts;
         }
     }
 }
