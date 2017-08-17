@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Minify.Tests</RootNamespace>
     <AssemblyName>Minify.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
@@ -19,6 +19,7 @@
     <TestProjectType>UnitTest</TestProjectType>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +54,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Files\Files.csproj">
+      <Project>{7530f94d-0387-492e-b784-a1d4eb22b26b}</Project>
+      <Name>Files</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Minify\Minify.csproj">
+      <Project>{5ebe98da-2dfe-4543-9aad-47867ffae74e}</Project>
+      <Name>Minify</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test Files\css1.css" />
+    <Content Include="Test Files\css2.css" />
+    <Content Include="Test Files\index1.html" />
+    <Content Include="Test Files\index2.html" />
+    <Content Include="Test Files\js1.js" />
+    <Content Include="Test Files\syntaxError.js" />
+    <Content Include="Test Files\js2.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test Files\NewFolder1\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

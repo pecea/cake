@@ -14,7 +14,7 @@ namespace Minify
         /// </summary>
         /// <param name="pattern">Pattern for matching files to minify</param>
         /// <param name="excludePattern">Pattern for not matching files to minify</param>
-        /// <param name="destination">Path and name of the output file</param>
+        /// <param name="destination">Path to the output directory</param>
         /// <param name="ignoreCase">Flag indicating whether to ignore case in files</param>
         /// <returns>True in case of success, false otherwise</returns>
         public static bool MinifyJs(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
@@ -29,7 +29,7 @@ namespace Minify
         /// </summary>
         /// <param name="pattern">Pattern for matching files to minify</param>
         /// <param name="excludePattern">Pattern for not matching files to minify</param>
-        /// <param name="destination">Path and name of the output file</param>
+        /// <param name="destination">Path to the output directory</param>
         /// <param name="ignoreCase">Flag indicating whether to ignore case in files</param>
         /// <returns>True in case of success, false otherwise</returns>
         public static bool MinifyCss(string pattern, string excludePattern = null, string destination = null, bool ignoreCase = true)
@@ -55,6 +55,9 @@ namespace Minify
                     var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
                     files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
                 }
+
+                if (!string.IsNullOrEmpty(destination) && !Directory.Exists(destination))
+                    Directory.CreateDirectory(destination);
 
                 var minifier = new Minifier();
                 foreach (var fileInfo in files)
@@ -100,8 +103,9 @@ namespace Minify
         /// Methodd for bundling files into one.
         /// </summary>
         /// <param name="pattern">Pattern for matching files to minify</param>
-        /// <param name="excludePattern">Pattern for not matching files to minify</param>
         /// <param name="destination">Path and name of the output file</param>
+        /// <param name="separator">Character to separate bundled files</param>
+        /// <param name="excludePattern">Pattern for not matching files to minify</param>
         /// <param name="ignoreCase">Flag indicating whether to ignore case in files</param>
         /// <returns>True in case of success, false otherwise</returns>
         public static bool BundleFiles(string pattern, string destination, char? separator = null, string excludePattern = null, bool ignoreCase = true)
@@ -124,6 +128,9 @@ namespace Minify
                     Logger.Log(LogLevel.Warn, "You have to specify the output file!");
                     return false;
                 }
+                var dest = Path.GetDirectoryName(destination);
+                if (!string.IsNullOrEmpty(dest))
+                    Directory.CreateDirectory(dest);
 
                 using (var outputStream = File.AppendText(destination)) //File.OpenRead(destination)
                 {

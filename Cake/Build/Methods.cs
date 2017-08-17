@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Common;
+﻿using Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.Build.Execution;
-using System.Collections.Immutable;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Build
 {
@@ -85,19 +83,18 @@ namespace Build
         private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
         {
             Logger.Log(LogLevel.Trace, "Method started.");
-            var success = false;
             
             var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?
                     .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
                 .GetCompilationAsync()?.Result;
             if (string.IsNullOrEmpty(outputPath))
-                outputPath = $"{Path.GetDirectoryName(project.OutputFilePath)}\\";
+                outputPath = $"{Path.GetDirectoryName(project?.OutputFilePath)}\\";
             outputPath = outputPath.Replace('/', '\\');
             if (!outputPath.EndsWith("\\"))
                 outputPath += '\\';
             if(graph != null)
             {
-                outputPath += $"{project.Name}\\";
+                outputPath += $"{project?.Name}\\";
                 if (!Directory.Exists(outputPath))
                     Directory.CreateDirectory(outputPath);
             }
@@ -108,42 +105,46 @@ namespace Build
                 var stream3 = new MemoryStream();
                 //var newResult = projectCompilation.Emit("test.exe", "test.pdb", "test");
                 var result = projectCompilation.Emit(stream, stream2, stream3);
-                foreach(var diagnostic in result?.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error))
-                {
-                    Logger.Log(LogLevel.Error, $"{diagnostic.ToString()}\n.");
-                }
-                success = result.Success;
-                if (success)
+                var diagnostics = result?.Diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error);
+                if (diagnostics != null)
+                    foreach (var diagnostic in diagnostics)
+                    {
+                        Logger.Log(LogLevel.Error, $"{diagnostic}\n.");
+                    }
+                if (result!= null && result.Success)
                 {
                     Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully.");
-                    var extension = ProjectOutputs[project.CompilationOptions.OutputKind];
                     var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{ProjectOutputs[project.CompilationOptions.OutputKind]}";
                     var pathTwo = $"{outputPath}{projectCompilation.AssemblyName}.pdb";
                     var pathThree = $"{outputPath}{projectCompilation.AssemblyName}.xml";
                     WriteStreamToFile(stream, pathOne);
                     WriteStreamToFile(stream2, pathTwo);
                     WriteStreamToFile(stream3, pathThree);
-                    if(library != null)
+                    if (library != null)
+                    {
                         library[project.Id] = new BuildResult
                         {
                             OutputPath = pathOne,
                             PdbPath = pathTwo,
                             XmlPath = pathThree
                         };
+                        foreach (var dependency in graph?.GetProjectsThatThisProjectTransitivelyDependsOn(project.Id)?.ToArray() ?? new ProjectId[0])
+                        {
+                            File.Copy(library[dependency].OutputPath, $"{outputPath}{library[dependency]?.OutputPath?.Split('\\').LastOrDefault()}", true);
+                            File.Copy(library[dependency].PdbPath, $"{outputPath}{library[dependency]?.PdbPath?.Split('\\').LastOrDefault()}", true);
+                            File.Copy(library[dependency].XmlPath, $"{outputPath}{library[dependency]?.XmlPath?.Split('\\').LastOrDefault()}", true);
+                        }
+                    }
+                        
                     foreach(var met in project.MetadataReferences)
                     {
-                        File.Copy(met.Display, $"{outputPath}{met.Display?.Split('\\')?.LastOrDefault()}", true);
+                        File.Copy(met.Display, $"{outputPath}{met.Display?.Split('\\').LastOrDefault()}", true);
                     }
-                    foreach (var dependency in graph?.GetProjectsThatThisProjectTransitivelyDependsOn(project.Id)?.ToArray() ?? new ProjectId[0])
-                    {
-                        File.Copy(library[dependency].OutputPath, $"{outputPath}{library[dependency]?.OutputPath?.Split('\\')?.LastOrDefault()}", true);
-                        File.Copy(library[dependency].PdbPath, $"{outputPath}{library[dependency]?.PdbPath?.Split('\\')?.LastOrDefault()}", true);
-                        File.Copy(library[dependency].XmlPath, $"{outputPath}{library[dependency]?.XmlPath?.Split('\\')?.LastOrDefault()}", true);
-                    }
+                    
                 }
             }
             Logger.Log(LogLevel.Trace, "Method finished.");
-            return success;
+            return true;
         }
 
         private static bool CompileSolution(string solutionUrl, string outputDir, string configuration, string platform)

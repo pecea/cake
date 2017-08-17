@@ -7,8 +7,8 @@ namespace Git.Tests
     [TestClass]
     public class GitMethodsTests
     {
-        private static int CreatedFilesCount = 0;
-        private static Commit InitialCommit;
+        private static int _createdFilesCount;
+        private static Commit _initialCommit;
 
         [ClassInitialize]
         public static void CreateRepository(TestContext context)
@@ -26,7 +26,7 @@ namespace Git.Tests
         {
             using (var repo = new Repository(Methods.RepositoryPath))
             {
-                repo.Reset(ResetMode.Hard, InitialCommit);
+                repo.Reset(ResetMode.Hard, _initialCommit);
                 repo.RemoveUntrackedFiles();
             }
         }
@@ -36,11 +36,12 @@ namespace Git.Tests
             using (var repo = new Repository(Methods.RepositoryPath))
             {
                 var signature = Methods.UserIdentity.GetSignature();
-                InitialCommit = repo.Commit("Test initial commit", signature, signature);
+                _initialCommit = repo.Commit("Test initial commit", signature, signature);
             }
         }
 
         [TestMethod]
+        [TestCategory("GitMethods")]
         public void AfterCommittingAllChangesShouldBeZeroWorkingDirChanges()
         {
             Assert.AreEqual(0, GetWorkingDirChangesCount());
@@ -53,10 +54,11 @@ namespace Git.Tests
         }
 
         [TestMethod]
+        [TestCategory("GitMethods")]
         public void AfterStagingAFileShouldBeOneMoreIndexChange()
         {
             Assert.AreEqual(0, GetWorkingDirChangesCount());
-            string filePath = CreateFile();
+            var filePath = CreateFile();
             Assert.AreEqual(1, GetWorkingDirChangesCount());
 
             var indexChanges = GetIndexChangesCount();
@@ -65,9 +67,10 @@ namespace Git.Tests
         }
 
         [TestMethod]
+        [TestCategory("GitMethods")]
         public void AfterResetShouldBeZeroIndexChanges()
         {
-            string filePath = CreateFile();
+            var filePath = CreateFile();
 
             Assert.AreEqual(0, GetIndexChangesCount());
             Methods.Stage(filePath);
@@ -76,11 +79,11 @@ namespace Git.Tests
             Assert.AreEqual(0, GetIndexChangesCount());
         }
 
-        private int GetWorkingDirChangesCount() => GetChangesCount(DiffTargets.WorkingDirectory);
+        private static int GetWorkingDirChangesCount() => GetChangesCount(DiffTargets.WorkingDirectory);
 
-        private int GetIndexChangesCount() => GetChangesCount(DiffTargets.Index);
+        private static int GetIndexChangesCount() => GetChangesCount(DiffTargets.Index);
 
-        private int GetChangesCount(DiffTargets diffTarget)
+        private static int GetChangesCount(DiffTargets diffTarget)
         {
             using (var repo = new Repository(Methods.RepositoryPath))
             {
@@ -88,9 +91,9 @@ namespace Git.Tests
             }
         }
 
-        private string CreateFile()
+        private static string CreateFile()
         {
-            string path = Path.Combine(Methods.RepositoryPath, $"test_file_{CreatedFilesCount++}.txt");
+            var path = Path.Combine(Methods.RepositoryPath, $"test_file_{_createdFilesCount++}.txt");
             using (File.Create(path)) { }
 
             return path;
