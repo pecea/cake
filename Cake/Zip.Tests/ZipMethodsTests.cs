@@ -105,6 +105,8 @@ namespace Zip.Tests
                     Assert.AreEqual(notZippedFileByte, unzippedFileByte);
                 } while (notZippedFileByte != -1 && unzippedFileByte != -1);
             }
+            if (File.Exists(archivePath + ".zip"))
+                File.Delete(archivePath + ".zip");
         }
         /// <summary>
         /// Test method for deleting entries in an archive.
@@ -169,6 +171,19 @@ namespace Zip.Tests
             var filesAfterRename = Files.Methods.GetFilesWithPattern(unzippedPath, "*");
             CollectionAssert.Contains(filesAfterRename, unzippedPath + "newName.txt");
 
+        }
+        /// <summary>
+        /// Deleting all files and directories created during tests
+        /// </summary>
+        [TestCleanup]
+        public void DeleteTestContent()
+        {
+            if (Directory.Exists("../../Test Files/DeleteTest/"))
+                Directory.Delete("../../Test Files/DeleteTest/", true);
+            if (Directory.Exists("../../Test Files/RenameTest/"))
+                Directory.Delete("../../Test Files/RenameTest/", true);
+            if (Directory.Exists("../../Test Files/UpdateTest/"))
+                Directory.Delete("../../Test Files/UpdateTest/", true);
         }
     }
 }
