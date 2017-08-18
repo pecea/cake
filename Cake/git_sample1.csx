@@ -4,7 +4,7 @@ using System;
 
 new VoidJob("GitInit").Does(() =>
 {
-    RepositoryPath = PathManager.RepositoryPath;
+    RepositoryPath = @"C:\Repository";
     UserIdentity = Identity.FromJsonFile(@"C:\creds.json");
 });
 
@@ -30,13 +30,3 @@ new Job("Pull").DependsOn("Commit").Does(Pull);
 new Job("Push").DependsOn("Pull").Does(Push);
 
 JobManager.SetDefault("Push");
-
-static class PathManager
-{
-    public const string RepositoryPath = @"C:\Repository";
-
-    public static string RelativeToRepo(string path)
-    {
-        return Path.Combine(RepositoryPath, path);
-    }
-}
