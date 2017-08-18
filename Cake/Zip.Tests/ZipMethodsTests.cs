@@ -184,6 +184,8 @@ namespace Zip.Tests
                 Directory.Delete("../../Test Files/RenameTest/", true);
             if (Directory.Exists("../../Test Files/UpdateTest/"))
                 Directory.Delete("../../Test Files/UpdateTest/", true);
+            if (File.Exists(PathForTests + ".zip"))
+                File.Delete(PathForTests + ".zip");
         }
     }
 }
