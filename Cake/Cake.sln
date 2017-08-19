@@ -72,12 +72,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{70E5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{E58A5907-4AC8-473A-B1BD-944FAF5DA7BC}"
 	ProjectSection(SolutionItems) = preProject
-		git_sample1.csx = git_sample1.csx
+		Scripts\git_sample1.csx = Scripts\git_sample1.csx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{8B607D5B-458C-489D-9F72-5A2F5A913FBE}"
 	ProjectSection(SolutionItems) = preProject
-		general_sample1.csx = general_sample1.csx
+		Scripts\general_sample1.csx = Scripts\general_sample1.csx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{8095E7FA-F187-4B07-84EF-A5F4E34774D2}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\build_sample1.csx = Scripts\build_sample1.csx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Minify", "Minify", "{8E1023C0-EDF8-4D00-9EA9-3D50AC4953BC}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\colors.css = Scripts\colors.css
+		Scripts\js1.js = Scripts\js1.js
+		Scripts\js2.js = Scripts\js2.js
+		Scripts\minify_sample1.csx = Scripts\minify_sample1.csx
 	EndProjectSection
 EndProject
 Global
@@ -200,5 +213,7 @@ Global
 		{70E5F872-FB05-4193-8C57-0ED47EAFA749} = {3BB5221E-145A-409F-B140-96903C48CB54}
 		{E58A5907-4AC8-473A-B1BD-944FAF5DA7BC} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
 		{8B607D5B-458C-489D-9F72-5A2F5A913FBE} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
+		{8095E7FA-F187-4B07-84EF-A5F4E34774D2} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
+		{8E1023C0-EDF8-4D00-9EA9-3D50AC4953BC} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
 	EndGlobalSection
 EndGlobal
