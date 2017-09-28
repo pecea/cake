@@ -48,8 +48,7 @@ namespace Build
         {
             Logger.LogMethodStart();
             bool success;
-            var options = new Dictionary<string, string> { { "Configuration", configuration }
-            };
+            var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
             try
             {
@@ -82,8 +81,9 @@ namespace Build
 
         private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
         {
+            bool success = false;
             Logger.LogMethodStart();
-            
+
             var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?
                     .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
                 .GetCompilationAsync()?.Result;
@@ -92,7 +92,7 @@ namespace Build
             outputPath = outputPath.Replace('/', '\\');
             if (!outputPath.EndsWith("\\"))
                 outputPath += '\\';
-            if(graph != null)
+            if (graph != null)
             {
                 outputPath += $"{project?.Name}\\";
                 if (!Directory.Exists(outputPath))
@@ -111,7 +111,7 @@ namespace Build
                     {
                         Logger.Log(LogLevel.Error, $"{diagnostic}\n.");
                     }
-                if (result!= null && result.Success)
+                if (result != null && result.Success)
                 {
                     Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully.");
                     var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{ProjectOutputs[project.CompilationOptions.OutputKind]}";
@@ -135,16 +135,19 @@ namespace Build
                             File.Copy(library[dependency].XmlPath, $"{outputPath}{library[dependency]?.XmlPath?.Split('\\').LastOrDefault()}", true);
                         }
                     }
-                        
-                    foreach(var met in project.MetadataReferences)
+
+                    foreach (var met in project.MetadataReferences)
                     {
                         File.Copy(met.Display, $"{outputPath}{met.Display?.Split('\\').LastOrDefault()}", true);
                     }
-                    
+
                 }
+
+                success = result?.Success ?? false;
             }
+
             Logger.LogMethodEnd();
-            return true;
+            return success;
         }
 
         private static bool CompileSolution(string solutionUrl, string outputDir, string configuration, string platform)
