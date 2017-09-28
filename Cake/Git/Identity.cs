@@ -4,6 +4,7 @@ using System.Xml.Serialization;
 using LibGit2Sharp;
 using LibGit2Sharp.Handlers;
 using Newtonsoft.Json;
+using Git.Helpers;
 
 namespace Git
 {
@@ -34,15 +35,18 @@ namespace Git
 
         public string Password
         {
-            get => (_password = AskIfNull(_password, nameof(Password)));
+            get => (_password = AskIfNull(_password, nameof(Password), masked: true));
             set => _password = value;
         }
 
-        private string AskIfNull(string value, string name)
+        private string AskIfNull(string value, string name, bool masked = false)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
                 Console.WriteLine($"Please provide your git {name}:");
+
+                if (masked)
+                    return ConsoleHelper.ReadLineMasked();
                 return Console.ReadLine();
             }
 
