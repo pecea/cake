@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 
 namespace Build
 {
@@ -44,17 +45,53 @@ namespace Build
         };
 
 
+        internal static bool TryGetOutputKind(string outputKind, out OutputKind kind)
+        {
+            if (string.Equals(outputKind, "Library", StringComparison.OrdinalIgnoreCase))
+            {
+                kind = OutputKind.DynamicallyLinkedLibrary;
+                return true;
+            }
+            else if (string.Equals(outputKind, "Exe", StringComparison.OrdinalIgnoreCase))
+            {
+                kind = OutputKind.ConsoleApplication;
+                return true;
+            }
+            else if (string.Equals(outputKind, "WinExe", StringComparison.OrdinalIgnoreCase))
+            {
+                kind = OutputKind.WindowsApplication;
+                return true;
+            }
+            else if (string.Equals(outputKind, "Module", StringComparison.OrdinalIgnoreCase))
+            {
+                kind = OutputKind.NetModule;
+                return true;
+            }
+            else if (string.Equals(outputKind, "WinMDObj", StringComparison.OrdinalIgnoreCase))
+            {
+                kind = OutputKind.WindowsRuntimeMetadata;
+                return true;
+            }
+            else
+            {
+                kind = OutputKind.DynamicallyLinkedLibrary;
+                return false;
+            }
+        }
+
         private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
         {
             Logger.LogMethodStart();
             bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration }
             };
-            var workspace = MSBuildWorkspace.Create(options);
+            //var workspace = MSBuildWorkspace.Create(options);
+            //var loader = new MSBuildProjectLoader(workspace);
+            //var projectInfo = loader.LoadProjectInfoAsync(projectUrl).Result;
+            var workspace = MSBuildWorkspace.Create();
             try
             {
                 var project = workspace.OpenProjectAsync(projectUrl).Result;
-
                 success = CompileProject(project, outputDir, configuration, platform);
 
                 Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished.");
@@ -83,12 +120,17 @@ namespace Build
         private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
         {
             Logger.LogMethodStart();
-            
-            var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?
+            var doc = new XmlDocument();
+            doc.Load(project.FilePath);
+            var outputType = doc.GetElementById("OutputType");
+            var output = doc.GetElementsByTagName("OutputType").OfType<XmlNode>();
+            var type = output.FirstOrDefault()?.InnerText;
+            var regognizedKind = TryGetOutputKind(type, out OutputKind kind);
+            var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?.WithOutputKind(kind)?
                     .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
                 .GetCompilationAsync()?.Result;
             if (string.IsNullOrEmpty(outputPath))
-                outputPath = $"{Path.GetDirectoryName(project?.OutputFilePath)}\\";
+                outputPath = $"{Path.GetDirectoryName( string.IsNullOrEmpty(project?.OutputFilePath) ? Path.Combine(Path.GetDirectoryName(project?.FilePath), "bin\\"+configuration) : project?.OutputFilePath)}\\";
             outputPath = outputPath.Replace('/', '\\');
             if (!outputPath.EndsWith("\\"))
                 outputPath += '\\';
