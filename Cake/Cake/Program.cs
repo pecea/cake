@@ -82,6 +82,7 @@ namespace Cake
             }
 
             Logger.Log(LogLevel.Info, "Cake finished successfully.");
+            Console.ReadKey();
         }
     }
 }

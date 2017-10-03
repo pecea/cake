@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Commit.cs" />
     <Compile Include="Diff.cs" />
+    <Compile Include="Helpers\ConsoleHelper.cs" />
     <Compile Include="Fetch.cs" />
     <Compile Include="Identity.cs" />
     <Compile Include="Methods.cs" />
