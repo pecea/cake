@@ -153,7 +153,7 @@ namespace Build
                 if (result != null && result.Success)
                 {
                     Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully.");
-                    var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{ProjectOutputs[project.CompilationOptions.OutputKind]}";
+                    var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{ProjectOutputs[kind]}";
                     var pathTwo = $"{outputPath}{projectCompilation.AssemblyName}.pdb";
                     var pathThree = $"{outputPath}{projectCompilation.AssemblyName}.xml";
                     WriteStreamToFile(stream, pathOne);
