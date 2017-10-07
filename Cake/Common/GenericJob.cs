@@ -1,23 +1,39 @@
 ﻿using System;
 using System.Linq;
-using Common;
+using System.Collections.Generic;
 
-namespace Cake
+namespace Common
 {
     /// <summary>
     /// Represents a job to be executed at some point.
     /// </summary>
-    public class Job : CakeJob
+    public class GenericJob<T> where T: new()
     {
-        private Func<dynamic> _actionWithResult;
+        internal string Name { get; }
+
+        internal List<string> Dependencies { get; }
+
+        internal string FailJob { get; set; }
+
+        //internal List<string> FailDependencies { get; }
+
+        internal JobStatus Status { get; set; }
+
+        private Func<T> _action;
+
+        //private Action _failAction;
 
         /// <summary>
         /// Job constructor that is also registering newly created job to the <see cref="JobManager"/>.
         /// </summary>
         /// <param name="name"></param>
-        public Job(string name) : base(name)
+        public GenericJob(string name, bool failJob = false)
         {
-            _actionWithResult = () => true;
+            Name = name;
+            Status = JobStatus.NotVisited;
+            Dependencies = new List<string>();
+            //FailDependencies = new List<string>();
+            JobManager<T>.RegisterJob(this, failJob);
         }
 
         /// <summary>
@@ -25,7 +41,7 @@ namespace Cake
         /// </summary>
         /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="CakeJob.Dependencies"/>.</param>
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
-        public Job DependsOn(params string[] dependenciesToAdd)
+        public GenericJob<T> DependsOn(params string[] dependenciesToAdd)
         {
             Logger.LogMethodStart();
             foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
@@ -40,38 +56,44 @@ namespace Cake
         /// </summary>
         /// <param name="dependenciesToAdd">Jobs that this job will be reliant on.</param>
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
-        public Job DependsOn(params Job[] dependenciesToAdd)
+        public GenericJob<T> DependsOn(params GenericJob<T>[] dependenciesToAdd)
         {
             Logger.LogMethodStart();
             return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
         }
+
 
         /// <summary>
         /// Defines a <see cref="Func{T, TResult}"/> that can be perfromed by this job.
         /// </summary>
         /// <param name="actionWithResultToDo">Function delegate to be passed to this job.</param>
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
-        public Job Does(Func<dynamic> actionWithResultToDo)
+        public GenericJob<T> Does(Func<T> actionToDo)
         {
-            _actionWithResult = actionWithResultToDo;
+            _action = actionToDo;
             return this;
         }
 
+        public GenericJob<T> OnFail(string failJob)
+        {
+            FailJob = failJob;
+            return this;
+        }
 
-        internal override dynamic Execute()
+        internal T Execute()
         {
             Logger.LogMethodStart();
-            try
-            {
-                var res = _actionWithResult();
+            //try
+            //{
+                var res = _action();
                 Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
                 return res;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
-                return false;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
+                ///return default(T);
+            //}
         }
     }
 }

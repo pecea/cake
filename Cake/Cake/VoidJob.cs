@@ -11,7 +11,7 @@ namespace Cake
     {
         private Action _action;
         /// <summary>
-        /// Job constructor that is also registering newly created job to the <see cref="JobManager"/>.
+        /// Job constructor that is also registering newly created job to the<see cref="JobManager"/>.
         /// </summary>
         /// <param name="name"></param>
         public VoidJob(string name) : base(name)
@@ -57,7 +57,7 @@ namespace Cake
             return this;
         }
 
-        internal override bool Execute()
+        internal override dynamic Execute()
         {
             Logger.LogMethodStart();
             try

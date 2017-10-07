@@ -26,6 +26,6 @@ namespace Cake
             JobManager.RegisterJob(this);
         }
 
-        internal abstract bool Execute();
+        internal abstract dynamic Execute();
     }
 }
