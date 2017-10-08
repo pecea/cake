@@ -57,7 +57,7 @@ namespace Cake
             return this;
         }
 
-        internal override dynamic Execute()
+        internal override JobResult Execute()
         {
             Logger.LogMethodStart();
             try
@@ -65,13 +65,19 @@ namespace Cake
                 _action();
                 Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
                 Logger.LogMethodEnd();
-                return true;
+                return Result = new JobResult
+                {
+                    Success = true
+                };
             }
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
                 Logger.LogMethodEnd();
-                return false;
+                return Result = new JobResult
+                {
+                    Success = false
+                };
             }
         }
     }

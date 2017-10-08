@@ -94,12 +94,10 @@ namespace Cake
                     }
                 }
             }
-            //assemblies.Add(typeof(GenericJob).Assembly);
+            assemblies.Add(typeof(Job).Assembly);
             assemblies.Add(typeof(Logger).Assembly);
-            //namespaceStrings.Add(typeof(Job).Namespace);
-            //namespaceStrings.Add(typeof(VoidJob).Namespace);
+            namespaceStrings.Add(typeof(Job).Namespace);
             namespaceStrings.Add(typeof(JobManager).Namespace);
-            //namespaceStrings.Add(typeof().Namespace);
             namespaceStrings.Add(typeof(Logger).Namespace);
             namespaceStrings.Add(typeof(Logger).FullName);
             return ScriptOptions.Default.WithReferences(assemblies).WithImports(namespaceStrings);

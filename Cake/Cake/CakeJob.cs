@@ -14,6 +14,8 @@ namespace Cake
 
         internal JobStatus Status { get; set; }
 
+        public JobResult Result { get; set; }
+
         /// <summary>
         /// CakeJob constructor that is also registering newly created job to the <see cref="JobManager"/>
         /// </summary>
@@ -26,6 +28,6 @@ namespace Cake
             JobManager.RegisterJob(this);
         }
 
-        internal abstract dynamic Execute();
+        internal abstract JobResult Execute();
     }
 }

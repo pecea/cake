@@ -199,6 +199,7 @@
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentParser.cs" />
     <Compile Include="CakeJob.cs" />
+    <Compile Include="JobResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoslynEngine.cs" />

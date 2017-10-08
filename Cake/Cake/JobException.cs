@@ -7,7 +7,7 @@ namespace Cake
     /// These exceptions are thrown when there are errors in user written script concerning jobs.
     /// </summary>
     [Serializable]
-    public class JobException : Exception
+    public class JobException : ApplicationException
     {
         /// <summary>
         /// The source of the error
