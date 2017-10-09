@@ -14,7 +14,9 @@ namespace Cake
 
         internal JobStatus Status { get; set; }
 
-        public JobResult Result { get; set; }
+        internal string FailJob { get; set; }
+
+        internal JobResult Result { get; set; }
 
         /// <summary>
         /// CakeJob constructor that is also registering newly created job to the <see cref="JobManager"/>
@@ -26,6 +28,12 @@ namespace Cake
             Status = JobStatus.NotVisited;
             Dependencies = new List<string>();
             JobManager.RegisterJob(this);
+        }
+
+        internal CakeJob OnFail(string failJob)
+        {
+            FailJob = failJob;
+            return this;
         }
 
         internal abstract JobResult Execute();

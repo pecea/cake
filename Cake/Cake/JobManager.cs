@@ -131,14 +131,16 @@ namespace Cake
     public static class JobManager
     {
         private static Dictionary<string, CakeJob> _jobs;
-        private static List<string> _dependencies;
+
+
+       // private static Dictionary<string, CakeJob> _failJobs;
 
         internal static string JobToRun { get; set; }
 
         static JobManager()
         {
             _jobs = new Dictionary<string, CakeJob>();
-            _dependencies = new List<string>();
+            //_failJobs = new Dictionary<string, CakeJob>();
         }
 
         private static bool CycleDetection()
@@ -222,10 +224,15 @@ namespace Cake
         /// Registers <see cref="Job"/> by adding it to the <see cref="_jobs"/> dictionary.
         /// </summary>
         /// <param name="job">A <see cref="Job"/> to be added.</param>
-        public static void RegisterJob(CakeJob job)
+        public static void RegisterJob(CakeJob job)//, bool failJob = false)
         {
             Logger.LogMethodStart();
-            _jobs.Add(job.Name, job);
+            //if (!failJob)
+                _jobs.Add(job.Name, job);
+            //else if (_failJobs.Count > 0)
+            //    throw new JobDependencyException("There can only be one job done on fail!");
+            //else
+             //   _failJobs.Add(job.Name, job);
             Logger.Log(LogLevel.Debug, $"Job \"{job.Name}\" registered.");
             Logger.LogMethodEnd();
         }
@@ -268,7 +275,11 @@ namespace Cake
             //{
             //    job.Value.Status = JobStatus.NotVisited;
             //}
-            if(!result.Success)
+            //foreach (var job in _failJobs)
+            //{
+            //    job.Value.Status = JobStatus.NotVisited;
+            //}
+            if (!result.Success)
                 Logger.Log(LogLevel.Warn, $"Job {name} did not end succesfully!");
 
             Logger.LogMethodEnd();
@@ -293,6 +304,7 @@ namespace Cake
         {
             Logger.LogMethodStart();
             _jobs = new Dictionary<string, CakeJob>();
+            //_failJobs = new Dictionary<string, CakeJob>();
             Logger.LogMethodEnd();
         }
 
@@ -332,6 +344,8 @@ namespace Cake
             }
             switch (job.Status)
             {
+                case JobStatus.NotVisited:
+                    break;
                 case JobStatus.Pending:
                     throw new JobException(
                        $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
@@ -347,20 +361,26 @@ namespace Cake
                         ResultObject = name,
                         Success = true
                     };
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
             job.Status = JobStatus.Pending;
             foreach (var dependency in job.Dependencies ?? new List<string>())
             {
-                JobResult dependencyResult;
+                //JobResult dependencyResult;
                 try
                 {
-                    dependencyResult = PerformJobWithDependencies(dependency);
+                    //var dependencyResult = 
+                    PerformJobWithDependencies(dependency);
                 }
                 catch (Exception ex)
                 {
                     Logger.LogException(LogLevel.Error, ex, $"Exception occurred in dependency {dependency}");
                     job.Status = JobStatus.Failed;
-                    throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
+                    if (!string.IsNullOrWhiteSpace(job.FailJob))
+                        PerformJobWithDependencies(job.FailJob);
+                    else
+                        throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
                 }
                 //try
                 //{
@@ -394,6 +414,8 @@ namespace Cake
             {
                 Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job.\n");
                 job.Status = JobStatus.Failed;
+                if (!string.IsNullOrWhiteSpace(job.FailJob))
+                    return PerformJobWithDependencies(job.FailJob);
                 throw new JobException($"Job {name} did not end succesfully!\n");
             }
         }
