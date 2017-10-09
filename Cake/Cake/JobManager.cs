@@ -185,13 +185,26 @@ namespace Cake
                 KeyValuePair<string, bool> visitedNode;
                 try
                 {
-                    visitedNode = visited.First(v => v.Key == dependency);
+                    var failJob = _jobs[dependency].FailJob;
+                    visitedNode = !string.IsNullOrEmpty(failJob)
+                        ? visited.First(v => v.Key == failJob)
+                        : visited.First(v => v.Key == dependency);
                 }
-                catch(InvalidOperationException ex)
+                catch (Exception ex) when (ex is KeyNotFoundException || ex is InvalidOperationException)
                 {
                     Logger.LogException(LogLevel.Error, ex, $"Dependency {dependency} does not exist!");
                     throw;
                 }
+                //catch (KeyNotFoundException ex)
+                //{
+                //    Logger.LogException(LogLevel.Error, ex, $"Dependency {dependency} does not exist!");
+                //    throw;
+                //}
+                //catch(InvalidOperationException ex)
+                //{
+                //    Logger.LogException(LogLevel.Error, ex, $"Dependency {dependency} does not exist!");
+                //    throw;
+                //}
                 if (Visit(visitedNode, ref visited, ref visitedTemporarily))
                     return true;
             }
@@ -377,10 +390,7 @@ namespace Cake
                 {
                     Logger.LogException(LogLevel.Error, ex, $"Exception occurred in dependency {dependency}");
                     job.Status = JobStatus.Failed;
-                    if (!string.IsNullOrWhiteSpace(job.FailJob))
-                        PerformJobWithDependencies(job.FailJob);
-                    else
-                        throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
+                    throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
                 }
                 //try
                 //{
@@ -414,6 +424,11 @@ namespace Cake
             {
                 Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job.\n");
                 job.Status = JobStatus.Failed;
+                job.Result = new JobResult
+                {
+                    Exception = e,
+                    Success = false
+                };
                 if (!string.IsNullOrWhiteSpace(job.FailJob))
                     return PerformJobWithDependencies(job.FailJob);
                 throw new JobException($"Job {name} did not end succesfully!\n");

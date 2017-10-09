@@ -61,8 +61,8 @@ namespace Cake
         internal override JobResult Execute()
         {
             Logger.LogMethodStart();
-            try
-            {
+            //try
+            //{
                 var res = _actionWithResult();
                 Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
                 return Result = new JobResult
@@ -70,15 +70,15 @@ namespace Cake
                     ResultObject = res,
                     Success = true
                 };
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
-                return Result = new JobResult
-                {
-                    Success = false
-                };
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
+            //    return Result = new JobResult
+            //    {
+            //        Success = false
+            //    };
+            //}
         }
     }
 }

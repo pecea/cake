@@ -29,8 +29,12 @@ namespace Cake
             Dependencies = new List<string>();
             JobManager.RegisterJob(this);
         }
-
-        internal CakeJob OnFail(string failJob)
+        /// <summary>
+        /// Method for defining an exception path in the script
+        /// </summary>
+        /// <param name="failJob">Job that should run on exception</param>
+        /// <returns></returns>
+        public CakeJob OnException(string failJob)
         {
             FailJob = failJob;
             return this;
