@@ -14,7 +14,7 @@ namespace Common
         /// <param name="command">Command to run</param>
         /// <param name="arguments">Arguments to go with command</param>
         /// <param name="workingDirectory">Directory on which command should run</param>
-        /// <returns></returns>
+        /// <returns></returns> 
         public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = ".")
         {
             Logger.LogMethodStart();

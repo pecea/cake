@@ -13,7 +13,7 @@ namespace Cake
         /// Entry point of the application.
         /// </summary>
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
-        private static void Main(string[] args)
+        private static async void Main(string[] args)
         {
             Logger.Log(LogLevel.Trace, "Cake program starting ...");
             //var msTestPath = 
@@ -65,7 +65,7 @@ namespace Cake
             // Running the script
             try
             {
-                RoslynEngine.ExecuteFile(scriptArgument.Value);
+                await RoslynEngine.Instance.ExecuteFile(scriptArgument.Value).ConfigureAwait(false);
             }
             catch (JobException j)
             {

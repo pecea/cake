@@ -54,12 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GenericJob.cs" />
     <Compile Include="GetPathsOptions.cs" />
     <Compile Include="Isolated.cs" />
-    <Compile Include="JobException.cs" />
-    <Compile Include="JobManager.cs" />
-    <Compile Include="JobStatus.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LogLevel.cs" />
     <Compile Include="Node.cs" />

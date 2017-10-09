@@ -146,8 +146,8 @@ namespace Cake
         private static bool CycleDetection()
         {
 
-            Dictionary<string, bool> visited = new Dictionary<string, bool>();
-            Dictionary<string, bool> visitedTemporarily = new Dictionary<string, bool>();
+            var visited = new Dictionary<string, bool>();
+            var visitedTemporarily = new Dictionary<string, bool>();
             foreach (var job in _jobs)
             {
                 visited.Add(job.Key, false);
