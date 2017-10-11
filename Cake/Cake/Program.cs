@@ -22,7 +22,7 @@ namespace Cake
             Argument[] arguments;
             try
             {
-                arguments = ArgumentParser.Parse(args);
+                arguments = new ArgumentParser().Parse(args);
             }
             catch (Exception e)
             {

@@ -5,9 +5,9 @@ using Common;
 
 namespace Cake
 {
-    internal static class ArgumentParser
+    internal class ArgumentParser
     {
-        static ArgumentParser()
+        internal ArgumentParser()
         {
             Arguments = new List<Argument>
                            {
@@ -19,13 +19,13 @@ namespace Cake
                            }.ToArray();
         }
 
-        private static readonly Argument[] Arguments;
+        private readonly Argument[] Arguments;
         /// <summary>
         /// Parses arguments passed when running Cake.
         /// </summary>
         /// <param name="args">Arguments passed to the application</param>
         /// <returns></returns>
-        public static Argument[] Parse(string[] args)
+        public Argument[] Parse(string[] args)
         {
             Logger.LogMethodStart();
             var result = new List<Argument>();

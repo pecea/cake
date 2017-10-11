@@ -15,8 +15,10 @@ namespace Cake
         internal JobStatus Status { get; set; }
 
         internal string FailJob { get; set; }
-
-        internal JobResult Result { get; set; }
+        /// <summary>
+        /// Property that keeps the job's action result
+        /// </summary>
+        public JobResult Result { get; set; }
 
         /// <summary>
         /// CakeJob constructor that is also registering newly created job to the <see cref="JobManager"/>
