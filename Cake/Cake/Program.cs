@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Common;
+using System.Threading.Tasks;
 
 namespace Cake
 {
@@ -13,7 +14,7 @@ namespace Cake
         /// Entry point of the application.
         /// </summary>
         /// <param name="args">Paths to *.csx scripts to be executed.</param>
-        private static async void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             Logger.Log(LogLevel.Trace, "Cake program starting ...");
             //var msTestPath = 
