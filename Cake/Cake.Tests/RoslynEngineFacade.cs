@@ -6,7 +6,7 @@ namespace Cake.Tests
     {
         public void ExecuteFile(string filePath)
         {
-            RoslynEngine.Instance.ExecuteFile(filePath).Wait();
+            RoslynEngine.ExecuteFile(filePath);
         }
     }
 }
