@@ -185,7 +185,7 @@ namespace Cake
                 KeyValuePair<string, bool> visitedNode;
                 try
                 {
-                    var failJob = _jobs[dependency].FailJob;
+                    var failJob = _jobs[dependency].ExceptionJob;
                     visitedNode = !string.IsNullOrEmpty(failJob)
                         ? visited.First(v => v.Key == failJob)
                         : visited.First(v => v.Key == dependency);
@@ -429,8 +429,8 @@ namespace Cake
                     Exception = e,
                     Success = false
                 };
-                if (!string.IsNullOrWhiteSpace(job.FailJob))
-                    return PerformJobWithDependencies(job.FailJob);
+                if (!string.IsNullOrWhiteSpace(job.ExceptionJob))
+                    return PerformJobWithDependencies(job.ExceptionJob);
                 throw new JobException($"Job {name} did not end succesfully!\n");
             }
         }

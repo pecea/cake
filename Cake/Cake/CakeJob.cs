@@ -14,7 +14,7 @@ namespace Cake
 
         internal JobStatus Status { get; set; }
 
-        internal string FailJob { get; set; }
+        internal string ExceptionJob { get; set; }
         /// <summary>
         /// Property that keeps the job's action result
         /// </summary>
@@ -34,11 +34,11 @@ namespace Cake
         /// <summary>
         /// Method for defining an exception path in the script
         /// </summary>
-        /// <param name="failJob">Job that should run on exception</param>
+        /// <param name="exceptionJob">Job that should run on exception</param>
         /// <returns></returns>
-        public CakeJob OnException(string failJob)
+        public CakeJob OnException(string exceptionJob)
         {
-            FailJob = failJob;
+            ExceptionJob = exceptionJob;
             return this;
         }
 
