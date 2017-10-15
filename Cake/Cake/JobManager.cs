@@ -237,7 +237,7 @@ namespace Cake
         /// Registers <see cref="Job"/> by adding it to the <see cref="_jobs"/> dictionary.
         /// </summary>
         /// <param name="job">A <see cref="Job"/> to be added.</param>
-        public static void RegisterJob(CakeJob job)//, bool failJob = false)
+        internal static void RegisterJob(CakeJob job)//, bool failJob = false)
         {
             Logger.LogMethodStart();
             //if (!failJob)
