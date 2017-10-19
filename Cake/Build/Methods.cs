@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Build
@@ -79,7 +80,7 @@ namespace Build
             }
         }
 
-        private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
+        private static async Task<bool> CompileProjectAsync(string projectUrl, string outputDir, string configuration, string platform)
         {
             Logger.LogMethodStart();
             bool success;
@@ -87,8 +88,8 @@ namespace Build
             var workspace = MSBuildWorkspace.Create(options);
             try
             {
-                var project = workspace.OpenProjectAsync(projectUrl).Result;
-                success = CompileProject(project, outputDir, configuration, platform);
+                var project = await workspace.OpenProjectAsync(projectUrl).ConfigureAwait(false);
+                success = await CompileProjectAsync(project, outputDir, configuration, platform).ConfigureAwait(false);
 
                 Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished.");
                 workspace.CloseSolution();
@@ -103,6 +104,30 @@ namespace Build
             return success;
         }
 
+        //private static bool CompileProject(string projectUrl, string outputDir, string configuration, string platform)
+        //{
+        //    Logger.LogMethodStart();
+        //    bool success;
+        //    var options = new Dictionary<string, string> { { "Configuration", configuration } };
+        //    var workspace = MSBuildWorkspace.Create(options);
+        //    try
+        //    {
+        //        var project = workspace.OpenProjectAsync(projectUrl).Result;
+        //        success = CompileProject(project, outputDir, configuration, platform);
+
+        //        Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished.");
+        //        workspace.CloseSolution();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.LogException(LogLevel.Error, ex, $"Could not build project {projectUrl}.");
+        //        success = false;
+        //    }
+
+        //    Logger.LogMethodEnd();
+        //    return success;
+        //}
+
         private static void WriteStreamToFile(Stream stream, string fileName)
         {
             using (var file = File.Create(fileName))
@@ -113,7 +138,7 @@ namespace Build
             stream.Close();
         }
 
-        private static bool CompileProject(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
+        private static async Task<bool> CompileProjectAsync(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
         {
             bool success = false;
             Logger.LogMethodStart();
@@ -123,9 +148,10 @@ namespace Build
             var output = doc.GetElementsByTagName("OutputType").OfType<XmlNode>();
             var type = output.FirstOrDefault()?.InnerText;
             var regognizedKind = TryGetOutputKind(type, out OutputKind kind);
-            var projectCompilation = project?.WithCompilationOptions(project.CompilationOptions?.WithOutputKind(kind)?
-                    .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))?
-                .GetCompilationAsync()?.Result;
+            var projectCompilation = await project.WithCompilationOptions(project.CompilationOptions?.WithOutputKind(kind)?
+                    .WithOptimizationLevel(OptimizationOptions[configuration])?.WithPlatform(PlatformOptions[platform]))
+                .GetCompilationAsync().ConfigureAwait(false);
+
             if (string.IsNullOrEmpty(outputPath))
                 outputPath = $"{Path.GetDirectoryName( string.IsNullOrEmpty(project?.OutputFilePath) ? Path.Combine(Path.GetDirectoryName(project?.FilePath), "bin\\"+configuration) : project?.OutputFilePath)}\\";
             outputPath = outputPath.Replace('/', '\\');
@@ -189,21 +215,25 @@ namespace Build
             return success;
         }
 
-        private static bool CompileSolution(string solutionUrl, string outputDir, string configuration, string platform)
+        private static async Task<bool> CompileSolutionAsync(string solutionUrl, string outputDir, string configuration, string platform)
         {
             Logger.LogMethodStart();
-            bool success;
+            bool success = true;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
 
             //workspace.LoadMetadataForReferencedProjects = true;
             try
             {
-                var solution = workspace.OpenSolutionAsync(solutionUrl).Result;
+                var solution = await workspace.OpenSolutionAsync(solutionUrl).ConfigureAwait(false);
                 var projectGraph = solution.GetProjectDependencyGraph();
                 //var dllLibrary = new Dictionary<ProjectId, FileStream>();
                 var library = new Dictionary<ProjectId, BuildResult>();
-                success = projectGraph.GetTopologicallySortedProjects().Aggregate(true, (current, projectId) => current & CompileProject(solution.GetProject(projectId), outputDir, configuration, platform, projectGraph, library));
+                foreach(var project in projectGraph.GetTopologicallySortedProjects())
+                {
+                    success &= await CompileProjectAsync(solution.GetProject(project), outputDir, configuration, platform).ConfigureAwait(false);
+                }
+                //success = projectGraph.GetTopologicallySortedProjects().Aggregate(true, (current, projectId) => current & CompileProjectAsync(solution.GetProject(projectId), outputDir, configuration, platform, projectGraph, library).Result);
                 workspace.CloseSolution();
             }
             catch (Exception ex)
@@ -224,19 +254,18 @@ namespace Build
         /// <param name="platform">Build platform.</param>
         /// <param name="outputPath">Build output path.</param>
         /// <returns>true in case of success, false otherwise.</returns>
-        public static bool BuildSolution(string solutionFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
+        public static async Task<bool> BuildSolutionAsync(string solutionFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
             Logger.LogMethodStart();
-
-            var paths = solutionFile.GetFilePaths();
-            var enumerable = paths as IList<string> ?? paths.ToList();
-            if (!enumerable.Any()) return false;
+            //var paths = solutionFile.GetFilePaths();
+            //var enumerable = paths as IList<string> ?? paths.ToList();
+            //if (!enumerable.Any()) return false;
 
             //if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(solutionFile, outputPath, configuration, platform)) return false;
-
-            var res = enumerable.Aggregate(true,
-                (current, path) => current & CompileSolution(path, outputPath, configuration, platform));
+            var res = await CompileSolutionAsync(solutionFile, outputPath, configuration, platform).ConfigureAwait(false);
+            //var res = enumerable.Aggregate(true,
+            //    (current, path) => current & CompileSolution(path, outputPath, configuration, platform));
 
             Logger.LogMethodEnd();
 
@@ -251,19 +280,19 @@ namespace Build
         /// <param name="platform">Build platform.</param>
         /// <param name="outputPath">Build output path.</param>
         /// <returns>true in case of success, false otherwise.</returns>
-        public static bool BuildProject(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
+        public static async Task<bool> BuildProjectAsync(string projectFile, string outputPath = null, string configuration = "Debug", string platform = "Any CPU")
         {
             Logger.LogMethodStart();
-            var paths = projectFile.GetFilePaths();
+            //var paths = projectFile.GetFilePaths();
 
-            var enumerable = paths as IList<string> ?? paths.ToList();
-            if (!enumerable.Any()) return false;
+            //var enumerable = paths as IList<string> ?? paths.ToList();
+            //if (!enumerable.Any()) return false;
 
             //if (string.IsNullOrEmpty(outputPath)) outputPath = @".\bin\" + configuration;
             if (!CheckBuildProjectArguments(projectFile, outputPath, configuration, platform)) return false;
-
-            var res = enumerable.Aggregate(true,
-                (current, path) => current & CompileProject(path, outputPath, configuration, platform));
+            var res = await CompileProjectAsync(projectFile, outputPath, configuration, platform).ConfigureAwait(false);
+            //var res = enumerable.Aggregate(true,
+            //    (current, path) => current & CompileProject(path, outputPath, configuration, platform));
             Logger.LogMethodEnd();
             return res;
         }

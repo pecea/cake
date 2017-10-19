@@ -1,6 +1,7 @@
 ﻿using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Build.Tests
 {
@@ -27,96 +28,96 @@ namespace Build.Tests
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnFailureIfProjectFileArgumentIsEmpty()
+        public async Task BuildProjectShouldReturnFailureIfProjectFileArgumentIsEmpty()
         {
-            Assert.IsFalse(Methods.BuildProject(""));
+            Assert.IsFalse(await Methods.BuildProjectAsync(""));
         }
         /// <summary>
         /// Test method for invalid argument
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnFailureIfProjectFileDoesNotExist()
+        public async Task BuildProjectShouldReturnFailureIfProjectFileDoesNotExist()
         {
-            Assert.IsFalse(Methods.BuildProject("Nonexisting or invalid project/solution file"));
+            Assert.IsFalse(await Methods.BuildProjectAsync("Nonexisting or invalid project/solution file"));
         }
         /// <summary>
         /// Test method for invalid project file
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnFailureIfProjectFileIsNotAValidProjectFile()
+        public async Task BuildProjectShouldReturnFailureIfProjectFileIsNotAValidProjectFile()
         {
-            Assert.IsFalse(Methods.BuildProject("Build.Tests.dll"));
+            Assert.IsFalse(await Methods.BuildProjectAsync("Build.Tests.dll"));
         }
         /// <summary>
         /// Test method for standard valid build
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnSuccessIfProjectIsValid()
+        public async Task BuildProjectShouldReturnSuccessIfProjectIsValid()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath));
         }
         /// <summary>
         /// Test method for invalid platform
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnFailureIfPlatformIsNotValid()
+        public async Task BuildProjectShouldReturnFailureIfPlatformIsNotValid()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
-            Assert.IsFalse(Methods.BuildProject(ProjectPath, platform: "invalid platform"));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath));
+            Assert.IsFalse(await Methods.BuildProjectAsync(ProjectPath, platform: "invalid platform"));
         }
         /// <summary>
         /// Test method for valid platform
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnSuccessIfPlatformIsValid()
+        public async Task BuildProjectShouldReturnSuccessIfPlatformIsValid()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, platform: "x86"));
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, platform: "x64"));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, platform: "x86"));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, platform: "x64"));
         }
         /// <summary>
         /// Test method for invalid configuration
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnFailureIfConfigurationIsNotValid()
+        public async Task BuildProjectShouldReturnFailureIfConfigurationIsNotValid()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
-            Assert.IsFalse(Methods.BuildProject(ProjectPath, configuration: "invalid configuration"));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath));
+            Assert.IsFalse(await Methods.BuildProjectAsync(ProjectPath, configuration: "invalid configuration"));
         }
         /// <summary>
         /// Test method for valid configuration
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnSuccessIfConfigurationIsValid()
+        public async Task BuildProjectShouldReturnSuccessIfConfigurationIsValid()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, configuration: "Release"));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, configuration: "Release"));
         }
         /// <summary>
         /// Test method for invalid output path
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldReturnFailureIfOutputPathIsInvalid()
+        public async Task BuildProjectShouldReturnFailureIfOutputPathIsInvalid()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath));
-            Assert.IsFalse(Methods.BuildProject(ProjectPath, "invalid: output path?"));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath));
+            Assert.IsFalse(await Methods.BuildProjectAsync(ProjectPath, "invalid: output path?"));
         }
         /// <summary>
         /// test method for reassuring output was created
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldCreateFilesWhenBuildingAProject()
+        public async Task BuildProjectShouldCreateFilesWhenBuildingAProject()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathDebug));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, OutputPathDebug));
 
             Assert.IsTrue((OutputPathDebug + "/*.*").GetFilePaths().Any());
         }
@@ -125,9 +126,9 @@ namespace Build.Tests
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldBuildAProjectInDebugIfDebugWasSpecified()
+        public async Task BuildProjectShouldBuildAProjectInDebugIfDebugWasSpecified()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathDebug));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, OutputPathDebug));
             using (var isolated = new Isolated<ConfigurationChecker>())
             {
                 Assert.IsTrue(isolated.Value.IsDebug((OutputPathDebug + "/*.dll").GetFilePaths().First()));
@@ -138,9 +139,9 @@ namespace Build.Tests
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public void BuildProjectShouldBuildAProjectInReleaseIfReleaseWasSpecified()
+        public async Task BuildProjectShouldBuildAProjectInReleaseIfReleaseWasSpecified()
         {
-            Assert.IsTrue(Methods.BuildProject(ProjectPath, OutputPathRelease, "Release"));
+            Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, OutputPathRelease, "Release"));
             using (var isolated = new Isolated<ConfigurationChecker>())
             {
                 Assert.IsFalse(isolated.Value.IsDebug((OutputPathRelease + "/*.dll").GetFilePaths().First()));
