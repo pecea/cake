@@ -24,7 +24,7 @@ namespace Cake
         /// Parses arguments passed when running Cake.
         /// </summary>
         /// <param name="args">Arguments passed to the application</param>
-        /// <returns></returns>
+        /// <returns>Array of <see cref="Argument"/></returns>
         public Argument[] Parse(string[] args)
         {
             Logger.LogMethodStart();
