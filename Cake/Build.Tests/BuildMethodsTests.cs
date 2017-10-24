@@ -1,5 +1,6 @@
 ﻿using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,9 +47,10 @@ namespace Build.Tests
         /// </summary>
         [TestCategory("BuildMethods")]
         [TestMethod]
-        public async Task BuildProjectShouldReturnFailureIfProjectFileIsNotAValidProjectFile()
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task BuildProjectShouldThrowIfProjectFileIsNotAValidProjectFile()
         {
-            Assert.IsFalse(await Methods.BuildProjectAsync("Build.Tests.dll"));
+            await Methods.BuildProjectAsync("Build.Tests.dll");
         }
         /// <summary>
         /// Test method for standard valid build
