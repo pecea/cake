@@ -11,8 +11,6 @@ namespace Files
     /// </summary>
     public static class Methods
     {
-
-        
         /// <summary>
         /// Copy folder content to another folder
         /// </summary>
@@ -26,57 +24,27 @@ namespace Files
         {
             Logger.LogMethodStart();
             var res = true;
-            DirectoryInfo dir;
-            try
-            {
-                dir = new DirectoryInfo(sourceDir);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Incorrect directory name: {sourceDir}.");
-                return false;
-            }
+
+            DirectoryInfo dir = new DirectoryInfo(sourceDir);
             if (!dir.Exists)
             {
                 Logger.Log(LogLevel.Warn, $"Directory {sourceDir} not found.");
                 return false;
             }
+
             // Get the subdirectories for the specified directory.
             var dirs = dir.GetDirectories();
-
-            //
 
             // If the destination directory doesn't exist, create it. 
             if (!Directory.Exists(destinationDir))
             {
-                try
-                {
-                    Directory.CreateDirectory(destinationDir);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException(LogLevel.Error, ex, $"Could not create {destinationDir}.");
-
-                    return false;
-                }
+                Directory.CreateDirectory(destinationDir);
                 Logger.Log(LogLevel.Info, $"Directory {destinationDir} created.");
-
             }
-            else
+            else if (cleanDestinationDirectory)
             {
-                if (cleanDestinationDirectory)
-                    try
-                    {
-                        res &= CleanDirectory(destinationDir);
-                        Logger.Log(LogLevel.Info, $"Directory {destinationDir} cleaned.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogException(LogLevel.Error, ex, $"Could not clean {destinationDir}.");
-
-                        return false;
-                    }
-
+                res &= CleanDirectory(destinationDir);
+                Logger.Log(LogLevel.Info, $"Directory {destinationDir} cleaned.");
             }
 
             // Get the files in the directory and copy them to the new location.
@@ -88,8 +56,6 @@ namespace Files
                     var tempPath = Path.Combine(destinationDir, file.Name);
                     file.CopyTo(tempPath, overwrite);
                     Logger.Log(LogLevel.Debug, $"File {file.Name} copied.");
-                    
-
                 }
                 catch (Exception ex)
                 {
@@ -98,22 +64,23 @@ namespace Files
             }
 
             // If copying subdirectories, copy them and their contents to new location. 
-            if (!copySubDirs) return res;
-            foreach (var subdir in dirs)
+            if (copySubDirs)
             {
-                try
+                foreach (var subdir in dirs)
                 {
-                    var tempPath = Path.Combine(destinationDir, subdir.Name);
-                    Logger.Log(LogLevel.Info, $"Copying {subdir.Name} from {tempPath}.");
-                    res &= CopyDirectory(subdir.FullName, tempPath, true, overwrite);
+                    try
+                    {
+                        var tempPath = Path.Combine(destinationDir, subdir.Name);
+                        Logger.Log(LogLevel.Info, $"Copying {subdir.Name} from {tempPath}.");
+                        res &= CopyDirectory(subdir.FullName, tempPath, true, overwrite);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogException(LogLevel.Error, ex, $"Could not copy {subdir.FullName}.");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogException(LogLevel.Error, ex, $"Could not copy {subdir.FullName}.");
-
-                }
-
             }
+
             Logger.LogMethodEnd();
             return res;
         }
@@ -131,23 +98,14 @@ namespace Files
             if (!File.Exists(sourceName))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {sourceName}.");
-                
                 return false;
             }
-            try
-            {
-                File.Copy(sourceName, destName, overwrite);
-                Logger.Log(LogLevel.Info, $"File {sourceName} copied.");
 
-                Logger.LogMethodEnd();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Could not copy {sourceName}.");
-                 
-                return false;
-            }
+            File.Copy(sourceName, destName, overwrite);
+            Logger.Log(LogLevel.Info, $"File {sourceName} copied.");
+
+            Logger.LogMethodEnd();
+            return true;
         }
 
         /// <summary>
@@ -161,24 +119,14 @@ namespace Files
             if (!File.Exists(filePath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
-                
-                return false;
-            }
-            try
-            {
-                File.Delete(filePath);
-                Logger.Log(LogLevel.Info, $"File {filePath} deleted");
-
-                Logger.LogMethodEnd();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Could not delete {filePath}");
-                
                 return false;
             }
 
+            File.Delete(filePath);
+            Logger.Log(LogLevel.Info, $"File {filePath} deleted");
+
+            Logger.LogMethodEnd();
+            return true;
         }
 
         /// <summary>
@@ -191,12 +139,19 @@ namespace Files
         public static string[] GetFilesWithPattern(string parentDirectoryPath, string filePattern, bool subdirectories = false)
         {
             Logger.LogMethodStart();
-            var result = !Directory.Exists(parentDirectoryPath) ? new string[0] : Directory.GetFiles(parentDirectoryPath, filePattern, subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly).Select(path => path.Replace('\\', '/')).ToArray();
+            var searchOption = subdirectories
+                ? SearchOption.AllDirectories
+                : SearchOption.TopDirectoryOnly;
 
-            Logger.LogMethodEnd();
+            var result = Directory.Exists(parentDirectoryPath)
+                ? Directory.GetFiles(parentDirectoryPath, filePattern, searchOption).Select(path => path.Replace('\\', '/')).ToArray()
+                : new string[0];
+
             Logger.Log(LogLevel.Info, "Result:");
             foreach (var path in result)
                 Logger.Log(LogLevel.Info, $"{path}");
+
+            Logger.LogMethodEnd();
             return result;
         }
 
@@ -210,30 +165,29 @@ namespace Files
         {
             Logger.LogMethodStart();
             var res = true;
+
             if (!Directory.Exists(parentDirectoryPath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {parentDirectoryPath}");
-                
                 return false;
             }
+
             foreach (var directory in GetFilesWithPattern(parentDirectoryPath, filePattern))
             {
                 try
                 {
                     res &= DeleteFile(directory);
                     Logger.Log(LogLevel.Debug, $"File {directory} deleted");
-                
                 }
                 catch (Exception ex)
                 {
                     Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
-                
                 }
             }
 
             Logger.Log(LogLevel.Info, $"Files from {parentDirectoryPath} deleted");
-            Logger.LogMethodEnd();
 
+            Logger.LogMethodEnd();
             return res;
         }
 
@@ -248,33 +202,30 @@ namespace Files
         {
             Logger.LogMethodStart();
             var res = true;
-            var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+
             if (!Directory.Exists(parentDirectoryPath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {parentDirectoryPath}");
-                
                 return false;
             }
+
+            var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             foreach (var directory in Directory.GetDirectories(parentDirectoryPath, directoryPattern, option))
             {
                 try
                 {
                     res &= DeleteDirectory(directory);
                     Logger.Log(LogLevel.Debug, $"Directory {directory} deleted");
-                
-
                 }
                 catch (Exception ex)
                 {
                     Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
-                
-                
                 }
-
             }
-            Logger.Log(LogLevel.Info, $"Directories from {parentDirectoryPath} deleted");
-            Logger.LogMethodEnd();
 
+            Logger.Log(LogLevel.Info, $"Directories from {parentDirectoryPath} deleted");
+
+            Logger.LogMethodEnd();
             return res;
         }
 
@@ -289,24 +240,14 @@ namespace Files
             if (!Directory.Exists(directoryPath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
-                
                 return false;
             }
-            try
-            {
-                Directory.Delete(directoryPath, true);
-                Logger.Log(LogLevel.Info, $"Directory {directoryPath} deleted");
 
-                Logger.LogMethodEnd();
+            Directory.Delete(directoryPath, true);
+            Logger.Log(LogLevel.Info, $"Directory {directoryPath} deleted");
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Could not delete {directoryPath}");
-
-                return false;
-            }
+            Logger.LogMethodEnd();
+            return true;
         }
 
         /// <summary>
@@ -317,61 +258,41 @@ namespace Files
         public static bool CleanDirectory(string directoryPath) //TODO: check whether files outside directory are also cleaned :)
         {
             Logger.LogMethodStart();
+
             if (!Directory.Exists(directoryPath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
-                
-                return false;
-            }
-            try
-            {
-                var directoriesToClean = Directory.GetDirectories(directoryPath);
-                foreach (var dir in directoriesToClean)
-                {
-                    try
-                    {
-                        Directory.Delete(dir, true);
-                        Logger.Log(LogLevel.Debug, $"Directory {dir} deleted");
-                
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogException(LogLevel.Error, ex, $"Could not delete {dir}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Could not clean {directoryPath}");
-                
                 return false;
             }
 
-            try
+            var directoriesToClean = Directory.GetDirectories(directoryPath);
+            foreach (var dir in directoriesToClean)
             {
-                var filesToClean = Directory.GetFiles(directoryPath);
-                foreach (var file in filesToClean)
+                try
                 {
-                    try
-                    {
-                        File.Delete(file);
-                        Logger.Log(LogLevel.Debug, $"File {file} deleted");
-                
-            
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogException(LogLevel.Error, ex, $"Could not delete {file}");
-                    }
-                    
-                }        
+                    Directory.Delete(dir, true);
+                    Logger.Log(LogLevel.Debug, $"Directory {dir} deleted");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {dir}");
+                }
             }
-            catch (Exception ex)
+
+            var filesToClean = Directory.GetFiles(directoryPath);
+            foreach (var file in filesToClean)
             {
-                Logger.LogException(LogLevel.Error, ex, $"Could not clean {directoryPath}");
-                
-                return false;
+                try
+                {
+                    File.Delete(file);
+                    Logger.Log(LogLevel.Debug, $"File {file} deleted");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {file}");
+                }
             }
+
             Logger.Log(LogLevel.Info, $"{directoryPath} finished cleaning");
             Logger.LogMethodEnd();
 
@@ -388,26 +309,18 @@ namespace Files
         public static bool ReplaceText(string filePath, string regex, string newText)
         {
             Logger.LogMethodStart();
+
             if (!File.Exists(filePath))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
-                
                 return false;
             }
-            try
-            {
-                File.WriteAllText(filePath, Regex.Replace(File.ReadAllText(filePath), regex, newText));
-                Logger.Log(LogLevel.Info, $"File {filePath} overwritten");
 
-                Logger.LogMethodEnd();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Could not overwrite {filePath}");
-                
-                return false;
-            }
+            File.WriteAllText(filePath, Regex.Replace(File.ReadAllText(filePath), regex, newText));
+            Logger.Log(LogLevel.Info, $"File {filePath} overwritten");
+
+            Logger.LogMethodEnd();
+            return true;
         }
 
         /// <summary>
@@ -420,6 +333,7 @@ namespace Files
         {
             Logger.LogMethodStart();
             string[] res;
+
             try
             {
                 var paths = directories.Select(directory => Path.Combine(directory, filename)).Where(File.Exists).ToList();
@@ -428,17 +342,17 @@ namespace Files
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, "Incorrect filename or directories paths.");
-                
-                res = new[] {filename};
+                res = new[] { filename };
             }
 
-
-            Logger.LogMethodEnd();
             Logger.Log(LogLevel.Info, "Result:");
             foreach (var path in res)
                 Logger.Log(LogLevel.Info, $"{path}");
+
+            Logger.LogMethodEnd();
             return res;
         }
+
         /// <summary>
         /// Writes content of a file to the standard output.
         /// </summary>
@@ -447,20 +361,15 @@ namespace Files
         public static bool WriteFile(string fileName)
         {
             Logger.LogMethodStart();
+
             if (!File.Exists(fileName))
             {
                 Logger.Log(LogLevel.Warn, $"Could not find {fileName}.");
                 return false;
             }
-            try
-            {
-                Logger.Log(LogLevel.Info, File.ReadAllText(fileName));
-            }
-            catch(Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Could not read content of {fileName}");
-                return false;
-            }
+
+            Logger.Log(LogLevel.Info, File.ReadAllText(fileName));
+
             Logger.LogMethodEnd();
             return true;
         }
