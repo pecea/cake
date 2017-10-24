@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Zip.Tests
 {
@@ -70,9 +71,10 @@ namespace Zip.Tests
         /// </summary>
         [TestMethod]
         [TestCategory("ZipMethods")]
+        [ExpectedException(typeof(NotSupportedException))]
         public void ZipFilesShouldReturnFailureWhenZipPathIsNotValid()
         {
-            Assert.IsFalse(Methods.ZipFiles("invalid zip path:!@", "../../Test Files/testZipFile.txt"));
+            Methods.ZipFiles("invalid zip path:!@", "../../Test Files/testZipFile.txt");
         }
         /// <summary>
         /// Test method for zipping, unzipping files and comparing them with not-zipped files
