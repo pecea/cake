@@ -43,33 +43,27 @@ namespace Minify
         private static bool MinifyFiles(string pattern, string excludePattern, string destination, bool ignoreCase, Action<Minifier, FileSystemInfo, string> minifyAction)
         {
             Logger.LogMethodStart();
-            try
-            {
-                var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
 
-                if (!ValidateGlob(files, pattern))
-                    return false;
+            var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
 
-                if (!string.IsNullOrWhiteSpace(excludePattern))
-                {
-                    var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
-                    files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
-                }
-
-                if (!string.IsNullOrEmpty(destination) && !Directory.Exists(destination))
-                    Directory.CreateDirectory(destination);
-
-                var minifier = new Minifier();
-                foreach (var fileInfo in files)
-                    minifyAction(minifier, fileInfo, destination);
-
-                Logger.Log(LogLevel.Info, $"{files.Count()} files minified.");
-            }
-            catch(Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, "Could not minify files!");
+            if (!ValidateGlob(files, pattern))
                 return false;
+
+            if (!string.IsNullOrWhiteSpace(excludePattern))
+            {
+                var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
+                files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
             }
+
+            if (!string.IsNullOrEmpty(destination) && !Directory.Exists(destination))
+                Directory.CreateDirectory(destination);
+
+            var minifier = new Minifier();
+            foreach (var fileInfo in files)
+                minifyAction(minifier, fileInfo, destination);
+
+            Logger.Log(LogLevel.Info, $"{files.Count()} files minified.");
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -111,43 +105,35 @@ namespace Minify
         public static bool BundleFiles(string pattern, string destination, char? separator = null, string excludePattern = null, bool ignoreCase = true)
         {
             Logger.LogMethodStart();
-            try
-            {
-                var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
+            var files = Glob.Glob.Expand(pattern, ignoreCase).ToArray();
 
-                if (!ValidateGlob(files, pattern))
-                    return false;
-
-                if (!string.IsNullOrWhiteSpace(excludePattern))
-                {
-                    var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
-                    files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
-                }
-                if (string.IsNullOrEmpty(destination))
-                {
-                    Logger.Log(LogLevel.Warn, "You have to specify the output file!");
-                    return false;
-                }
-                var dest = Path.GetDirectoryName(destination);
-                if (!string.IsNullOrEmpty(dest))
-                    Directory.CreateDirectory(dest);
-
-                using (var outputStream = File.AppendText(destination)) //File.OpenRead(destination)
-                {
-                    foreach (var fileName in files.Select(s => $"{s.FullName}"))
-                    {
-                        outputStream.Write(File.ReadAllText(fileName));
-                        if(separator != null)
-                            outputStream.Write(separator);
-
-                        Logger.Log(LogLevel.Info, $"The file {fileName} has been processed.");
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, "Could not bundle files!");
+            if (!ValidateGlob(files, pattern))
                 return false;
+
+            if (!string.IsNullOrWhiteSpace(excludePattern))
+            {
+                var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
+                files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
+            }
+            if (string.IsNullOrEmpty(destination))
+            {
+                Logger.Log(LogLevel.Warn, "You have to specify the output file!");
+                return false;
+            }
+            var dest = Path.GetDirectoryName(destination);
+            if (!string.IsNullOrEmpty(dest))
+                Directory.CreateDirectory(dest);
+
+            using (var outputStream = File.AppendText(destination))
+            {
+                foreach (var fileName in files.Select(s => $"{s.FullName}"))
+                {
+                    outputStream.Write(File.ReadAllText(fileName));
+                    if (separator != null)
+                        outputStream.Write(separator);
+
+                    Logger.Log(LogLevel.Info, $"The file {fileName} has been processed.");
+                }
             }
 
             Logger.LogMethodEnd();
