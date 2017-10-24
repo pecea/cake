@@ -181,6 +181,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildResult.cs" />
+    <Compile Include="CompilationException.cs" />
+    <Compile Include="Extensions\DiagnosticSeverityExtensions.cs" />
     <Compile Include="Methods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

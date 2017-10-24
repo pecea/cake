@@ -80,6 +80,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{8B60
 	ProjectSection(SolutionItems) = preProject
 		Scripts\deps_cycle.csx = Scripts\deps_cycle.csx
 		Scripts\general_sample1.csx = Scripts\general_sample1.csx
+		Scripts\jobs_sample1.csx = Scripts\jobs_sample1.csx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{8095E7FA-F187-4B07-84EF-A5F4E34774D2}"

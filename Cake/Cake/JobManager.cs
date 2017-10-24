@@ -1,130 +1,9 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Cake
 {
-
-    //public static class JobManager<T> where T: new()
-    //{
-    //    private static Dictionary<string, GenericJob<T>> _jobs;
-
-    //    internal static string JobToRun { get; set; }
-
-    //    static JobManager()
-    //    {
-    //        _jobs = new Dictionary<string, GenericJob<T>>();
-    //    }
-
-    //    /// <summary>
-    //    /// Registers <see cref="Job"/> by adding it to the <see cref="_jobs"/> dictionary.
-    //    /// </summary>
-    //    /// <param name="job">A <see cref="Job"/> to be added.</param>
-    //    public static void RegisterJob(GenericJob<T> job)
-    //    {
-    //        Logger.LogMethodStart();
-    //        _jobs.Add(job.Name, job);
-    //        Logger.Log(LogLevel.Debug, $"Job \"{job.Name}\" registered.");
-    //        Logger.LogMethodEnd();
-    //    }
-
-    //    /// <summary>
-    //    /// Runs <see cref="PerformJobWithDependencies"/> recursive function 
-    //    /// and resets <see cref="CakeJob.Status"/> property of each <see cref="CakeJob"/> from <see cref="_jobs"/> after it is finished.
-    //    /// </summary>
-    //    /// <param name="name">Name of a <see cref="CakeJob"/> to be executed.</param>
-    //    public static void SetDefault(string name)
-    //    {
-    //        Logger.LogMethodStart();
-    //        if (!string.IsNullOrEmpty(JobToRun)) name = JobToRun;
-    //        //PerformJobWithDependencies(name);
-    //        var result = PerformJobWithDependencies(name);
-    //        foreach (var job in _jobs)
-    //        {
-    //            job.Value.Status = JobStatus.NotVisited;
-    //        }
-    //        if(!result.Item2)
-    //        ///if (!result)
-    //            Logger.Log(LogLevel.Warn, $"Job {name} did not end succesfully!");
-
-    //        Logger.LogMethodEnd();
-
-    //    }
-
-    //    /// <summary>
-    //    /// Runs <see cref="PerformJobWithDependencies"/> recursive function 
-    //    /// and resets <see cref="CakeJob.Status"/> property of each <see cref="CakeJob"/> from <see cref="_jobs"/> after it is finished.
-    //    /// </summary>
-    //    /// <param name="job">A <see cref="CakeJob"/> to be executed.</param>
-    //    public static void SetDefault(GenericJob<T> job)
-    //    {
-    //        SetDefault(job.Name);
-    //    }
-
-    //    /// <summary>
-    //    /// Clears JobManager's job list.
-    //    /// Used in unit testing.
-    //    /// </summary>
-    //    public static void ClearJobs()
-    //    {
-    //        Logger.LogMethodStart();
-    //        _jobs = new Dictionary<string, GenericJob<T>>();
-    //        Logger.LogMethodEnd();
-    //    }
-
-    //    private static (T, bool) PerformJobWithDependencies(string name)
-    //    {
-    //        Logger.LogMethodStart();
-    //        GenericJob<T> job;
-    //        try
-    //        {
-    //            job = _jobs[name];
-    //        }
-    //        catch (KeyNotFoundException e)
-    //        {
-    //            throw new JobException($"Could not find the definition of Job \"{name}\".", e.Source);
-    //        }
-    //        switch (job.Status)
-    //        {
-    //            case JobStatus.Pending:
-    //                throw new JobException(
-    //                   $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
-    //            case JobStatus.Failed:
-    //                return (default(T), false);
-    //            case JobStatus.Done:
-    //                return (new T(), true);
-    //        }
-    //        job.Status = JobStatus.Pending;
-    //        foreach (var dependency in job.Dependencies ?? new List<string>())
-    //        {
-    //            if (PerformJobWithDependencies(dependency).Item2) continue;
-    //            job.Status = JobStatus.Failed;
-    //            throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n", "JobManager.RunJobWithDependencies");
-    //        }
-    //        try
-    //        {
-    //            //var result = job.Execute();
-    //            //if (result.Item2)
-    //            //{
-    //            job.Status = JobStatus.Done;
-    //            Logger.Log(LogLevel.Trace, "Method finished successfully.");
-    //            return (job.Execute(), true);
-    //                //return (result.Item1, true);
-    //            //}
-    //            //job.Status = JobStatus.Failed;
-    //            //Logger.Log(LogLevel.Trace, "Method finished unsuccessfully.");
-    //            //return (result.Item1, false);
-    //        }
-    //        catch (Exception e)
-    //        {
-    //            Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job.\n");
-    //            job.Status = JobStatus.Failed;
-    //            throw new JobException($"Job {name} did not end succesfully!\n");
-    //        }
-    //    }
-    //}
-
     /// <summary>
     /// Registers jobs read from the script, figures out job execution order and executes them.
     /// </summary>
@@ -132,121 +11,24 @@ namespace Cake
     {
         private static Dictionary<string, CakeJob> _jobs;
 
-
-       // private static Dictionary<string, CakeJob> _failJobs;
-
         internal static string JobToRun { get; set; }
 
         static JobManager()
         {
             _jobs = new Dictionary<string, CakeJob>();
-            //_failJobs = new Dictionary<string, CakeJob>();
         }
-
-        private static bool CycleDetection()
-        {
-
-            var visited = new Dictionary<string, bool>();
-            var visitedTemporarily = new Dictionary<string, bool>();
-            foreach (var job in _jobs)
-            {
-                visited.Add(job.Key, false);
-                visitedTemporarily.Add(job.Key, false);
-            }
-            //var node = visited.FirstOrDefault(v => !v.Value);
-
-            while (visited.Any(v => !v.Value))
-            {
-                var node = visited.First(v => !v.Value);
-                if (Visit(node, ref visited, ref visitedTemporarily))
-                    return true;
-            }
-            return false;
-        }
-
-        private static bool Visit(KeyValuePair<string, bool> node, ref Dictionary<string,bool> visited, ref Dictionary<string, bool> visitedTemporarily)
-        {
-            CakeJob job;
-            bool visitedTemporarilyNode;
-            try
-            {
-                job = _jobs[node.Key];
-                visitedTemporarilyNode = visitedTemporarily[node.Key];
-            }
-            catch(KeyNotFoundException ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Job {node.Key} does not exist!");
-                throw;
-            }
-            if (visitedTemporarilyNode) return true;
-            visitedTemporarily[node.Key] = true;
-            foreach (var dependency in job.Dependencies)
-            {
-                KeyValuePair<string, bool> visitedNode;
-                try
-                {
-                    var failJob = _jobs[dependency].ExceptionJob;
-                    visitedNode = !string.IsNullOrEmpty(failJob)
-                        ? visited.First(v => v.Key == failJob)
-                        : visited.First(v => v.Key == dependency);
-                }
-                catch (Exception ex) when (ex is KeyNotFoundException || ex is InvalidOperationException)
-                {
-                    Logger.LogException(LogLevel.Error, ex, $"Dependency {dependency} does not exist!");
-                    throw;
-                }
-                //catch (KeyNotFoundException ex)
-                //{
-                //    Logger.LogException(LogLevel.Error, ex, $"Dependency {dependency} does not exist!");
-                //    throw;
-                //}
-                //catch(InvalidOperationException ex)
-                //{
-                //    Logger.LogException(LogLevel.Error, ex, $"Dependency {dependency} does not exist!");
-                //    throw;
-                //}
-                if (Visit(visitedNode, ref visited, ref visitedTemporarily))
-                    return true;
-            }
-            visited[node.Key] = true;
-            visitedTemporarily[node.Key] = false;
-            return false;
-        }
-
-        //private static void CheckDependencies(string jobName)
-        //{
-        //    foreach(var)
-        //    //CakeJob job;
-        //    //try
-        //    //{
-        //    //    job = _jobs[jobName];
-        //    //}
-        //    //catch (KeyNotFoundException e)
-        //    //{
-        //    //    throw new JobException($"Could not find the definition of Job \"{jobName}\".", e.Source);
-        //    //}
-        //    //if (_dependencies.Contains(jobName))
-        //    //    throw new JobException(
-        //    //           $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {jobName}.");
-        //    //_dependencies.Add(jobName);
-        //    //foreach (var dependency in job.Dependencies)
-        //    //    CheckDependencies(dependency);
-        //}
 
         /// <summary>
         /// Registers <see cref="Job"/> by adding it to the <see cref="_jobs"/> dictionary.
         /// </summary>
         /// <param name="job">A <see cref="Job"/> to be added.</param>
-        internal static void RegisterJob(CakeJob job)//, bool failJob = false)
+        internal static void RegisterJob(CakeJob job)
         {
             Logger.LogMethodStart();
-            //if (!failJob)
-                _jobs.Add(job.Name, job);
-            //else if (_failJobs.Count > 0)
-            //    throw new JobDependencyException("There can only be one job done on fail!");
-            //else
-             //   _failJobs.Add(job.Name, job);
-            Logger.Log(LogLevel.Debug, $"Job \"{job.Name}\" registered.");
+
+            _jobs.Add(job.Name, job);
+
+            Logger.Log(LogLevel.Debug, $"Job {job.Name} registered.");
             Logger.LogMethodEnd();
         }
 
@@ -259,44 +41,28 @@ namespace Cake
         {
             Logger.LogMethodStart();
             if (!string.IsNullOrEmpty(JobToRun)) name = JobToRun;
-            //PerformJobWithDependencies(name);
-            //CheckDependencies(name);
-            try
-            {
-                if (CycleDetection())
-                    throw new JobException(
-                           $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {name}.");
-            }
-            catch(Exception ex)
-            {
-                var stringException = "Exception occured while resolving dependencies in the script!";
-                Logger.LogException(LogLevel.Error, ex, stringException);
-                throw new JobException(stringException);
-            }
 
-            JobResult result;
             try
             {
-                result = PerformJobWithDependencies(name);
+                var validator = new DependenciesValidator(_jobs);
+                var validationResult = validator.Validate();
+
+                if (!validationResult.IsValid)
+                    throw new JobException($"There is a circular dependency defined in the script. Job visited twice for dependency examination: {validationResult.CycleSourceJobName}.");
             }
             catch (Exception ex)
             {
-                Logger.LogException(LogLevel.Error, ex, $"Exception occurred in job {name}");
-                throw new JobException($"Job {name} did not run succesfully!\n");
+                var stringException = "Exception occured while resolving dependencies in the script!";
+                Logger.LogException(LogLevel.Error, ex, stringException);
+                throw new JobException(stringException, ex);
             }
-            //foreach (var job in _jobs)
-            //{
-            //    job.Value.Status = JobStatus.NotVisited;
-            //}
-            //foreach (var job in _failJobs)
-            //{
-            //    job.Value.Status = JobStatus.NotVisited;
-            //}
+
+            JobResult result = PerformJobWithDependencies(name);
+
             if (!result.Success)
                 Logger.Log(LogLevel.Warn, $"Job {name} did not end succesfully!");
 
             Logger.LogMethodEnd();
-
         }
 
         /// <summary>
@@ -317,121 +83,73 @@ namespace Cake
         {
             Logger.LogMethodStart();
             _jobs = new Dictionary<string, CakeJob>();
-            //_failJobs = new Dictionary<string, CakeJob>();
             Logger.LogMethodEnd();
         }
-
-        //private static string Serialize<T>(T value)
-        //{
-        //    if (value == null)
-        //    {
-        //        return string.Empty;
-        //    }
-        //    try
-        //    {
-        //        var xmlserializer = new XmlSerializer(typeof(T));
-        //        var stringWriter = new StringWriter();
-        //        using (var writer = XmlWriter.Create(stringWriter))
-        //        {
-        //            xmlserializer.Serialize(writer, value);
-        //            return stringWriter.ToString();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception("Cannot serialize the object!", ex);
-        //    }
-        //}
 
         private static JobResult PerformJobWithDependencies(string name)
         {
             Logger.LogMethodStart();
-            CakeJob job;
+            Logger.Debug($"Resolving {name} execution request.");
+
+            JobResult result;
+            CakeJob job = GetJob(name);
+
+            if (job.Status == JobStatus.Failed)
+            {
+                Logger.Warn($"{name} has already failed.");
+                return job.Result;
+            }
+            if (job.Status == JobStatus.Done)
+            {
+                Logger.Debug($"{name} has already finished.");
+                return job.Result;
+            }
+
+            job.Status = JobStatus.Pending;
+
+            foreach (var dependency in job.Dependencies)
+            {
+                Logger.Log(LogLevel.Debug, $"Resolving {name}'s dependencies ({job.Dependencies.Count}).");
+
+                if (!PerformJobWithDependencies(dependency).Success)                
+                    return new JobResult { Success = false };                
+            }
+
+            result = job.Execute();
+
+            job.Status = result.Success 
+                ? JobStatus.Done 
+                : JobStatus.Failed;
+
+            if (!result.Success)
+                result = PerformExceptionJobWithDependencies(job);
+
+            Logger.LogMethodEnd();
+            return result;
+        }
+
+        private static CakeJob GetJob(string jobName)
+        {
             try
             {
-                job = _jobs[name];
+                return _jobs[jobName];
             }
             catch (KeyNotFoundException e)
             {
-                throw new JobException($"Could not find the definition of Job \"{name}\".", e.Source);
+                throw new JobException($"Could not find the definition of Job \"{jobName}\".", e);
             }
-            switch (job.Status)
+        }
+
+        private static JobResult PerformExceptionJobWithDependencies(CakeJob job)
+        {
+            if (job.HasExceptionJob)
             {
-                case JobStatus.NotVisited:
-                    break;
-                case JobStatus.Pending:
-                    throw new JobException(
-                       $"There is a circular dependency defined in the script. Job visited twice for dependency examination: {job.Name}.");
-                case JobStatus.Failed:
-                    return new JobResult
-                    {
-                        ResultObject = name,
-                        Success = false
-                    };
-                case JobStatus.Done:
-                    return new JobResult
-                    {
-                        ResultObject = name,
-                        Success = true
-                    };
-                default:
-                    throw new ArgumentOutOfRangeException();
+                return PerformJobWithDependencies(job.ExceptionJob);
             }
-            job.Status = JobStatus.Pending;
-            foreach (var dependency in job.Dependencies ?? new List<string>())
+            else
             {
-                //JobResult dependencyResult;
-                try
-                {
-                    //var dependencyResult = 
-                    PerformJobWithDependencies(dependency);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException(LogLevel.Error, ex, $"Exception occurred in dependency {dependency}");
-                    job.Status = JobStatus.Failed;
-                    throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n");
-                }
-                //try
-                //{
-                //    var serialized = Serialize(dependencyResult);
-                //    Logger.Log(LogLevel.Info, $"Dependency {dependency} result: {serialized}");
-                //}
-                //catch (Exception ex)
-                //{
-                //    Logger.LogException(LogLevel.Warn, ex, $"Could not serialize dependency {dependency} result!");
-                //}
-                
-                //if (PerformJobWithDependencies(dependency)) continue;
-                //job.Status = JobStatus.Failed;
-                //throw new JobDependencyException($"Dependency {dependency} did not run succesfully!\n", "JobManager.RunJobWithDependencies");
-            }
-            try
-            {
-                var result = job.Execute();
-                job.Status = JobStatus.Done;
-                Logger.Log(LogLevel.Trace, "Method finished successfully.");
-                return new JobResult
-                {
-                    ResultObject = result,
-                    Success = true
-                };
-                //job.Status = JobStatus.Failed;
-                //Logger.Log(LogLevel.Trace, "Method finished unsuccessfully.");
-                //return false;
-            }
-            catch (Exception e)
-            {
-                Logger.LogException(LogLevel.Error, e, "An exception occured while performing a job.\n");
-                job.Status = JobStatus.Failed;
-                job.Result = new JobResult
-                {
-                    Exception = e,
-                    Success = false
-                };
-                if (!string.IsNullOrWhiteSpace(job.ExceptionJob))
-                    return PerformJobWithDependencies(job.ExceptionJob);
-                throw new JobException($"Job {name} did not end succesfully!\n");
+                // Break execution
+                throw new JobException($"Job {job.Name} did not end succesfully!", job);
             }
         }
     }

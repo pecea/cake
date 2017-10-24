@@ -1,5 +1,7 @@
-// cake using "../../../Build/bin/Debug/Build.dll";
+#r "C:\Users\Piotr\Source\Repos\cake\Cake\Build\bin\Debug\Build.dll"
 
-new Job("BuildProject").Does(() => BuildProject("../../../Success/Success.csproj"));
+using Build;
+
+new VoidJob("BuildProject").Does(() => Methods.BuildProjectAsync(@"C:\Users\Piotr\Source\Repos\local\TestApp\TestApp\TestLib\TestLib.csproj", @"C:\Users\Piotr\Desktop\test").Wait());
 
 JobManager.SetDefault("BuildProject");

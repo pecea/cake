@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Common;
 
 namespace Cake
 {
@@ -24,26 +22,21 @@ namespace Cake
         /// </summary>
         /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="CakeJob.Dependencies"/>.</param>
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
-        public VoidJob DependsOn(params string[] dependenciesToAdd)
+        public new VoidJob DependsOn(params string[] dependenciesToAdd)
         {
-            Logger.LogMethodStart();
-            foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
-            {
-                Dependencies.Add(dependency);
-            }
-
-            Logger.LogMethodEnd();
+            base.DependsOn(dependenciesToAdd);
             return this;
         }
 
         /// <summary>
-        /// Adds one or more <see cref="VoidJob"/> that this job is dependent on.
+        /// Adds one or more <see cref="CakeJob"/> that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Jobs that this job will be reliant on.</param>
         /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
-        public VoidJob DependsOn(params VoidJob[] dependenciesToAdd)
+        public new VoidJob DependsOn(params CakeJob[] dependenciesToAdd)
         {
-            return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
+            base.DependsOn(dependenciesToAdd);
+            return this;
         }
 
         /// <summary>
@@ -57,28 +50,32 @@ namespace Cake
             return this;
         }
 
-        internal override JobResult Execute()
+        /// <summary>
+        /// Method for defining an exception path in the script
+        /// </summary>
+        /// <param name="exceptionJobName">Job that should run on exception</param>
+        /// <returns></returns>
+        public new VoidJob OnException(string exceptionJobName)
         {
-            Logger.LogMethodStart();
-            //try
-           // {
-                _action();
-                Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
-                Logger.LogMethodEnd();
-                return Result = new JobResult
-                {
-                    Success = true
-                };
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
-            //    Logger.LogMethodEnd();
-            //    return Result = new JobResult
-            //    {
-            //        Success = false
-            //    };
-            //}
+            base.OnException(exceptionJobName);
+            return this;    
+        }
+
+        /// <summary>
+        /// Method for defining an exception path in the script
+        /// </summary>
+        /// <param name="exceptionJob">Job that should run on exception</param>
+        /// <returns></returns>
+        public new VoidJob OnException(CakeJob exceptionJob)
+        {
+            base.OnException(exceptionJob);
+            return this;
+        }
+
+        protected override JobResult ExecuteJob()
+        {
+            _action();
+            return new JobResult { Success = true };
         }
     }
 }

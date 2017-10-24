@@ -74,15 +74,24 @@ namespace Common
         /// <param name="logLevel"><see cref="LogLevel"/> of the log.</param>
         /// <param name="message">Message to be logged. There will be info appended to it about exception's type, source and message.</param>
         /// <param name="loggerName">Name of the logger to be used.</param>
-        public static void LogException(LogLevel logLevel, Exception e, string message, [CallerMemberName] string loggerName = "Script")
+        public static void LogException(LogLevel logLevel, Exception e, string message, bool includeStackTrace = true, [CallerMemberName] string loggerName = "Script")
         {
-            Log(logLevel, $"{message}\nType: {e.GetType()}.\nSource: {e.Source}.\nMessage: {e.Message}\nStack trace: {e.StackTrace}", loggerName);
+            string msg = $"{message}{GetExceptionLogMessage(e, includeStackTrace)}";
 
-            if (e.InnerException != null)
-            {
-                var baseException = e.GetBaseException();
-                LogException(logLevel, baseException, "Base exception:");
-            }
+            if (e.InnerException != null)            
+                msg += $"\n\nBase exception:{GetExceptionLogMessage(e.GetBaseException(), includeStackTrace)}";
+            
+            Log(logLevel, msg, loggerName);
+        }
+
+        private static string GetExceptionLogMessage(Exception e, bool includeStackTrace)
+        {
+            var result = $"\n\nMessage: {e.Message}\nType: {e.GetType()}.\n";
+
+            if (includeStackTrace)
+                result += $"Stack trace:\n{e.StackTrace}\n";
+
+            return result;
         }
 
         /// <summary>
@@ -92,7 +101,6 @@ namespace Common
         /// <param name="targetName"></param>
         public static void Reconfigure(string logLevelName, string targetName)
         {
-            LogMethodStart();
             NLog.LogLevel logLevel;
             try
             {
@@ -122,11 +130,10 @@ namespace Common
             }
 
             LogManager.ReconfigExistingLoggers();
-            LogMethodEnd();
         }
 
-        public static void LogMethodStart([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, "Method started.", methodName);
+        public static void LogMethodStart([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, $"Method {methodName} started.", methodName);
         
-        public static void LogMethodEnd([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, "Method finished.", methodName);
+        public static void LogMethodEnd([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, $"Method {methodName} finished.", methodName);
     }
 }

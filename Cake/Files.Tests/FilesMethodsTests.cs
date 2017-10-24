@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Files.Tests
 {
@@ -12,36 +13,40 @@ namespace Files.Tests
     public class FilesMethodsTests
     {
         private const string PathForTests = "../../Test Files/";
+
         /// <summary>
         /// Initialize method for clearing copied content
         /// </summary>
         [TestInitialize]
         public void ClearCopiedContent()
         {
-            if(Directory.Exists(PathForTests + "Copied Content"))
+            if (Directory.Exists(PathForTests + "Copied Content"))
                 Directory.Delete(PathForTests + "Copied Content", true);
             //Methods.CleanDirectory(PathForTests + "Copied Content");
         }
+
         /// <summary>
         /// Test method for copying folder with incorrect source path
         /// </summary>
         [TestMethod]
         [TestCategory("FilesMethods")]
-        public void CopyDirectoryShouldReturnFalseIfSourcePathIsNotCorrect()
+        [ExpectedException(typeof(NotSupportedException))]
+        public void CopyDirectoryShouldThrowIfSourcePathIsNotCorrect()
         {
-            //Assert.AreEqual(false, Methods.CopyDirectory("Incorrect path:!@$", PathForTests+"Folder To Copy"));
-            Assert.IsFalse(Methods.CopyDirectory("Incorrect path:!@$", PathForTests + "Folder To Copy"));
+            Methods.CopyDirectory("Incorrect path:!@$", PathForTests + "Folder To Copy");
         }
+
         /// <summary>
         /// Test method for copying folder with incorrect destination path
         /// </summary>
         [TestMethod]
         [TestCategory("FilesMethods")]
-        public void CopyDirectoryShouldReturnFalseIfDestinationPathIsNotCorrect()
+        [ExpectedException(typeof(NotSupportedException))]
+        public void CopyDirectoryShouldThrowIfDestinationPathIsNotCorrect()
         {
-            Assert.IsFalse(Methods.CopyDirectory(PathForTests + "Folder To Copy", "Incorrect path:!@$@!"));
-            //Assert.AreEqual(false, Methods.CopyDirectory(PathForTests+"Folder To Copy", "Incorrect path:!@$@!"));
+            Methods.CopyDirectory(PathForTests + "Folder To Copy", "Incorrect path:!@$@!");
         }
+
         /// <summary>
         /// Test method for copying folder without subdirectories
         /// </summary>
@@ -52,13 +57,13 @@ namespace Files.Tests
             var filesToCopy = new DirectoryInfo(PathForTests).GetFiles();
             var dirToCopy = new DirectoryInfo(PathForTests).GetDirectories();
             //foreach(var dir in Directory.GetDirectories(PathForTests+"Copied Content"))
-                //Directory.Delete(dir, true);
+            //Directory.Delete(dir, true);
             //var res = Methods.CopyDirectory(PathForTests, PathForTests + "Copied Content", false);
             Assert.IsTrue(Methods.CopyDirectory(PathForTests, PathForTests + "Copied Content", false));
             var filesCopied = new DirectoryInfo(PathForTests + "Copied Content").GetFiles();
             Assert.AreEqual(filesToCopy.Length, filesCopied.Length);
             var dirCopied = new DirectoryInfo(PathForTests + "Copied Content").GetDirectories();
-            CollectionAssert.AreEqual(new DirectoryInfo[]{}, dirCopied);
+            CollectionAssert.AreEqual(new DirectoryInfo[] { }, dirCopied);
             CollectionAssert.AreNotEqual(dirToCopy, dirCopied);
         }
         /// <summary>
@@ -116,8 +121,8 @@ namespace Files.Tests
             Assert.IsTrue(File.Exists(PathForTests + "Copied Content/File2ToCopy.txt"));
             //Assert.AreEqual(true, File.Exists(PathForTests + "Copied Content/FileToCopy.txt"));
             //Assert.AreEqual(true, File.Exists(PathForTests + "Copied Content/File2ToCopy.txt"));
-            Assert.AreEqual(2, new DirectoryInfo(PathForTests+"Copied Content").GetFiles().Length);
-            Assert.AreEqual(0, new DirectoryInfo(PathForTests+"Copied Content").GetDirectories().Length);
+            Assert.AreEqual(2, new DirectoryInfo(PathForTests + "Copied Content").GetFiles().Length);
+            Assert.AreEqual(0, new DirectoryInfo(PathForTests + "Copied Content").GetDirectories().Length);
             Assert.AreNotEqual(files.Length, new DirectoryInfo(PathForTests + "Copied Content").GetFiles().Length);
         }
         /// <summary>
@@ -175,15 +180,14 @@ namespace Files.Tests
             //Assert.AreNotEqual(file.Length, new FileInfo(PathForTests + "Copied Content/FileToCopy.txt").Length);
             ////Assert.AreNotEqual(file, new FileInfo(PathForTests + "Copied Content/FileToCopy.txt"));
         }
+
         /// <summary>
         /// Test method for copying file without overwriting
         /// </summary>
         [TestMethod]
         [TestCategory("FilesMethods")]
-        //[ExpectedException(typeof (IOException))]
         public void CopyFileWithoutOverwriteShouldNotOverwriteFile()
         {
-            //var res = Methods.CopyDirectory(PathForTests, PathForTests + "Copied Content");
             Assert.IsTrue(Methods.CopyDirectory(PathForTests, PathForTests + "Copied Content"));
             var f = new FileInfo(PathForTests + "Copied Content/FileToCopy.txt");
             var fileList = new List<FileInfo> { f };
@@ -195,11 +199,8 @@ namespace Files.Tests
                 where fileText.Contains("Content")
                 select file.FullName;
 
-
-            //Assert.AreEqual(false, string.IsNullOrEmpty(queryMatchingFiles.FirstOrDefault()));
             Assert.IsFalse(string.IsNullOrEmpty(queryMatchingFiles.FirstOrDefault()));
             Methods.ReplaceText(PathForTests + "Copied Content/FileToCopy.txt", "Content", "New content");
-
 
             queryMatchingFiles =
                 from file in fileList
@@ -208,21 +209,26 @@ namespace Files.Tests
                 where fileText.Contains("New content")
                 select file.FullName;
 
-            //Assert.AreEqual(false, string.IsNullOrEmpty(queryMatchingFiles.FirstOrDefault()));
-           Assert.IsFalse(string.IsNullOrEmpty(queryMatchingFiles.FirstOrDefault()));
-            //Methods.CopyFile(PathForTests + "FileToCopy.txt",PathForTests + "Copied Content/", false);
-           Assert.IsFalse(Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content/FileToCopy.txt", false));
+            Assert.IsFalse(string.IsNullOrEmpty(queryMatchingFiles.FirstOrDefault()));
+
+            try
+            {
+                Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content/FileToCopy.txt", overwrite: false);
+            }
+            catch (Exception e)
+            {
+                Assert.IsInstanceOfType(e, typeof(IOException));
+            }
+
             queryMatchingFiles =
                 from file in fileList
                 where file.Extension == ".txt"
                 let fileText = GetFileText(file.FullName)
                 where fileText.Contains("Content")
                 select file.FullName;
-
-            //Assert.AreEqual(false, string.IsNullOrEmpty(queryMatchingFiles.FirstOrDefault()));
+            
             Assert.IsTrue(string.IsNullOrEmpty(queryMatchingFiles.FirstOrDefault()));
             Assert.IsTrue(Methods.ReplaceText(PathForTests + "Copied Content/FileToCopy.txt", "New content", "Content"));
-
         }
         /// <summary>
         /// Test method for deleting a non-existing file
@@ -295,7 +301,7 @@ namespace Files.Tests
             //Assert.IsTrue(Methods.CopyDirectory(PathForTests, PathForTests + "Copied Content"));
             Assert.IsTrue(Methods.CopyDirectory(PathForTests, PathForTests + "Copied Content"));
             var dirs = new DirectoryInfo(PathForTests + "Copied Content").GetDirectories();
-            var files = new DirectoryInfo(PathForTests + "Copied Content").GetFiles(); 
+            var files = new DirectoryInfo(PathForTests + "Copied Content").GetFiles();
             Assert.IsTrue(Methods.DeleteFilesWithPattern(PathForTests + "Copied Content", "*.txt"));
             var dirsDel = new DirectoryInfo(PathForTests + "Copied Content").GetDirectories();
             var filesDel = new DirectoryInfo(PathForTests + "Copied Content").GetFiles();
@@ -391,7 +397,7 @@ namespace Files.Tests
         public void ReplaceTextShouldOverwriteTextPattern()
         {
             var f = new FileInfo(PathForTests + "FileToCopy.txt");
-            var fileList = new List<FileInfo> {f};
+            var fileList = new List<FileInfo> { f };
 
             var queryMatchingFiles =
                 from file in fileList
@@ -399,7 +405,7 @@ namespace Files.Tests
                 let fileText = GetFileText(file.FullName)
                 where fileText.Contains("Content")
                 select file.FullName;
-            
+
 
             var queryMatchingFiles2 =
                 from file in fileList
@@ -413,7 +419,7 @@ namespace Files.Tests
             Assert.IsTrue(string.IsNullOrEmpty(queryMatchingFiles2.FirstOrDefault()));
             //Assert.AreEqual(true, string.IsNullOrEmpty(queryMatchingFiles2.FirstOrDefault()));
             Assert.IsTrue(Methods.ReplaceText(PathForTests + "FileToCopy.txt", "Content", "New content"));
-            
+
 
             queryMatchingFiles =
                 from file in fileList
@@ -479,7 +485,8 @@ namespace Files.Tests
 
         [TestMethod]
         [TestCategory("FilesMethods")]
-        public void WriteFileToOutputReturnsSuccessIfFileIsValid() {
+        public void WriteFileToOutputReturnsSuccessIfFileIsValid()
+        {
             Assert.IsTrue(Methods.WriteFile($"{PathForTests}FileToCopy.txt"));
         }
 
