@@ -1,4 +1,4 @@
-// cake using "../../../Git/bin/Debug/Git.dll";
+#r "C:\Users\Piotr\Source\Repos\cake\Cake\Git\bin\Debug\Git.dll"
 
 using System;
 
@@ -30,3 +30,4 @@ new Job("Pull").DependsOn("Commit").Does(Pull);
 new Job("Push").DependsOn("Pull").Does(Push);
 
 JobManager.SetDefault("Push");
+

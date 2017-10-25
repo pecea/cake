@@ -31,37 +31,25 @@ namespace Zip
                 paths.AddRange(filePath.GetFilePaths());
                 paths.AddRange(filePath.GetDirectoriesPaths());
             }
-            //entriesPaths = paths.ToArray();
 
             if (!CheckZipFilesArguments(paths, zipPathAndName)) return false;
-            try
+
+            using (var zip = new ZipFile())
             {
-                using (var zip = new ZipFile())
+                foreach (var path in paths)
                 {
-                    foreach (var path in paths)
-                    {
-                        var attributes = File.GetAttributes(path);
-                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
-                            zip.AddDirectory(path, path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault());
-                        else zip.AddFile(path, "");
-                    }
-                    if (!string.IsNullOrEmpty(zipPathAndName) && zipPathAndName.Contains(".zip"))
-                        zip.Save(zipPathAndName);
-                    else
-                        zip.Save($"{zipPathAndName}.zip");
-                    Logger.Log(LogLevel.Info, $"{zipPathAndName} zipped succesfully.");
+                    var attributes = File.GetAttributes(path);
+                    if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
+                        zip.AddDirectory(path, path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault());
+                    else zip.AddFile(path, "");
                 }
+                if (!string.IsNullOrEmpty(zipPathAndName) && zipPathAndName.Contains(".zip"))
+                    zip.Save(zipPathAndName);
+                else
+                    zip.Save($"{zipPathAndName}.zip");
+                Logger.Log(LogLevel.Info, $"{zipPathAndName} zipped succesfully.");
             }
-            catch (DirectoryNotFoundException e)
-            {
-                Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                throw;
-            }
-            catch (FileNotFoundException e)
-            {
-                Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                throw;
-            }
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -87,54 +75,44 @@ namespace Zip
             }
 
             if (!CheckZipFilesArguments(paths, zipPathAndName)) return false;
-            try
+
+            using (var zip = new ZipFile())
             {
-                using (var zip = new ZipFile())
+                if (useZip64)
+                    zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
+                if (!string.IsNullOrEmpty(password))
+                    zip.Password = password;
+                if (aes256Encryption)
+                    zip.Encryption = EncryptionAlgorithm.WinZipAes256;
+                switch (compression)
                 {
-                    if(useZip64)
-                        zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-                    if (!string.IsNullOrEmpty(password))
-                        zip.Password = password;
-                    if(aes256Encryption)
-                        zip.Encryption = EncryptionAlgorithm.WinZipAes256;
-                    switch (compression)
-                    {
-                        case "none":
-                            zip.CompressionLevel = CompressionLevel.None;
-                            break;
-                        case "best":
-                            zip.CompressionLevel = CompressionLevel.BestCompression;
-                            break;
-                        case "fastest":
-                            zip.CompressionLevel = CompressionLevel.BestSpeed;
-                            break;
-                        default:
-                            zip.CompressionLevel = CompressionLevel.Default;
-                            break;
-                    }
-                    foreach (var path in paths)
-                    {
-                        var attributes = File.GetAttributes(path);
-                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path, path);
-                        else zip.AddFile(path, "");
-                    }
-                    if (!string.IsNullOrEmpty(zipPathAndName) && zipPathAndName.Contains(".zip"))
-                        zip.Save(zipPathAndName);
-                    else
-                        zip.Save($"{zipPathAndName}.zip");
-                    Logger.Log(LogLevel.Info, $"{zipPathAndName} zipped succesfully.");
+                    case "none":
+                        zip.CompressionLevel = CompressionLevel.None;
+                        break;
+                    case "best":
+                        zip.CompressionLevel = CompressionLevel.BestCompression;
+                        break;
+                    case "fastest":
+                        zip.CompressionLevel = CompressionLevel.BestSpeed;
+                        break;
+                    default:
+                        zip.CompressionLevel = CompressionLevel.Default;
+                        break;
                 }
+                foreach (var path in paths)
+                {
+                    var attributes = File.GetAttributes(path);
+                    if ((attributes & FileAttributes.Directory) == FileAttributes.Directory) zip.AddDirectory(path, path);
+                    else zip.AddFile(path, "");
+                }
+                if (!string.IsNullOrEmpty(zipPathAndName) && zipPathAndName.Contains(".zip"))
+                    zip.Save(zipPathAndName);
+                else
+                    zip.Save($"{zipPathAndName}.zip");
+                Logger.Log(LogLevel.Info, $"{zipPathAndName} zipped succesfully.");
             }
-            catch (DirectoryNotFoundException e)
-            {
-                Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                throw;
-            }
-            catch (FileNotFoundException e)
-            {
-                Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                throw;
-            }
+
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -154,35 +132,29 @@ namespace Zip
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
-            try
+
+            using (var zip = ZipFile.Read(zipPathAndName))
             {
-                using (var zip = ZipFile.Read(zipPathAndName))
+                foreach (var entry in zip)
                 {
-                    foreach (var entry in zip)
+                    if (!string.IsNullOrEmpty(password))
                     {
-                        if (!string.IsNullOrEmpty(password))
-                        {
-                            if(overwrite)
-                                entry.ExtractWithPassword(destination, ExtractExistingFileAction.OverwriteSilently, password);
-                            else
-                                entry.ExtractWithPassword(destination, password);
-                        }
+                        if (overwrite)
+                            entry.ExtractWithPassword(destination, ExtractExistingFileAction.OverwriteSilently, password);
                         else
-                        {
-                            if (overwrite)
-                                entry.Extract(destination, ExtractExistingFileAction.OverwriteSilently);
-                            else
-                                entry.Extract(destination);
-                        }
+                            entry.ExtractWithPassword(destination, password);
                     }
-                    Logger.Log(LogLevel.Info, $"{zipPathAndName} unzipped succesfully.");
+                    else
+                    {
+                        if (overwrite)
+                            entry.Extract(destination, ExtractExistingFileAction.OverwriteSilently);
+                        else
+                            entry.Extract(destination);
+                    }
                 }
+                Logger.Log(LogLevel.Info, $"{zipPathAndName} unzipped succesfully.");
             }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Unzipping {zipPathAndName}.zip failed.");
-                throw;
-            }
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -201,19 +173,13 @@ namespace Zip
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
-            try
+
+            using (var zip = ZipFile.Read(zipPathAndName))
             {
-                using (var zip = ZipFile.Read(zipPathAndName))
-                {
-                    zip.RemoveEntries(entriesToDelete);
-                    zip.Save();
-                }
+                zip.RemoveEntries(entriesToDelete);
+                zip.Save();
             }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Deleting files from {zipPathAndName}.zip failed.");
-                throw;
-            }
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -232,30 +198,25 @@ namespace Zip
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
-            try
+
+            using (var zip = ZipFile.Read(zipPathAndName))
             {
-                using (var zip = ZipFile.Read(zipPathAndName))
+                foreach (var entry in entriesToUpdate)
                 {
-                    foreach (var entry in entriesToUpdate)
+                    var mod = entry;
+                    var attributes = File.GetAttributes(mod);
+                    if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
                     {
-                        var mod = entry;
-                        var attributes = File.GetAttributes(mod);
-                        if ((attributes & FileAttributes.Directory) == FileAttributes.Directory)
-                        {
-                            mod = mod.Replace('\\', '/').Split(new[] { '/'}, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() +'/';
-                            zip.UpdateItem(entry, mod);
-                        }
-                        else
-                            zip.UpdateItem(entry);
+                        mod = mod.Replace('\\', '/').Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() + '/';
+                        zip.UpdateItem(entry, mod);
                     }
-                    zip.Save();
+                    else
+                        zip.UpdateItem(entry);
                 }
+                zip.Save();
             }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
-                throw;
-            }
+
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -274,26 +235,20 @@ namespace Zip
                 Logger.Log(LogLevel.Warn, $"Could not find {zipPathAndName}.");
                 return false;
             }
-            try
+
+            using (var zip = ZipFile.Read(zipPathAndName))
             {
-                using (var zip = ZipFile.Read(zipPathAndName))
+
+                if (zip[oldName] != null)
+                    zip[oldName].FileName = newName;
+                else
                 {
 
-                    if(zip[oldName] != null)
-                        zip[oldName].FileName = newName;
-                    else
-                    {
-                        
-                        Logger.Log(LogLevel.Warn, $"File {oldName} not found in the archive!");
-                    }
-                    zip.Save();
+                    Logger.Log(LogLevel.Warn, $"File {oldName} not found in the archive!");
                 }
+                zip.Save();
             }
-            catch (Exception ex)
-            {
-                Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
-                throw;
-            }
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -307,15 +262,9 @@ namespace Zip
 
             if (string.IsNullOrEmpty(zipPath)) return true;
             string fullPath;
-            try
-            {
-                fullPath = Path.GetFullPath(zipPath);
-            }
-            catch (Exception)
-            {
-                Logger.Log(LogLevel.Warn, $"The zipPath parameter {zipPath} is not a valid path.");
-                return false;
-            }
+
+            fullPath = Path.GetFullPath(zipPath);
+
             Logger.LogMethodEnd();
             return !string.IsNullOrEmpty(fullPath);
         }

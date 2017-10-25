@@ -2,6 +2,7 @@
 using System.Linq;
 using Common;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Cake
 {
@@ -16,28 +17,26 @@ namespace Cake
         /// <param name="args">Path to *.csx script to be executed, logging verbosity and optionally job to be run</param>
         private static async Task Main(string[] args)
         {
-            Logger.Log(LogLevel.Trace, "Cake program starting ...");
-            //var msTestPath = 
             // Parsing arguments
             Argument[] arguments;
             try
             {
                 arguments = new ArgumentParser().Parse(args);
             }
-            catch (Exception e)
+            catch (ArgumentException e)
             {
-                Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
+                Console.WriteLine($"{e.ParamName} is not a valid argument.");
+                ShowHelp();
                 Console.ReadKey();
                 return;
             }
-
 
             // Retrieving whether to show help or not
             var helpArgument = arguments.SingleOrDefault(arg => arg.Names.Contains("/help"));
             if (helpArgument != null)
             {
-                Console.Write(
-                    "\n\nTo use the program run cake.exe with arguments:\n\n1./script (/s) - path to your c# script - necessary\n2./verbosity (/v) - level of output\n    Possible values: debug, info, warn, error, fatal\n3./runjob (/r) - name of the job to run from your c# script\n   Necessary if your c# script does not have SetDefault(jobName) method\n4./help (/h) - show help\n\n");
+                ShowHelp();
+                Console.ReadKey();
                 return;
             }
 
@@ -71,14 +70,13 @@ namespace Cake
             }
             catch (JobException j)
             {
-                Logger.LogException(LogLevel.Error, j, "An exception occured while performing a job.\n");
-
+                HandleJobException(j);
                 Console.ReadKey();
                 return;
             }
             catch (Exception e)
             {
-                Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.\n");
+                Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
                 Console.ReadKey();
                 return;
             }
@@ -86,5 +84,33 @@ namespace Cake
             Logger.Log(LogLevel.Info, "Cake finished successfully.");
             Console.ReadKey();
         }
+
+        private static void HandleJobException(JobException j)
+        {
+            string message = "Script execution finished with errors.";
+
+            if (!string.IsNullOrWhiteSpace(j.SourceJobName))
+            {
+                message += $" Exception source job: {j.SourceJobName}.";
+            }
+
+            Logger.Error(message);
+        }
+
+        private static void ShowHelp()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine("To use the program run cake.exe with arguments:");
+            sb.AppendLine();
+            sb.AppendLine("1. /script (/s)      Path to your c# script - necessary.");
+            sb.AppendLine("2. /verbosity (/v)   Level of output.");
+            sb.AppendLine("                     Possible values: debug, info, warn, error, fatal.");
+            sb.AppendLine("3. /runjob (/r)      Name of the job to run from your c# script.");
+            sb.AppendLine("                     Necessary if your c# script does not have SetDefault(jobName) method.");
+            sb.AppendLine("4. /help (/h)        Show help.");
+
+            Console.Write(sb.ToString());
+        }
     }
-}
+};

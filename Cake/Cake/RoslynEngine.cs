@@ -53,20 +53,8 @@ namespace Cake
         /// <param name="filePath">Script's path.</param>
         public async Task ExecuteFile(string filePath)
         {
-            try
-            {
-                await CSharpScript.RunAsync(File.ReadAllText(filePath), ScriptOptions.Default
-                    .WithReferences(Assemblies).WithImports(Namespaces)).ConfigureAwait(false);
-            }
-            catch (CompilationErrorException ce)
-            {
-                throw new JobException($"Error inside the script: {ce.Message}.", ce.Source);
-            }
-            catch (AggregateException ae)
-            {
-                if (ae.InnerException != null)
-                    throw ae.InnerException;
-            }
+            await CSharpScript.RunAsync(File.ReadAllText(filePath), ScriptOptions.Default
+                .WithReferences(_assemblies).WithImports(_namespaces)).ConfigureAwait(false);
         }
     }
 }
@@ -144,7 +132,7 @@ namespace Cake
 //        //    //using (var streamReader = new StreamReader(filePath, Encoding.GetEncoding("ISO-8859-2")))
 //        //    //{
 //        //    //    string line;
-               
+
 //        //    //    while ((line = streamReader.ReadLine()) != null)
 //        //    //    {
 //        //    //        var match = assemblyRegex.Match(line);

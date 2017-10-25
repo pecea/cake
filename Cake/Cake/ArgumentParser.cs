@@ -24,10 +24,9 @@ namespace Cake
         /// Parses arguments passed when running Cake.
         /// </summary>
         /// <param name="args">Arguments passed to the application</param>
-        /// <returns></returns>
+        /// <returns>Array of <see cref="Argument"/></returns>
         public Argument[] Parse(string[] args)
         {
-            Logger.LogMethodStart();
             var result = new List<Argument>();
 
             for (var i = 0; i < args.Length; i++)
@@ -35,8 +34,7 @@ namespace Cake
                 var argName = args[i];
                 var argument = _arguments.FirstOrDefault(arg => arg.Names.Contains(argName));
                 if (argument == null)
-                    throw new ArgumentException(
-                        $"The argument {argName} is invalid. Run the program with /help or /h for help.");
+                    throw new ArgumentException(string.Empty, paramName: argName);
 
                 if (argument.HasValue)
                 {
@@ -48,7 +46,7 @@ namespace Cake
                     result.Add(new Argument(argument.Names, argument.HasValue));
                 }
             }
-            Logger.LogMethodEnd();
+
             return result.ToArray();
         }
     }

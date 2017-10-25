@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Common;
 
 namespace Cake
 {
@@ -27,23 +25,19 @@ namespace Cake
         /// <returns><see cref="Job"/> object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params string[] dependenciesToAdd)
         {
-            Logger.LogMethodStart();
-            foreach (var dependency in dependenciesToAdd.Where(dependency => Dependencies.All(added => added != dependency)))
-            {
-                Dependencies.Add(dependency);
-            }
+            base.DependsOn(dependenciesToAdd);
             return this;
         }
 
         /// <summary>
-        /// Adds one or more <see cref="Job"/> that this job is dependent on.
+        /// Adds one or more <see cref="CakeJob"/> that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Jobs that this job will be reliant on.</param>
         /// <returns><see cref="Job"/> object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params Job[] dependenciesToAdd)
         {
-            Logger.LogMethodStart();
-            return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
+            base.DependsOn(dependenciesToAdd);
+            return this;
         }
 
         /// <summary>
@@ -57,28 +51,36 @@ namespace Cake
             return this;
         }
 
-
-        internal override JobResult Execute()
+        /// <summary>
+        /// Method for defining an exception path in the script
+        /// </summary>
+        /// <param name="exceptionJobName">Job that should run on exception</param>
+        /// <returns></returns>
+        public new Job OnException(string exceptionJobName)
         {
-            Logger.LogMethodStart();
-            //try
-            //{
-                var res = _actionWithResult();
-                Logger.Log(LogLevel.Debug, $"Job \"{Name}\" executed.");
-                return Result = new JobResult
-                {
-                    ResultObject = res,
-                    Success = true
-                };
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.LogException(LogLevel.Error, ex, "Exception occured during a job!");
-            //    return Result = new JobResult
-            //    {
-            //        Success = false
-            //    };
-            //}
+            base.OnException(exceptionJobName);
+            return this;
+        }
+
+        /// <summary>
+        /// Method for defining an exception path in the script
+        /// </summary>
+        /// <param name="exceptionJob">Job that should run on exception</param>
+        /// <returns></returns>
+        public new Job OnException(CakeJob exceptionJob)
+        {
+            base.OnException(exceptionJob);
+            return this;
+        }
+
+        protected override JobResult ExecuteJob()
+        {
+            dynamic actionResult = _actionWithResult();
+            return new JobResult
+            {
+                ResultObject = actionResult,
+                Success = true
+            };
         }
     }
 }

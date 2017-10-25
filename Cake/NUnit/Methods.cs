@@ -30,32 +30,25 @@ namespace NUnit
                 Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
                 return false;
             }
-            try
+
+            if (assemblyPaths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
             {
-                if (assemblyPaths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
-                {
-                    Logger.Log(LogLevel.Warn, $"Incorrect test assemby paths!\n");
-                    return false;
-                }
-                var parameters = assemblyPaths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
-                if (!string.IsNullOrEmpty(conditions))
-                    parameters += $" --where \"{conditions}\"";
-                if (!string.IsNullOrEmpty(config))
-                    parameters += $" --config={config}";
-
-                var result = Processor.RunProcess(FullPathExe, parameters);
-
-                if (!string.IsNullOrEmpty(result.Output))
-                    res = result.Output.Contains(TestsPassed);
-
-                Logger.LogMethodEnd();
-                return res;
-            }
-            catch (Exception e)
-            {
-                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe.");
+                Logger.Log(LogLevel.Warn, $"Incorrect test assemby paths!\n");
                 return false;
             }
+            var parameters = assemblyPaths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
+            if (!string.IsNullOrEmpty(conditions))
+                parameters += $" --where \"{conditions}\"";
+            if (!string.IsNullOrEmpty(config))
+                parameters += $" --config={config}";
+
+            var result = Processor.RunProcess(FullPathExe, parameters);
+
+            if (!string.IsNullOrEmpty(result.Output))
+                res = result.Output.Contains(TestsPassed);
+
+            Logger.LogMethodEnd();
+            return res;
         }
         /// <summary>
         /// 
@@ -87,61 +80,54 @@ namespace NUnit
                 Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
                 return false;
             }
-            try
+
+            var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
+            if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
             {
-                var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
-                if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
-                {
-                    Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
-                    return false;
-                }
-                var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
-                if (!string.IsNullOrEmpty(conditions))
-                    parameters += $" --where {Processor.QuoteArgument(conditions)}";
-                if (!string.IsNullOrEmpty(config))
-                    parameters += $" --config {config}";
-                if (!string.IsNullOrEmpty(workingDirectoryPath))
-                    parameters += $" --work {workingDirectoryPath}";
-                if (!string.IsNullOrEmpty(outputPath))
-                    parameters += $" --out {outputPath}";
-                if (!string.IsNullOrEmpty(errorPath))
-                    parameters += $" --err {errorPath}";
-                if (stopOnError.HasValue)
-                    parameters += $" --stoponerror";
-                if (skipNonAssemblies.HasValue)
-                    parameters += $" --skipnontestassemblies";
-                if (noResult.HasValue)
-                    parameters += $" --noresult";
-                if (!string.IsNullOrEmpty(verbosity))
-                    parameters += $" --trace {Processor.QuoteArgument(verbosity)}";
-                if (!string.IsNullOrEmpty(timeout))
-                    parameters += $" --timeout {timeout}";
-                if (shadowcopy.HasValue)
-                    parameters += $" --shadowcopy";
-                if (!string.IsNullOrEmpty(processIsolation))
-                    parameters += $" --process {Processor.QuoteArgument(processIsolation)}";
-                if (!string.IsNullOrEmpty(numberOfAgents))
-                    parameters += $" --agents {numberOfAgents}";
-                if (!string.IsNullOrEmpty(domainIsolation))
-                    parameters += $" --domain {Processor.QuoteArgument(domainIsolation)}";
-                if (!string.IsNullOrEmpty(frameworkVersion))
-                    parameters += $" --framework {Processor.QuoteArgument(frameworkVersion)}";
-                if (runIn32Bit.HasValue)
-                    parameters += $" --x86";
-
-                var result = Processor.RunProcess(FullPathExe, parameters);
-
-                if (!string.IsNullOrEmpty(result.Output))
-                    res = result.Output.Contains(TestsPassed);
-
-                Logger.LogMethodEnd();
-                return res;
-            }
-            catch (Exception e)
-            {
-                Logger.LogException(LogLevel.Error, e, "An exception occured while running nunit3-console.exe.");
+                Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
                 return false;
             }
+            var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
+            if (!string.IsNullOrEmpty(conditions))
+                parameters += $" --where {Processor.QuoteArgument(conditions)}";
+            if (!string.IsNullOrEmpty(config))
+                parameters += $" --config {config}";
+            if (!string.IsNullOrEmpty(workingDirectoryPath))
+                parameters += $" --work {workingDirectoryPath}";
+            if (!string.IsNullOrEmpty(outputPath))
+                parameters += $" --out {outputPath}";
+            if (!string.IsNullOrEmpty(errorPath))
+                parameters += $" --err {errorPath}";
+            if (stopOnError.HasValue)
+                parameters += $" --stoponerror";
+            if (skipNonAssemblies.HasValue)
+                parameters += $" --skipnontestassemblies";
+            if (noResult.HasValue)
+                parameters += $" --noresult";
+            if (!string.IsNullOrEmpty(verbosity))
+                parameters += $" --trace {Processor.QuoteArgument(verbosity)}";
+            if (!string.IsNullOrEmpty(timeout))
+                parameters += $" --timeout {timeout}";
+            if (shadowcopy.HasValue)
+                parameters += $" --shadowcopy";
+            if (!string.IsNullOrEmpty(processIsolation))
+                parameters += $" --process {Processor.QuoteArgument(processIsolation)}";
+            if (!string.IsNullOrEmpty(numberOfAgents))
+                parameters += $" --agents {numberOfAgents}";
+            if (!string.IsNullOrEmpty(domainIsolation))
+                parameters += $" --domain {Processor.QuoteArgument(domainIsolation)}";
+            if (!string.IsNullOrEmpty(frameworkVersion))
+                parameters += $" --framework {Processor.QuoteArgument(frameworkVersion)}";
+            if (runIn32Bit.HasValue)
+                parameters += $" --x86";
+
+            var result = Processor.RunProcess(FullPathExe, parameters);
+
+            if (!string.IsNullOrEmpty(result.Output))
+                res = result.Output.Contains(TestsPassed);
+
+            Logger.LogMethodEnd();
+            return res;
         }
     }
 }

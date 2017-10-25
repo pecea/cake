@@ -12,17 +12,36 @@ namespace Cake
         /// <summary>
         /// The source of the error
         /// </summary>
-        public sealed override string Source { get => _source;
+        public sealed override string Source
+        {
+            get => _source;
             set => _source = value;
         }
 
         private string _source;
+
+        private CakeJob _sourceJob;
+        public string SourceJobName => _sourceJob?.Name;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JobException"/> class.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         public JobException(string message) : base(message)
+        {
+        }
+
+        public JobException(string message, CakeJob job) : base(message)
+        {
+            _sourceJob = job;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobException"/> class.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="inner">Inner exception</param>
+        public JobException(string message, Exception inner) : base(message, inner)
         {
         }
 
@@ -35,6 +54,7 @@ namespace Cake
         {
             Source = source;
         }
+
         /// <summary>
         /// The method is called on serialization.
         /// </summary>
@@ -44,7 +64,6 @@ namespace Cake
         {
             // Use the AddValue method to specify serialized values.
             info.AddValue("properties", _source, typeof(string));
-
         }
         
         /// <summary>

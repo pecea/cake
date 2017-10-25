@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using Microsoft.CodeAnalysis.Scripting;
 
 namespace Cake.Tests
 {
@@ -16,27 +18,40 @@ namespace Cake.Tests
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("RoslynEngineMethods")]
-        [ExpectedException(typeof(JobException))]
         public void ShouldThrowWhenTypeCannotBeFound()
         {
-           // using (var isolated = new Isolated<RoslynEngineFacade>())
-           // {
-                new RoslynEngineFacade().ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx");
-            //}
+            try
+            {
+                RoslynEngine.Instance.ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx").Wait();
+            }
+            catch (AggregateException e)
+            {
+                Assert.IsTrue(e.InnerException is CompilationErrorException);
+                return;
+            }
+
+            Assert.IsTrue(false);
         }
+
         /// <summary>
         /// Test method for non-existing script
         /// </summary>
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("RoslynEngineMethods")]
-        [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowWhenNonExistingScriptIsSpecified()
         {
-            //using (var isolated = new Isolated<RoslynEngineFacade>())
-            //{
-                new RoslynEngineFacade().ExecuteFile(@"../../Test Files/Non existing script.csx");
-            //}
+            try
+            {
+                RoslynEngine.Instance.ExecuteFile(@"../../Test Files/Non existing script.csx").Wait();
+            }
+            catch (AggregateException e)
+            {
+                Assert.IsTrue(e.InnerException is FileNotFoundException);
+                return;
+            }
+
+            Assert.IsTrue(false);
         }
         /// <summary>
         /// Test method for invalid reference in the script
@@ -44,14 +59,19 @@ namespace Cake.Tests
         [TestMethod]
         [TestCategory("CakeMethods")]
         [TestCategory("RoslynEngineMethods")]
-        [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript()
         {
-            //using (var isolated = new Isolated<RoslynEngineFacade>())
-            //{
-                new RoslynEngineFacade().ExecuteFile(
-                    @"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx");
-            //}
+            try
+            {
+                RoslynEngine.Instance.ExecuteFile(@"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx").Wait();
+            }
+            catch (AggregateException e)
+            {
+                Assert.IsTrue(e.InnerException is CompilationErrorException);
+                return;
+            }
+
+            Assert.IsTrue(false);
         }
     }
 }
