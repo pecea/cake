@@ -6,6 +6,9 @@ using Common;
 
 namespace NUnit
 {
+    /// <summary>
+    /// Encloses methods used with running unit tests written in NUnit.
+    /// </summary>
     public class Methods
     {
         private static string FullPathExe => ConfigurationManager.AppSettings["NUnitPath"];

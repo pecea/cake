@@ -55,12 +55,12 @@ namespace Zip
             catch (DirectoryNotFoundException e)
             {
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             catch (FileNotFoundException e)
             {
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             Logger.LogMethodEnd();
             return true;
@@ -128,12 +128,12 @@ namespace Zip
             catch (DirectoryNotFoundException e)
             {
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             catch (FileNotFoundException e)
             {
                 Logger.LogException(LogLevel.Error, e, $"Zipping {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             Logger.LogMethodEnd();
             return true;
@@ -181,7 +181,7 @@ namespace Zip
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, $"Unzipping {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             Logger.LogMethodEnd();
             return true;
@@ -212,7 +212,7 @@ namespace Zip
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, $"Deleting files from {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             Logger.LogMethodEnd();
             return true;
@@ -223,7 +223,7 @@ namespace Zip
         /// </summary>
         /// <param name="zipPathAndName">Path and name of the modified archive</param>
         /// <param name="entriesToUpdate">Names of entries to be updated</param>
-        /// <returns></returns>
+        /// <returns>True, if update was successful, false otherwise</returns>
         public static bool UpdateEntries(string zipPathAndName, params string[] entriesToUpdate)
         {
             Logger.LogMethodStart();
@@ -254,7 +254,7 @@ namespace Zip
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             Logger.LogMethodEnd();
             return true;
@@ -265,7 +265,7 @@ namespace Zip
         /// <param name="zipPathAndName">Path and name of the archive</param>
         /// <param name="oldName">Old name of the entry to be renamed</param>
         /// <param name="newName">New name of the entry to be renamed</param>
-        /// <returns></returns>
+        /// <returns>True, if renaming was successful, false otherwise</returns>
         public static bool RenameEntry(string zipPathAndName, string oldName, string newName)
         {
             Logger.LogMethodStart();
@@ -292,7 +292,7 @@ namespace Zip
             catch (Exception ex)
             {
                 Logger.LogException(LogLevel.Error, ex, $"Updating files in {zipPathAndName}.zip failed.");
-                return false;
+                throw;
             }
             Logger.LogMethodEnd();
             return true;

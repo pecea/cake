@@ -5,7 +5,7 @@ using Common;
 namespace Cake
 {
     /// <summary>
-    /// Class for
+    /// Represents a void job to be executed at some point.
     /// </summary>
     public class VoidJob : CakeJob
     {
@@ -23,7 +23,7 @@ namespace Cake
         /// Adds one or more Jobs that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="CakeJob.Dependencies"/>.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="VoidJob"/> object is returned so that method chaining can be used in the script.</returns>
         public VoidJob DependsOn(params string[] dependenciesToAdd)
         {
             Logger.LogMethodStart();
@@ -40,7 +40,7 @@ namespace Cake
         /// Adds one or more <see cref="VoidJob"/> that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Jobs that this job will be reliant on.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="VoidJob"/> object is returned so that method chaining can be used in the script.</returns>
         public VoidJob DependsOn(params VoidJob[] dependenciesToAdd)
         {
             return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
@@ -50,7 +50,7 @@ namespace Cake
         /// Defines an <see cref="Action"/> that can be performed by this job.
         /// </summary>
         /// <param name="actionToDo">Action delegate to be passed to this job.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="VoidJob"/> object is returned so that method chaining can be used in the script.</returns>
         public VoidJob Does(Action actionToDo)
         {
             _action = actionToDo;

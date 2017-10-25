@@ -19,10 +19,10 @@ namespace Cake.Tests
         [ExpectedException(typeof(JobException))]
         public void ShouldThrowWhenTypeCannotBeFound()
         {
-            using (var isolated = new Isolated<RoslynEngineFacade>())
-            {
-                isolated.Value.ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx");
-            }
+           // using (var isolated = new Isolated<RoslynEngineFacade>())
+           // {
+                new RoslynEngineFacade().ExecuteFile(@"../../Test Files/ShouldThrowWhenTypeCannotBeFound.csx");
+            //}
         }
         /// <summary>
         /// Test method for non-existing script
@@ -33,10 +33,10 @@ namespace Cake.Tests
         [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowWhenNonExistingScriptIsSpecified()
         {
-            using (var isolated = new Isolated<RoslynEngineFacade>())
-            {
-                isolated.Value.ExecuteFile(@"../../Test Files/Non existing script.csx");
-            }
+            //using (var isolated = new Isolated<RoslynEngineFacade>())
+            //{
+                new RoslynEngineFacade().ExecuteFile(@"../../Test Files/Non existing script.csx");
+            //}
         }
         /// <summary>
         /// Test method for invalid reference in the script
@@ -47,11 +47,11 @@ namespace Cake.Tests
         [ExpectedException(typeof(FileNotFoundException))]
         public void ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript()
         {
-            using (var isolated = new Isolated<RoslynEngineFacade>())
-            {
-                isolated.Value.ExecuteFile(
+            //using (var isolated = new Isolated<RoslynEngineFacade>())
+            //{
+                new RoslynEngineFacade().ExecuteFile(
                     @"../../Test Files/ShouldThrowIfInvalidPathToAssemblyIsSpecifiedInTheScript.csx");
-            }
+            //}
         }
     }
 }

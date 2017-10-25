@@ -12,22 +12,46 @@ namespace Common
     {
         private const string RoslynCallerMemberName = "<Initialize>";
         private const string ScriptLoggerName = "Script";
-
+        /// <summary>
+        /// Logs message of <see cref="LogLevel.Trace"/> level
+        /// </summary>
+        /// <param name="message">Log message</param>
+        /// <param name="loggerName">Logger name</param>
         public static void Trace(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Trace, message, loggerName);
-
+        /// <summary>
+        /// Logs message of <see cref="LogLevel.Debug"/> level
+        /// </summary>
+        /// <param name="message">Log message</param>
+        /// <param name="loggerName">Logger name</param>
         public static void Debug(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Debug, message, loggerName);
-
+        /// <summary>
+        /// Logs message of <see cref="LogLevel.Info"/> level
+        /// </summary>
+        /// <param name="message">Log message</param>
+        /// <param name="loggerName">Logger name</param>
         public static void Info(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Info, message, loggerName);
-
+        /// <summary>
+        /// Logs message of <see cref="LogLevel.Warn"/> level
+        /// </summary>
+        /// <param name="message">Log message</param>
+        /// <param name="loggerName">Logger name</param>
         public static void Warn(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Warn, message, loggerName);
-
+        /// <summary>
+        /// Logs message of <see cref="LogLevel.Error"/> level
+        /// </summary>
+        /// <param name="message">Log message</param>
+        /// <param name="loggerName">Logger name</param>
         public static void Error(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Error, message, loggerName);
-
+        /// <summary>
+        /// Logs message of <see cref="LogLevel.Fatal"/> level
+        /// </summary>
+        /// <param name="message">Log message</param>
+        /// <param name="loggerName">Logger name</param>
         public static void Fatal(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Fatal, message, loggerName);
 
@@ -86,10 +110,10 @@ namespace Common
         }
 
         /// <summary>
-        /// 
+        /// Method for run-time reconfiguration of logging level
         /// </summary>
-        /// <param name="logLevelName"></param>
-        /// <param name="targetName"></param>
+        /// <param name="logLevelName">Type of logging - application or script</param>
+        /// <param name="targetName">NLog configuration target name</param>
         public static void Reconfigure(string logLevelName, string targetName)
         {
             LogMethodStart();
@@ -124,9 +148,15 @@ namespace Common
             LogManager.ReconfigExistingLoggers();
             LogMethodEnd();
         }
-
+        /// <summary>
+        /// Method for logging start of any method in the application
+        /// </summary>
+        /// <param name="methodName">Logging place</param>
         public static void LogMethodStart([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, "Method started.", methodName);
-        
+        /// <summary>
+        /// Method for logging end of any method in the application
+        /// </summary>
+        /// <param name="methodName">Logging place</param>
         public static void LogMethodEnd([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, "Method finished.", methodName);
     }
 }

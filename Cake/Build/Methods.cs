@@ -218,7 +218,7 @@ namespace Build
         private static async Task<bool> CompileSolutionAsync(string solutionUrl, string outputDir, string configuration, string platform)
         {
             Logger.LogMethodStart();
-            bool success = true;
+            var success = true;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
 
@@ -228,7 +228,7 @@ namespace Build
                 var solution = await workspace.OpenSolutionAsync(solutionUrl).ConfigureAwait(false);
                 var projectGraph = solution.GetProjectDependencyGraph();
                 //var dllLibrary = new Dictionary<ProjectId, FileStream>();
-                var library = new Dictionary<ProjectId, BuildResult>();
+                //var library = new Dictionary<ProjectId, BuildResult>();
                 foreach(var project in projectGraph.GetTopologicallySortedProjects())
                 {
                     success &= await CompileProjectAsync(solution.GetProject(project), outputDir, configuration, platform).ConfigureAwait(false);

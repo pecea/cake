@@ -6,6 +6,9 @@ using LogLevel = Common.LogLevel;
 
 namespace Git
 {
+    /// <summary>
+    /// Encloses methods used with staging files in git.
+    /// </summary>
     public static partial class Methods
     {
         /// <summary>

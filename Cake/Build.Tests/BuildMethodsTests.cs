@@ -129,10 +129,10 @@ namespace Build.Tests
         public async Task BuildProjectShouldBuildAProjectInDebugIfDebugWasSpecified()
         {
             Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, OutputPathDebug));
-            using (var isolated = new Isolated<ConfigurationChecker>())
-            {
-                Assert.IsTrue(isolated.Value.IsDebug((OutputPathDebug + "/*.dll").GetFilePaths().First()));
-            }
+            //using (var isolated = new Isolated<ConfigurationChecker>())
+           // {
+                Assert.IsTrue(new ConfigurationChecker().IsDebug((OutputPathDebug + "/*.dll").GetFilePaths().First()));
+            //}
         }
         /// <summary>
         /// Test method for release configuration
@@ -142,10 +142,10 @@ namespace Build.Tests
         public async Task BuildProjectShouldBuildAProjectInReleaseIfReleaseWasSpecified()
         {
             Assert.IsTrue(await Methods.BuildProjectAsync(ProjectPath, OutputPathRelease, "Release"));
-            using (var isolated = new Isolated<ConfigurationChecker>())
-            {
-                Assert.IsFalse(isolated.Value.IsDebug((OutputPathRelease + "/*.dll").GetFilePaths().First()));
-            }
+            //using (var isolated = new Isolated<ConfigurationChecker>())
+            //{
+                Assert.IsFalse(new ConfigurationChecker().IsDebug((OutputPathRelease + "/*.dll").GetFilePaths().First()));
+            //}
         }
     }
 }

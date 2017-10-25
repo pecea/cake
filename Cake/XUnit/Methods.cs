@@ -6,6 +6,9 @@ using Common;
 
 namespace XUnit
 {
+    /// <summary>
+    /// Encloses methods used with running unit tests written in xUnit.
+    /// </summary>
     public class Methods
     {
         private static string FullPathExe => ConfigurationManager.AppSettings["XUnitPath"];

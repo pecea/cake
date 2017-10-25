@@ -13,7 +13,7 @@ namespace Cake
         /// <summary>
         /// Entry point of the application.
         /// </summary>
-        /// <param name="args">Paths to *.csx scripts to be executed.</param>
+        /// <param name="args">Path to *.csx script to be executed, logging verbosity and optionally job to be run</param>
         private static async Task Main(string[] args)
         {
             Logger.Log(LogLevel.Trace, "Cake program starting ...");
@@ -27,6 +27,7 @@ namespace Cake
             catch (Exception e)
             {
                 Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
+                Console.ReadKey();
                 return;
             }
 

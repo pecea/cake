@@ -2,10 +2,16 @@
 
 namespace Git
 {
+    /// <summary>
+    /// Encloses methods used with repository in git.
+    /// </summary>
     public static partial class Methods
     {
         private static string _repositoryPath;
 
+        /// <summary>
+        /// Git repository path
+        /// </summary>
         public static string RepositoryPath
         {
             get
@@ -18,7 +24,9 @@ namespace Git
             }
             set => _repositoryPath = value;
         }
-
+        /// <summary>
+        /// User identity in git
+        /// </summary>
         public static Identity UserIdentity { get; set; } = new Identity();
     }
 }

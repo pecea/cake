@@ -4,6 +4,9 @@ using LogLevel = Common.LogLevel;
 
 namespace Git
 {
+    /// <summary>
+    /// Encloses methods used with pushing files in git.
+    /// </summary>
     public static partial class Methods
     {
         /// <summary>

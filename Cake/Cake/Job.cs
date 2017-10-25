@@ -24,7 +24,7 @@ namespace Cake
         /// Adds one or more Jobs that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="CakeJob.Dependencies"/>.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="Job"/> object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params string[] dependenciesToAdd)
         {
             Logger.LogMethodStart();
@@ -39,7 +39,7 @@ namespace Cake
         /// Adds one or more <see cref="Job"/> that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Jobs that this job will be reliant on.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="Job"/> object is returned so that method chaining can be used in the script.</returns>
         public Job DependsOn(params Job[] dependenciesToAdd)
         {
             Logger.LogMethodStart();
@@ -50,7 +50,7 @@ namespace Cake
         /// Defines a <see cref="Func{T, TResult}"/> that can be perfromed by this job.
         /// </summary>
         /// <param name="actionWithResultToDo">Function delegate to be passed to this job.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="Job"/> object is returned so that method chaining can be used in the script.</returns>
         public Job Does(Func<dynamic> actionWithResultToDo)
         {
             _actionWithResult = actionWithResultToDo;

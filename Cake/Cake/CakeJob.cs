@@ -35,7 +35,7 @@ namespace Cake
         /// Method for defining an exception path in the script
         /// </summary>
         /// <param name="exceptionJob">Job that should run on exception</param>
-        /// <returns></returns>
+        /// <returns><see cref="CakeJob"/> object is returned so that method chaining can be used in the script.</returns>
         public CakeJob OnException(string exceptionJob)
         {
             ExceptionJob = exceptionJob;

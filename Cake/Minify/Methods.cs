@@ -7,6 +7,9 @@ using Microsoft.Ajax.Utilities;
 
 namespace Minify
 {
+    /// <summary>
+    /// Encloses methods used with minifying files.
+    /// </summary>
     public static class Methods
     {
         /// <summary>

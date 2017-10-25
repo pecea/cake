@@ -15,20 +15,18 @@ namespace Cake
     public sealed class RoslynEngine
     {
         private static volatile RoslynEngine _instance;
-        private static readonly List<Assembly> _assemblies = new List<Assembly>();
-        private static readonly List<string> _namespaces = new List<string>();
-        private static object _lockObject = new object();
+        private static readonly List<Assembly> Assemblies = new List<Assembly>();
+        private static readonly List<string> Namespaces = new List<string>();
+        private static readonly object LockObject = new object();
 
         private RoslynEngine()
         {
-            //_assemblies = new List<Assembly>();
-            //_namespaces = new List<string>();
-            _assemblies.Add(typeof(Job).Assembly);
-            _assemblies.Add(typeof(Logger).Assembly);
-            _namespaces.Add(typeof(Job).Namespace);
-            _namespaces.Add(typeof(JobManager).Namespace);
-            _namespaces.Add(typeof(Logger).Namespace);
-            _namespaces.Add(typeof(Logger).FullName);
+            Assemblies.Add(typeof(Job).Assembly);
+            Assemblies.Add(typeof(Logger).Assembly);
+            Namespaces.Add(typeof(Job).Namespace);
+            Namespaces.Add(typeof(JobManager).Namespace);
+            Namespaces.Add(typeof(Logger).Namespace);
+            Namespaces.Add(typeof(Logger).FullName);
         }
         /// <summary>
         /// Method for getting instance of RoslynEngine
@@ -39,7 +37,7 @@ namespace Cake
             {
                 if (_instance == null)
                 {
-                    lock (_lockObject)
+                    lock (LockObject)
                     {
                         if (_instance == null)
                             _instance = new RoslynEngine();
@@ -58,7 +56,7 @@ namespace Cake
             try
             {
                 await CSharpScript.RunAsync(File.ReadAllText(filePath), ScriptOptions.Default
-                    .WithReferences(_assemblies).WithImports(_namespaces)).ConfigureAwait(false);
+                    .WithReferences(Assemblies).WithImports(Namespaces)).ConfigureAwait(false);
             }
             catch (CompilationErrorException ce)
             {
