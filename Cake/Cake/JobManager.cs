@@ -57,7 +57,7 @@ namespace Cake
                 throw new JobException(stringException, ex);
             }
 
-            JobResult result = PerformJobWithDependencies(name);
+            var result = PerformJobWithDependencies(name);
 
             if (!result.Success)
                 Logger.Log(LogLevel.Warn, $"Job {name} did not end succesfully!");
@@ -92,7 +92,7 @@ namespace Cake
             Logger.Debug($"Resolving {name} execution request.");
 
             JobResult result;
-            CakeJob job = GetJob(name);
+            var job = GetJob(name);
 
             if (job.Status == JobStatus.Failed)
             {
@@ -146,11 +146,8 @@ namespace Cake
             {
                 return PerformJobWithDependencies(job.ExceptionJob);
             }
-            else
-            {
-                // Break execution
-                throw new JobException($"Job {job.Name} did not end succesfully!", job);
-            }
+            // Break execution
+            throw new JobException($"Job {job.Name} did not end succesfully!", job);
         }
     }
 }

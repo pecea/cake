@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Common
@@ -40,6 +41,8 @@ namespace Common
                         return Directory.Exists(path) ? new[] { path } : new string[0];
                     case GetPathsOptions.Files:
                         return File.Exists(path) ? new[] { path } : new string[0];
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(option));
                 }
             }
 

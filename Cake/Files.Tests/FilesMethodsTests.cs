@@ -213,7 +213,7 @@ namespace Files.Tests
 
             try
             {
-                Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content/FileToCopy.txt", overwrite: false);
+                Methods.CopyFile(PathForTests + "FileToCopy.txt", PathForTests + "Copied Content/FileToCopy.txt", false);
             }
             catch (Exception e)
             {

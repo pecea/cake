@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
 
 namespace Cake
 {
@@ -9,7 +8,7 @@ namespace Cake
     {
         internal ArgumentParser()
         {
-            Arguments = new List<Argument>
+            _arguments = new List<Argument>
                            {
                                new Argument(new[] { "/runjob", "/r" }, true),
                                new Argument(new[] { "/scriptverbosity", "/sv" }, true),
@@ -19,7 +18,7 @@ namespace Cake
                            }.ToArray();
         }
 
-        private readonly Argument[] Arguments;
+        private readonly Argument[] _arguments;
         /// <summary>
         /// Parses arguments passed when running Cake.
         /// </summary>
@@ -32,9 +31,9 @@ namespace Cake
             for (var i = 0; i < args.Length; i++)
             {
                 var argName = args[i];
-                var argument = Arguments.FirstOrDefault(arg => arg.Names.Contains(argName));
+                var argument = _arguments.FirstOrDefault(arg => arg.Names.Contains(argName));
                 if (argument == null)
-                    throw new ArgumentException(string.Empty, paramName: argName);
+                    throw new ArgumentException(string.Empty, argName);
 
                 if (argument.HasValue)
                 {

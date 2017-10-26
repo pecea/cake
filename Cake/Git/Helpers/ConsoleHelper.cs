@@ -2,11 +2,11 @@
 
 namespace Git.Helpers
 {
-    public static class ConsoleHelper
+    internal static class ConsoleHelper
     {
-        public static string ReadLineMasked()
+        internal static string ReadLineMasked()
         {
-            string pass = "";
+            var pass = "";
             ConsoleKeyInfo key;
 
             do
@@ -21,11 +21,9 @@ namespace Git.Helpers
                 }
                 else
                 {
-                    if (key.Key == ConsoleKey.Backspace && pass.Length > 0)
-                    {
-                        pass = pass.Substring(0, (pass.Length - 1));
-                        Console.Write("\b \b");
-                    }
+                    if (key.Key != ConsoleKey.Backspace || pass.Length <= 0) continue;
+                    pass = pass.Substring(0, (pass.Length - 1));
+                    Console.Write("\b \b");
                 }
             }
             // Stops receving keys once enter is pressed

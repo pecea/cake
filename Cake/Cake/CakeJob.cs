@@ -26,7 +26,7 @@ namespace Cake
         public JobResult Result { get; set; }
 
         /// <summary>
-        /// CakeJob constructor that is also registering newly created job to the <see cref="JobManager"/>
+        /// Constructor that is also registering newly created job to the <see cref="JobManager"/>
         /// </summary>
         /// <param name="name"></param>
         protected CakeJob(string name)
@@ -41,7 +41,7 @@ namespace Cake
         /// Method for defining an exception path in the script
         /// </summary>
         /// <param name="exceptionJobName">Job that should run on exception</param>
-        /// <returns></returns>
+        /// <returns><see cref="CakeJob"/> is returned so that method chaining can be used in the script.</returns>
         protected CakeJob OnException(string exceptionJobName)
         {
             ExceptionJob = exceptionJobName;
@@ -52,7 +52,7 @@ namespace Cake
         /// Method for defining an exception path in the script
         /// </summary>
         /// <param name="exceptionJob">Job that should run on exception</param>
-        /// <returns></returns>
+        /// <returns><see cref="CakeJob"/> is returned so that method chaining can be used in the script.</returns>
         protected CakeJob OnException(CakeJob exceptionJob)
         {
             ExceptionJob = exceptionJob.Name;
@@ -63,7 +63,7 @@ namespace Cake
         /// Adds one or more Jobs that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Names of depenedencies to be added to <see cref="CakeJob.Dependencies"/>.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="CakeJob"/> is returned so that method chaining can be used in the script.</returns>
         protected CakeJob DependsOn(params string[] dependenciesToAdd)
         {
             Logger.LogMethodStart();
@@ -81,7 +81,7 @@ namespace Cake
         /// Adds one or more <see cref="CakeJob"/> that this job is dependent on.
         /// </summary>
         /// <param name="dependenciesToAdd">Jobs that this job will be reliant on.</param>
-        /// <returns>The Job object is returned so that method chaining can be used in the script.</returns>
+        /// <returns><see cref="CakeJob"/> is returned so that method chaining can be used in the script.</returns>
         protected CakeJob DependsOn(params CakeJob[] dependenciesToAdd)
         {
             return DependsOn(dependenciesToAdd.Select(dependency => dependency.Name).ToArray());
@@ -108,13 +108,16 @@ namespace Cake
                 Logger.LogMethodEnd();
             }
         }
-
+        /// <summary>
+        /// Abstract method for executing the job action
+        /// </summary>
+        /// <returns><see cref="JobResult"/></returns>
         protected abstract JobResult ExecuteJob();
 
         private JobResult HandleExecuteException(Exception e)
         {
             LogLevel level;
-            string message = $"An exception occured while executing {Name}";
+            var message = $"An exception occured while executing {Name}";
 
             if (HasExceptionJob)
             {
@@ -127,7 +130,7 @@ namespace Cake
                 message += $" and there is no \"OnException\" job specified.";
             }
             
-            Logger.LogException(level, e, message, includeStackTrace: true);
+            Logger.LogException(level, e, message);
 
             return Result = new JobResult
             {

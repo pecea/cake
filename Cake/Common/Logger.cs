@@ -12,22 +12,46 @@ namespace Common
     {
         private const string RoslynCallerMemberName = "<Initialize>";
         private const string ScriptLoggerName = "Script";
-
+        /// <summary>
+        /// Logs messages of <see cref="LogLevel.Trace"/> level
+        /// </summary>
+        /// <param name="message">Message to be logged</param>
+        /// <param name="loggerName">Message origin</param>
         public static void Trace(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Trace, message, loggerName);
-
+        /// <summary>
+        /// Logs messages of <see cref="LogLevel.Debug"/> level
+        /// </summary>
+        /// <param name="message">Message to be logged</param>
+        /// <param name="loggerName">Message origin</param>
         public static void Debug(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Debug, message, loggerName);
-
+        /// <summary>
+        /// Logs messages of <see cref="LogLevel.Info"/> level
+        /// </summary>
+        /// <param name="message">Message to be logged</param>
+        /// <param name="loggerName">Message origin</param>
         public static void Info(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Info, message, loggerName);
-
+        /// <summary>
+        /// Logs messages of <see cref="LogLevel.Warn"/> level
+        /// </summary>
+        /// <param name="message">Message to be logged</param>
+        /// <param name="loggerName">Message origin</param>
         public static void Warn(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Warn, message, loggerName);
-
+        /// <summary>
+        /// Logs messages of <see cref="LogLevel.Error"/> level
+        /// </summary>
+        /// <param name="message">Message to be logged</param>
+        /// <param name="loggerName">Message origin</param>
         public static void Error(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Error, message, loggerName);
-
+        /// <summary>
+        /// Logs messages of <see cref="LogLevel.Fatal"/> level
+        /// </summary>
+        /// <param name="message">Message to be logged</param>
+        /// <param name="loggerName">Message origin</param>
         public static void Fatal(string message, [CallerMemberName] string loggerName = ScriptLoggerName) =>
             Log(LogLevel.Fatal, message, loggerName);
 
@@ -73,10 +97,11 @@ namespace Common
         /// <param name="e">Exception to be logged.</param>
         /// <param name="logLevel"><see cref="LogLevel"/> of the log.</param>
         /// <param name="message">Message to be logged. There will be info appended to it about exception's type, source and message.</param>
+        /// <param name="includeStackTrace">Flag indictating whether to include stack trace</param>
         /// <param name="loggerName">Name of the logger to be used.</param>
         public static void LogException(LogLevel logLevel, Exception e, string message, bool includeStackTrace = true, [CallerMemberName] string loggerName = "Script")
         {
-            string msg = $"{message}{GetExceptionLogMessage(e, includeStackTrace)}";
+            var msg = $"{message}{GetExceptionLogMessage(e, includeStackTrace)}";
 
             if (e.InnerException != null)            
                 msg += $"\n\nBase exception:{GetExceptionLogMessage(e.GetBaseException(), includeStackTrace)}";
@@ -95,10 +120,10 @@ namespace Common
         }
 
         /// <summary>
-        /// 
+        /// Method for reconfiguring NLog
         /// </summary>
-        /// <param name="logLevelName"></param>
-        /// <param name="targetName"></param>
+        /// <param name="logLevelName">New string value of a <see cref="LogLevel"/></param>
+        /// <param name="targetName">Type of configuration to be changed - script or application</param>
         public static void Reconfigure(string logLevelName, string targetName)
         {
             NLog.LogLevel logLevel;
@@ -131,9 +156,15 @@ namespace Common
 
             LogManager.ReconfigExistingLoggers();
         }
-
+        /// <summary>
+        /// Method for logging an entry point for all methods
+        /// </summary>
+        /// <param name="methodName">Name of the method that started executing</param>
         public static void LogMethodStart([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, $"Method {methodName} started.", methodName);
-        
+        /// <summary>
+        /// Method for logging an exit point for all methods
+        /// </summary>
+        /// <param name="methodName">Name of the method that ended executing</param>
         public static void LogMethodEnd([CallerMemberName] string methodName = ScriptLoggerName) => Log(LogLevel.Trace, $"Method {methodName} finished.", methodName);
     }
 }

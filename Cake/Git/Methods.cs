@@ -5,7 +5,9 @@ namespace Git
     public static partial class Methods
     {
         private static string _repositoryPath;
-
+        /// <summary>
+        /// Path to the git repository
+        /// </summary>
         public static string RepositoryPath
         {
             get
@@ -18,7 +20,9 @@ namespace Git
             }
             set => _repositoryPath = value;
         }
-
+        /// <summary>
+        /// User <see cref="Identity"/>
+        /// </summary>
         public static Identity UserIdentity { get; set; } = new Identity();
     }
 }

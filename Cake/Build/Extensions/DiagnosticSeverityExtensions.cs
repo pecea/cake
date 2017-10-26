@@ -6,7 +6,7 @@ namespace Build.Extensions
 {
     internal static class DiagnosticSeverityExtensions
     {
-        public static LogLevel ToLogLevel(this DiagnosticSeverity severity)
+        internal static LogLevel ToLogLevel(this DiagnosticSeverity severity)
         {
             switch (severity)
             {

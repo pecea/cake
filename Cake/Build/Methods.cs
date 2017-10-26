@@ -9,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace Build
 {
@@ -47,50 +46,14 @@ namespace Build
             { "Release", OptimizationLevel.Release }
         };
 
-
-        internal static bool TryGetOutputKind(string outputKind, out OutputKind kind)
-        {
-            if (string.Equals(outputKind, "Library", StringComparison.OrdinalIgnoreCase))
-            {
-                kind = OutputKind.DynamicallyLinkedLibrary;
-                return true;
-            }
-            else if (string.Equals(outputKind, "Exe", StringComparison.OrdinalIgnoreCase))
-            {
-                kind = OutputKind.ConsoleApplication;
-                return true;
-            }
-            else if (string.Equals(outputKind, "WinExe", StringComparison.OrdinalIgnoreCase))
-            {
-                kind = OutputKind.WindowsApplication;
-                return true;
-            }
-            else if (string.Equals(outputKind, "Module", StringComparison.OrdinalIgnoreCase))
-            {
-                kind = OutputKind.NetModule;
-                return true;
-            }
-            else if (string.Equals(outputKind, "WinMDObj", StringComparison.OrdinalIgnoreCase))
-            {
-                kind = OutputKind.WindowsRuntimeMetadata;
-                return true;
-            }
-            else
-            {
-                kind = OutputKind.DynamicallyLinkedLibrary;
-                return false;
-            }
-        }
-
         private static async Task<bool> CompileProjectAsync(string projectUrl, string outputDir, string configuration, string platform)
         {
             Logger.LogMethodStart();
-            bool success;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
 
             var project = await workspace.OpenProjectAsync(projectUrl).ConfigureAwait(false);
-            success = await CompileProjectAsync(project, outputDir, configuration, platform).ConfigureAwait(false);
+            var success = await CompileProjectAsync(project, outputDir, configuration, platform).ConfigureAwait(false);
 
             Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished.");
             workspace.CloseSolution();
@@ -111,20 +74,11 @@ namespace Build
 
         private static async Task<bool> CompileProjectAsync(Project project, string outputPath, string configuration, string platform, ProjectDependencyGraph graph = null, Dictionary<ProjectId, BuildResult> library = null)
         {
-            bool success = false;
+            var success = false;
             Logger.LogMethodStart();
-            var doc = new XmlDocument();
-            doc.Load(project.FilePath);
-            var outputType = doc.GetElementById("OutputType");
-            var output = doc.GetElementsByTagName("OutputType").OfType<XmlNode>();
-            var type = output.FirstOrDefault()?.InnerText;
-            var regognizedKind = TryGetOutputKind(type, out OutputKind kind);
 
-            var coreDir = Path.GetDirectoryName(typeof(object).GetTypeInfo().Assembly.Location);
-            var mscorlib = MetadataReference.CreateFromFile(Path.Combine(coreDir, "mscorlib.dll"));
-
+            var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
             var opts = project.CompilationOptions
-                .WithOutputKind(kind)
                 .WithOptimizationLevel(OptimizationOptions[configuration])
                 .WithPlatform(PlatformOptions[platform]);
 
@@ -135,13 +89,13 @@ namespace Build
                 .ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(outputPath))
-                outputPath = $"{Path.GetDirectoryName(string.IsNullOrEmpty(project?.OutputFilePath) ? Path.Combine(Path.GetDirectoryName(project?.FilePath), "bin\\" + configuration) : project?.OutputFilePath)}\\";
+                outputPath = $"{Path.GetDirectoryName(string.IsNullOrEmpty(project.OutputFilePath) ? Path.Combine(Path.GetDirectoryName(project.FilePath) ?? "", "bin\\" + configuration) : project.OutputFilePath)}\\";
             outputPath = outputPath.Replace('/', '\\');
             if (!outputPath.EndsWith("\\"))
                 outputPath += '\\';
             if (graph != null)
             {
-                outputPath += $"{project?.Name}\\";
+                outputPath += $"{project.Name}\\";
                 if (!Directory.Exists(outputPath))
                     Directory.CreateDirectory(outputPath);
             }
@@ -161,10 +115,11 @@ namespace Build
                     }
                 }
 
-                if (result != null && result.Success)
+                if (result.Success)
                 {
                     Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully.");
-                    var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{ProjectOutputs[kind]}";
+                    var extension = ProjectOutputs[project.CompilationOptions.OutputKind];
+                    var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{extension}";
                     var pathTwo = $"{outputPath}{projectCompilation.AssemblyName}.pdb";
                     var pathThree = $"{outputPath}{projectCompilation.AssemblyName}.xml";
                     WriteStreamToFile(stream, pathOne);
@@ -193,10 +148,10 @@ namespace Build
                 }
                 else
                 {
-                    throw new CompilationException(project?.Name);
+                    throw new CompilationException(project.Name);
                 }
 
-                success = result?.Success ?? false;
+                success = result.Success;
             }
 
             Logger.LogMethodEnd();
@@ -206,14 +161,12 @@ namespace Build
         private static async Task<bool> CompileSolutionAsync(string solutionUrl, string outputDir, string configuration, string platform)
         {
             Logger.LogMethodStart();
-            bool success = true;
+            var success = true;
             var options = new Dictionary<string, string> { { "Configuration", configuration } };
             var workspace = MSBuildWorkspace.Create(options);
 
             var solution = await workspace.OpenSolutionAsync(solutionUrl).ConfigureAwait(false);
             var projectGraph = solution.GetProjectDependencyGraph();
-            //var dllLibrary = new Dictionary<ProjectId, FileStream>();
-            var library = new Dictionary<ProjectId, BuildResult>();
             foreach (var project in projectGraph.GetTopologicallySortedProjects())
             {
                 success &= await CompileProjectAsync(solution.GetProject(project), outputDir, configuration, platform).ConfigureAwait(false);
@@ -223,6 +176,41 @@ namespace Build
 
             Logger.LogMethodEnd();
             return success;
+        }
+
+        private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
+        {
+            Logger.LogMethodStart();
+            if (!File.Exists(projectFile))
+            {
+                Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");
+                return false;
+            }
+            if (!PlatformOptions.ContainsKey(platform))
+            {
+                Logger.Log(LogLevel.Warn, $"The platform parameter must be one of: {string.Join(", ", PlatformOptions.Select(k => k.Key))}.");
+                return false;
+            }
+
+            if (!OptimizationOptions.ContainsKey(configuration))
+            {
+                Logger.Log(LogLevel.Warn, "The configuration parameter must be set to \"Debug\" or \"Release\".");
+                return false;
+            }
+            if (!string.IsNullOrEmpty(outputPath) && !Directory.Exists(outputPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(outputPath);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(LogLevel.Error, ex, $"Could not create output folder: {outputPath}.");
+                    return false;
+                }
+            }
+            Logger.LogMethodEnd();
+            return true;
         }
 
         /// <summary>
@@ -261,41 +249,6 @@ namespace Build
 
             Logger.LogMethodEnd();
             return res;
-        }
-
-        private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
-        {
-            Logger.LogMethodStart();
-            if (!File.Exists(projectFile))
-            {
-                Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");
-                return false;
-            }
-            if (!PlatformOptions.ContainsKey(platform))
-            {
-                Logger.Log(LogLevel.Warn, $"The platform parameter must be one of: {string.Join(", ", PlatformOptions.Select(k => k.Key))}.");
-                return false;
-            }
-
-            if (!OptimizationOptions.ContainsKey(configuration))
-            {
-                Logger.Log(LogLevel.Warn, "The configuration parameter must be set to \"Debug\" or \"Release\".");
-                return false;
-            }
-            if (!string.IsNullOrEmpty(outputPath) && !Directory.Exists(outputPath))
-            {
-                try
-                {
-                    Directory.CreateDirectory(outputPath);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException(LogLevel.Error, ex, $"Could not create output folder: {outputPath}.");
-                    return false;
-                }
-            }
-            Logger.LogMethodEnd();
-            return true;
         }
     }
 }
