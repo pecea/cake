@@ -54,9 +54,9 @@ var secondJob = new VoidJob("Minify").DependsOn(firstJob).Does(() =>
         excludePattern: Path.Combine(cssPath, @"**/*.min.css"));
     if(!min2)
         throw new System.ApplicationException("Cascading Style Sheets files not minified correctly!");
-}).OnExcpetion("Cleanup");
+}).OnException("Cleanup");
 
-var thirdJob = new Job("BundleFiles").DependsOn(firstJob, secondJob)
+var thirdJob = new VoidJob("BundleFiles").DependsOn(firstJob, secondJob)
     .Does(() => {
         var bundle1 = Minify.Methods.BundleFiles(
         pattern: Path.Combine(jsPath, @"**/*.min.js"),
