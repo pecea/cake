@@ -87,7 +87,7 @@ namespace Cake
 
         private static void HandleJobException(JobException j)
         {
-            string message = "Script execution finished with errors.";
+            var message = "Script execution finished with errors.";
 
             if (!string.IsNullOrWhiteSpace(j.SourceJobName))
             {

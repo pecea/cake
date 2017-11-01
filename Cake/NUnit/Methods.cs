@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Common;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using Common;
 
 namespace NUnit
 {
@@ -15,7 +14,7 @@ namespace NUnit
         private const string TestsPassed = "Overall result: Passed";
 
         /// <summary>
-        /// 
+        /// Runs NUnit unit tests from the speciffied <paramref name="assemblyPaths"/>
         /// </summary>
         /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files.</param>
         /// <param name="conditions">Conditions may specify test names, classes, methods, categories or properties comparing them to actual values with the operators ==, !=, =~ and !~</param>
@@ -51,7 +50,7 @@ namespace NUnit
             return res;
         }
         /// <summary>
-        /// 
+        /// Runs NUnit tests from the specified <paramref name="assemblyPaths"/> with different options
         /// </summary>
         /// <param name="assemblyPaths">Paths to .dlls|.csproj|.nunit files, separated by commas. </param>
         /// <param name="conditions">Conditions may specify test names, classes, methods, categories or properties comparing them to actual values with the operators ==, !=, =~ and !~</param>

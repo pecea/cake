@@ -25,7 +25,7 @@ namespace Files
             Logger.LogMethodStart();
             var res = true;
 
-            DirectoryInfo dir = new DirectoryInfo(sourceDir);
+            var dir = new DirectoryInfo(sourceDir);
             if (!dir.Exists)
             {
                 Logger.Log(LogLevel.Warn, $"Directory {sourceDir} not found.");

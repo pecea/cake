@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common;
 
 namespace Cake
 {
@@ -34,7 +33,7 @@ namespace Cake
                 var argName = args[i];
                 var argument = _arguments.FirstOrDefault(arg => arg.Names.Contains(argName));
                 if (argument == null)
-                    throw new ArgumentException(string.Empty, paramName: argName);
+                    throw new ArgumentException(string.Empty, argName);
 
                 if (argument.HasValue)
                 {

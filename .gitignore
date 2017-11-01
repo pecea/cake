@@ -195,3 +195,4 @@ ModelManifest.xml
 /Cake/TestResults
 /Cake/.vs/Cake/v15/sqlite3/storage.ide
 /Cake/.vs/*
+/.vs/*

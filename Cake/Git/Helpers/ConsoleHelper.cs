@@ -2,16 +2,9 @@
 
 namespace Git.Helpers
 {
-    /// <summary>
-    /// Class for helping reading console input
-    /// </summary>
-    public static class ConsoleHelper
+    internal static class ConsoleHelper
     {
-        /// <summary>
-        /// Method for reading console input
-        /// </summary>
-        /// <returns>Input, masked for passwords</returns>
-        public static string ReadLineMasked()
+        internal static string ReadLineMasked()
         {
             var pass = "";
             ConsoleKeyInfo key;

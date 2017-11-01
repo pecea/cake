@@ -20,7 +20,10 @@ namespace Cake
 
         private string _source;
 
-        private CakeJob _sourceJob;
+        private readonly CakeJob _sourceJob;
+        /// <summary>
+        /// Name of the job that exception occurred in
+        /// </summary>
         public string SourceJobName => _sourceJob?.Name;
 
         /// <summary>
@@ -30,7 +33,11 @@ namespace Cake
         public JobException(string message) : base(message)
         {
         }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JobException"/> class.
+        /// </summary>
+        /// <param name="message">The message that describes the error.</param>
+        /// <param name="job"><see cref="CakeJob"/> that exception occurred in</param>
         public JobException(string message, CakeJob job) : base(message)
         {
             _sourceJob = job;
@@ -69,8 +76,8 @@ namespace Cake
         /// <summary>
         /// The special constructor is used to deserialize values.
         /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
+        /// <param name="info"><see cref="SerializationInfo"/></param>
+        /// <param name="context"><see cref="StreamingContext"/></param>
         public JobException(SerializationInfo info, StreamingContext context)
         {
             // Reset the property value using the GetValue method.

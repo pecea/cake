@@ -15,7 +15,7 @@ namespace Git
         /// <returns>True in case of success, false otherwise</returns>
         public static bool Pull()
         {
-            MergeResult result = null;
+            MergeResult result;
             Logger.LogMethodStart();
 
             var options = new PullOptions

@@ -46,7 +46,7 @@ namespace Git
         /// </summary>
         public string Password
         {
-            get => (_password = AskIfNull(_password, nameof(Password), masked: true));
+            get => (_password = AskIfNull(_password, nameof(Password), true));
             set => _password = value;
         }
 

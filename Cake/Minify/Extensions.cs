@@ -10,11 +10,11 @@ namespace Minify
     public static class Extensions
     {
         /// <summary>
-        /// Method for returning minified file name
+        /// Gets minified file name
         /// </summary>
-        /// <param name="fileInfo">File for minification</param>
-        /// <param name="newPath">Path to minified result</param>
-        /// <returns></returns>
+        /// <param name="fileInfo"><see cref="FileSystemInfo"/> of the file for minification</param>
+        /// <param name="newPath">Path for the minified file</param>
+        /// <returns>Minified file name</returns>
         public static string MinFullName(this FileSystemInfo fileInfo, string newPath = null)
         {
             var fullName = fileInfo.FullName;
@@ -26,21 +26,21 @@ namespace Minify
             return fullName.Insert(fullName.LastIndexOf(extension, StringComparison.Ordinal), ".min");
         }
         /// <summary>
-        /// Method for minifying .css files.
+        /// Minifies .css file
         /// </summary>
-        /// <param name="minifier"><see cref="Minifier"/> object performing minification</param>
-        /// <param name="fileInfo">File for minification</param>
-        /// <param name="destination">Path to destination file</param>
+        /// <param name="minifier"><see cref="Minifier"/> which performs minification</param>
+        /// <param name="fileInfo"><see cref="FileSystemInfo"/> of the file for minification</param>
+        /// <param name="destination">Path for the minified file</param>
         public static void MinifyCssFile(this Minifier minifier, FileSystemInfo fileInfo, string destination)
         {
             MinifyFile(fileInfo, destination, minifier.MinifyStyleSheet);
         }
         /// <summary>
-        /// Method for minifying .js files.
+        /// Minifies .js file
         /// </summary>
-        /// <param name="minifier"><see cref="Minifier"/> object performing minification</param>
-        /// <param name="fileInfo">File for minification</param>
-        /// <param name="destination">Path to destination file</param>
+        /// <param name="minifier"><see cref="Minifier"/> which performs minification</param>
+        /// <param name="fileInfo"><see cref="FileSystemInfo"/> of the file for minification</param>
+        /// <param name="destination">Path for the minified file</param>
         public static void MinifyJavaScriptFile(this Minifier minifier, FileSystemInfo fileInfo, string destination)
         {
             MinifyFile(fileInfo, destination, minifier.MinifyJavaScript);

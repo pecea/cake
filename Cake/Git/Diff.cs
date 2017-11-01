@@ -13,17 +13,19 @@ namespace Git
         /// <summary>
         /// Lists changes between local index and HEAD.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True in case of success, otherwise false</returns>
         public static bool DiffStaged() => Diff(DiffTargets.Index);
 
         /// <summary>
         /// Lists changes between working directory and HEAD.
         /// </summary>
+        /// /// <returns>True in case of success, otherwise false</returns>
         public static bool DiffWorkingDir() => Diff(DiffTargets.WorkingDirectory);
 
         /// <summary>
         /// Lists changes between both local index and working directory and HEAD.
         /// </summary>
+        /// <returns>True in case of success, otherwise false</returns>
         public static bool DiffAll() => Diff(DiffTargets.Index, DiffTargets.WorkingDirectory);
 
         private static bool Diff(params DiffTargets[] modes)

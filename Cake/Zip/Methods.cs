@@ -189,7 +189,7 @@ namespace Zip
         /// </summary>
         /// <param name="zipPathAndName">Path and name of the modified archive</param>
         /// <param name="entriesToUpdate">Names of entries to be updated</param>
-        /// <returns>True, if update was successful, false otherwise</returns>
+        /// <returns>True, if updating was successful, false otherwise</returns>
         public static bool UpdateEntries(string zipPathAndName, params string[] entriesToUpdate)
         {
             Logger.LogMethodStart();
@@ -261,9 +261,8 @@ namespace Zip
                 return false;
 
             if (string.IsNullOrEmpty(zipPath)) return true;
-            string fullPath;
 
-            fullPath = Path.GetFullPath(zipPath);
+            var fullPath = Path.GetFullPath(zipPath);
 
             Logger.LogMethodEnd();
             return !string.IsNullOrEmpty(fullPath);

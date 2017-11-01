@@ -28,6 +28,7 @@ namespace Git
         /// </summary>
         /// <param name="message">The commit message.</param>
         /// <param name="onlyStaged">Whether to commit staged or all changes.</param>
+        /// <returns>True in case of success, otherwise false</returns>
         private static bool Commit(string message, bool onlyStaged)
         {
             Logger.LogMethodStart();
