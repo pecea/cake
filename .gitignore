@@ -190,7 +190,8 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
 /Cake/packages
 /Cake/TestResults
 /Cake/.vs/Cake/v15/sqlite3/storage.ide
-/Cake/TestResults/Deploy_Piotr 2017-10-21 19_49_23/In/DESKTOP-QFAQ2LN/TestRepo
+/Cake/.vs/*
