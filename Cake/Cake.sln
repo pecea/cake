@@ -95,9 +95,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Minify", "Minify", "{8E1023C0-EDF8-4D00-9EA9-3D50AC4953BC}"
 	ProjectSection(SolutionItems) = preProject
 		Scripts\colors.css = Scripts\colors.css
+		index.html = index.html
 		Scripts\js1.js = Scripts\js1.js
 		Scripts\js2.js = Scripts\js2.js
 		Scripts\minify_sample1.csx = Scripts\minify_sample1.csx
+		template1.html = template1.html
 	EndProjectSection
 EndProject
 Global

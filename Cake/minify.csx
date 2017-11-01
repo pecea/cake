@@ -60,22 +60,24 @@ var thirdJob = new Job("BundleFiles").DependsOn(firstJob, secondJob)
     .Does(() => {
         var bundle1 = Minify.Methods.BundleFiles(
         pattern: Path.Combine(jsPath, @"**/*.min.js"),
-        destination: Path.Combine(bundledPath, "bundled.min.js")
+        destination: Path.Combine(bundledPath, "bundled.min.js"),
+        separator: ';'
         );
         if(!bundle1)
         {
             throw new System.ApplicationException("Javascript files not bundled correctly!");
         }
-        var bundle2 = BundleFiles(
+        var bundle2 = Minify.Methods.BundleFiles(
                 pattern: Path.Combine(cssPath, @"**/*.min.css"),
                 destination: Path.Combine(bundledPath, "bundled.min.css")
                 );
         if (!bundle2)
             throw new System.ApplicationException("Cascading Style Sheets files not bundled correctly!");
 
-        var bundle3 = BundleFiles(
+        var bundle3 = Minify.Methods.BundleFiles(
         pattern: Path.Combine(htmlPath, @"**/*.html"),
-        destination: Path.Combine(bundledPath, "bundled.html")
+        destination: Path.Combine(bundledPath, "bundled.html"),
+        separator: '\n'
         );
         if (!bundle3)
             throw new System.ApplicationException("HyperText Markup Language files not bundled correctly!");
