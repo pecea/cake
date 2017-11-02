@@ -104,7 +104,7 @@ namespace Common
             var msg = $"{message}{GetExceptionLogMessage(e, includeStackTrace)}";
 
             if (e.InnerException != null)            
-                msg += $"\n\nBase exception:{GetExceptionLogMessage(e.GetBaseException(), includeStackTrace)}";
+                msg += $"\nBase exception:{GetExceptionLogMessage(e.GetBaseException(), includeStackTrace)}";
             
             Log(logLevel, msg, loggerName);
         }

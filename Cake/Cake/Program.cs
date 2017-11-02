@@ -66,6 +66,9 @@ namespace Cake
             // Running the script
             try
             {
+                // Set current directory to the scripts directory
+                Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(scriptArgument.Value);
+
                 await RoslynEngine.Instance.ExecuteFile(scriptArgument.Value).ConfigureAwait(false);
             }
             catch (JobException j)
