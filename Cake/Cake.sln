@@ -86,7 +86,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{8B60
 		Scripts\deps_cycle.csx = Scripts\deps_cycle.csx
 		Scripts\General\general_sample1.csx = Scripts\General\general_sample1.csx
 		Scripts\General\general_sample2.csx = Scripts\General\general_sample2.csx
-		Scripts\jobs_sample1.csx = Scripts\jobs_sample1.csx
+		Scripts\General\general_web_sample1.csx = Scripts\General\general_web_sample1.csx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{8095E7FA-F187-4B07-84EF-A5F4E34774D2}"
@@ -105,6 +105,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Minify", "Minify", "{8E1023
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLib", "Scripts\General\TestApp\TestLib\TestLib.csproj", "{987716A3-9BD7-4A05-A4B9-E8617FF7D629}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Webroot", "Webroot", "{5D886BCA-1E37-436F-B6BA-26728F2D046C}"
+	ProjectSection(SolutionItems) = preProject
+		Scripts\General\Webroot\colors.css = Scripts\General\Webroot\colors.css
+		Scripts\General\Webroot\js1.js = Scripts\General\Webroot\js1.js
+		Scripts\General\Webroot\js2.js = Scripts\General\Webroot\js2.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -238,6 +245,7 @@ Global
 		{8095E7FA-F187-4B07-84EF-A5F4E34774D2} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
 		{8E1023C0-EDF8-4D00-9EA9-3D50AC4953BC} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
 		{987716A3-9BD7-4A05-A4B9-E8617FF7D629} = {8B607D5B-458C-489D-9F72-5A2F5A913FBE}
+		{5D886BCA-1E37-436F-B6BA-26728F2D046C} = {8B607D5B-458C-489D-9F72-5A2F5A913FBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2CAA4D13-63CE-479B-AF62-7B591A6F66E2}
