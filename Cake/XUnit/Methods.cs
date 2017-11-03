@@ -1,4 +1,6 @@
 ﻿using Common;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -10,8 +12,9 @@ namespace XUnit
     /// </summary>
     public class Methods
     {
-        private static string FullPathExe => ConfigurationManager.AppSettings["XUnitPath"];
+        private static string PathExe => ConfigurationManager.AppSettings["XUnitPath"];
         private const string TestsPassed = "Errors: 0, Failed: 0";
+
         /// <summary>
         /// Runs XUnit unit tests from the speciffied <paramref name="assemblyPaths"/>
         /// </summary>
@@ -23,26 +26,19 @@ namespace XUnit
         {
             Logger.LogMethodStart();
             var res = true;
-            if (!File.Exists(FullPathExe))
-            {
-                Logger.Log(LogLevel.Warn, "xunit.console.exe file not found.");
-                return false;
-            }
 
-            if (assemblyPaths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
-            {
-                Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
+            var paths = NormalizePaths(assemblyPaths);
+            if (!ValidateAssemblyPaths(paths))
                 return false;
-            }
 
-            var parameters = assemblyPaths.Aggregate((current, path) => current + $" {Processor.QuoteArgument(path)}");
+            var parameters = paths.Aggregate((current, path) => current + $" {Processor.QuoteArgument(path)}");
             if (!string.IsNullOrEmpty(traits))
                 parameters = traits.Split(',').Select(t => t.Trim()).Aggregate(parameters, (current, trait) => current + $" -trait {Processor.QuoteArgument(trait)} ");
             if (!string.IsNullOrEmpty(notraits))
                 parameters = notraits.Split(',').Select(nt => nt.Trim()).Aggregate(parameters, (current, notrait) => current + $" -notrait {Processor.QuoteArgument(notrait)}");
             parameters += " -nologo";
 
-            var result = Processor.RunProcess(FullPathExe, parameters);
+            var result = Processor.RunProcess(PathExe, parameters);
 
             if (!string.IsNullOrEmpty(result.Output))
                 res = result.Output.Contains(TestsPassed);
@@ -50,6 +46,7 @@ namespace XUnit
             Logger.LogMethodEnd();
             return res;
         }
+
         /// <summary>
         /// Runs XUnit tests from the specified <paramref name="assemblyPaths"/> with different options
         /// </summary>
@@ -70,18 +67,11 @@ namespace XUnit
         {
             Logger.LogMethodStart();
             var res = true;
-            if (!File.Exists(FullPathExe))
-            {
-                Logger.Log(LogLevel.Warn, "xunit.console.exe file not found.");
-                return false;
-            }
 
-            var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
-            if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
-            {
-                Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
+            var paths = NormalizePaths(assemblyPaths.Split(','));
+            if (!ValidateAssemblyPaths(paths))
                 return false;
-            }
+                    
             var parameters = paths.Aggregate((current, path) => current + $" {Processor.QuoteArgument(path)}");
 
             if (!string.IsNullOrEmpty(traits))
@@ -106,13 +96,31 @@ namespace XUnit
                 parameters += $" -{outputTypeAndName}";
             parameters += " -nologo";
 
-            var result = Processor.RunProcess(FullPathExe, parameters);
+            var result = Processor.RunProcess(PathExe, parameters);
 
             if (!string.IsNullOrEmpty(result.Output))
                 res = result.Output.Contains(TestsPassed);
 
             Logger.LogMethodEnd();
             return res;
+        }
+
+        private static bool ValidateAssemblyPaths(IEnumerable<string> paths)
+        {
+            var invalidPaths = paths.Where(p => !File.Exists(p)).Select(Path.GetFullPath);
+            bool areValid = !invalidPaths.Any();
+
+            if (!areValid)
+            {
+                Logger.Log(LogLevel.Error, $"Incorrect test assemby paths:\n{string.Join(Environment.NewLine, invalidPaths)}");
+            }
+
+            return areValid;
+        }
+
+        private static IEnumerable<string> NormalizePaths(IEnumerable<string> paths)
+        {
+            return paths.Select(p => p.Trim()).Select(Path.GetFullPath);
         }
     }
 }

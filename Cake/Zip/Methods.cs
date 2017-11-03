@@ -8,14 +8,11 @@ using Ionic.Zlib;
 
 namespace Zip
 {
-    //using Ionic.Zip;
     /// <summary>
     /// Encloses methods used with zipping files.
     /// </summary>
     public static class Methods
     {
-        #region methods
-
         /// <summary>
         /// Adds files and directories to .zip archive
         /// </summary>
@@ -269,7 +266,5 @@ namespace Zip
         }
 
         private static bool CheckIfArchiveExists(string archivePath) => File.Exists(archivePath);
-
-        #endregion
     }
 }

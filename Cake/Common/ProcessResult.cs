@@ -6,17 +6,20 @@
     public class ProcessResult
     {
         /// <summary>
-        /// flag indicating whether process run successfully
+        /// Flag indicating whether process run successfully
         /// </summary>
-        public bool Success { get; set; }
+        public bool Success => ExitCode == 0;
         /// <summary>
-        /// output string
+        /// Output string
         /// </summary>
         public string Output { get; set; }
         /// <summary>
-        /// error string
+        /// Error string
         /// </summary>
         public string Error { get; set; }
-
+        /// <summary>
+        /// Process exit code
+        /// </summary>
+        public int ExitCode { get; set; }
     }
 }

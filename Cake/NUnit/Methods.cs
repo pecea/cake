@@ -1,4 +1,6 @@
 ﻿using Common;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace NUnit
     /// </summary>
     public class Methods
     {
-        private static string FullPathExe => ConfigurationManager.AppSettings["NUnitPath"];
+        private static string PathExe => ConfigurationManager.AppSettings["NUnitPath"];
         private const string TestsPassed = "Overall result: Passed";
 
         /// <summary>
@@ -24,24 +26,18 @@ namespace NUnit
         {
             Logger.LogMethodStart();
             var res = true;
-            if (!File.Exists(FullPathExe))
-            {
-                Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
-                return false;
-            }
 
-            if (assemblyPaths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
-            {
-                Logger.Log(LogLevel.Warn, $"Incorrect test assemby paths!\n");
+            var paths = NormalizePaths(assemblyPaths);
+            if (!ValidateAssemblyPaths(paths))
                 return false;
-            }
-            var parameters = assemblyPaths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
+
+            var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
             if (!string.IsNullOrEmpty(conditions))
                 parameters += $" --where \"{conditions}\"";
             if (!string.IsNullOrEmpty(config))
                 parameters += $" --config={config}";
 
-            var result = Processor.RunProcess(FullPathExe, parameters);
+            var result = Processor.RunProcess(PathExe, parameters);
 
             if (!string.IsNullOrEmpty(result.Output))
                 res = result.Output.Contains(TestsPassed);
@@ -74,18 +70,11 @@ namespace NUnit
         {
             Logger.LogMethodStart();
             var res = true;
-            if (!File.Exists(FullPathExe))
-            {
-                Logger.Log(LogLevel.Warn, "Nunit3-console.exe file not found.");
-                return false;
-            }
 
-            var paths = assemblyPaths.Split(',').Select(ass => ass.Trim()).ToArray();
-            if (paths.Any(ass => string.IsNullOrEmpty(ass) || !File.Exists(ass)))
-            {
-                Logger.Log(LogLevel.Warn, "Incorrect test assemby paths!\n");
+            var paths = NormalizePaths(assemblyPaths.Split(','));
+            if (!ValidateAssemblyPaths(paths))
                 return false;
-            }
+
             var parameters = paths.Aggregate("--noh", (current, path) => current + $" {Processor.QuoteArgument(path)}");
             if (!string.IsNullOrEmpty(conditions))
                 parameters += $" --where {Processor.QuoteArgument(conditions)}";
@@ -120,13 +109,31 @@ namespace NUnit
             if (runIn32Bit.HasValue)
                 parameters += $" --x86";
 
-            var result = Processor.RunProcess(FullPathExe, parameters);
+            var result = Processor.RunProcess(PathExe, parameters);
 
             if (!string.IsNullOrEmpty(result.Output))
                 res = result.Output.Contains(TestsPassed);
 
             Logger.LogMethodEnd();
             return res;
+        }
+
+        private static bool ValidateAssemblyPaths(IEnumerable<string> paths)
+        {
+            var invalidPaths = paths.Where(p => !File.Exists(p));
+            bool areValid = !invalidPaths.Any();
+
+            if (!areValid)
+            {
+                Logger.Log(LogLevel.Error, $"Incorrect test assemby paths:\n{string.Join(Environment.NewLine, invalidPaths)}");
+            }
+
+            return areValid;
+        }
+        
+        private static IEnumerable<string> NormalizePaths(IEnumerable<string> paths)
+        {
+            return paths.Select(p => p.Trim()).Select(Path.GetFullPath);
         }
     }
 }

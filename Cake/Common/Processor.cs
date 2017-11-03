@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Common
@@ -8,6 +9,25 @@ namespace Common
     /// </summary>
     public static class Processor
     {
+        private static Uri ProcessorWorkingDirectory;
+
+        /// <summary>
+        /// Sets <see cref="Processor"/>'s working directory.
+        /// </summary>
+        /// <param name="path">Path to working directory</param>
+        public static void SetWorkingDirectory(string path)
+        {
+            string fullPath = Path.GetFullPath(path);
+
+            if (!Directory.Exists(fullPath))
+            {
+                throw new DirectoryNotFoundException($"Could not find directory ({fullPath}).");
+            }
+
+            Logger.Debug($"Setting Processor's working directory to {fullPath}.");
+            ProcessorWorkingDirectory = new Uri(fullPath, UriKind.Absolute);
+        }
+
         /// <summary>
         /// Runs command wth arguments
         /// </summary>
@@ -15,26 +35,29 @@ namespace Common
         /// <param name="arguments">Arguments to go with command</param>
         /// <param name="workingDirectory">Directory on which command should run</param>
         /// <returns><see cref="ProcessResult"/></returns> 
-        public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = ".")
+        public static ProcessResult RunProcess(string command, string arguments = "", string workingDirectory = null)
         {
             Logger.LogMethodStart();
             var result = new ProcessResult();
             Logger.Log(LogLevel.Debug, $"Running command: {command} {arguments}.");
 
-            if (workingDirectory != ".")
+            if (string.IsNullOrWhiteSpace(workingDirectory))
             {
-                if (!Directory.Exists(workingDirectory))
-                {
-                    workingDirectory = ".";
-                    Logger.Log(LogLevel.Warn, $"Working directory path does not exist! Changed path to {Directory.GetCurrentDirectory()}.");
-                }
+                workingDirectory = ProcessorWorkingDirectory.AbsolutePath;
             }
+            else if (!Directory.Exists(workingDirectory))
+            {
+                Logger.Warn($"Working directory path does not exist! ({Path.GetFullPath(workingDirectory)}) Using Processor's working directory ({ProcessorWorkingDirectory}).");
+                workingDirectory = ProcessorWorkingDirectory.AbsolutePath;
+            }
+
+            var fullPathCommand = new Uri(ProcessorWorkingDirectory, command);
 
             using (var process = new Process
             {
                 StartInfo =
                 {
-                    FileName = command,
+                    FileName = fullPathCommand.AbsolutePath,
                     Arguments = arguments,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -45,32 +68,18 @@ namespace Common
                 }
             })
             {
-                process.OutputDataReceived +=
-                    (sender, e) => { if (!string.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Info, e.Data); };
-                process.ErrorDataReceived +=
-                    (sender, e) => { if (!string.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Error, e.Data); };
+                process.OutputDataReceived += (sender, e) => { if (!string.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Info, e.Data); };
+                process.ErrorDataReceived += (sender, e) => { if (!string.IsNullOrEmpty(e.Data)) Logger.Log(LogLevel.Error, e.Data); };
 
                 process.Start();
 
                 result.Output = process.StandardOutput.ReadToEnd();
                 result.Error = process.StandardError.ReadToEnd();
-                if(!string.IsNullOrEmpty(result.Output))
-                    Logger.Log(LogLevel.Info, $"Process result: {result.Output}.");
-                if(!string.IsNullOrEmpty(result.Error))
-                    Logger.Log(LogLevel.Warn, $"Process error: {result.Error}.");
 
                 process.WaitForExit();
+                result.ExitCode = process.ExitCode;
 
-                if (process.ExitCode == 0)
-                {
-                    Logger.Log(LogLevel.Info, "Process run successfully!");
-                    result.Success = true;
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Warn, "Process exited with an error!");
-                    result.Success = false;
-                }
+                LogProcessOutput(result);
                 Logger.LogMethodEnd();
                 return result;
             }
@@ -84,6 +93,22 @@ namespace Common
         public static string QuoteArgument(string arg)
         {
             return $@"""{arg}""";
+        }
+
+        private static void LogProcessOutput(ProcessResult result)
+        {
+            LogLevel outputLevel = result.Success ? LogLevel.Info : LogLevel.Warn;
+
+            if (!string.IsNullOrWhiteSpace(result.Output))
+                Logger.Log(outputLevel, result.Output);
+
+            if (!string.IsNullOrWhiteSpace(result.Error))
+                Logger.Warn(result.Error);
+
+            if (result.Success)
+                Logger.Log(LogLevel.Info, "Process finished successfully.");
+            else
+                Logger.Log(LogLevel.Warn, $"Process finished with exit code {result.ExitCode}.");
         }
     }
 }

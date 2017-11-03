@@ -3,6 +3,7 @@ using System.Linq;
 using Common;
 using System.Threading.Tasks;
 using System.Text;
+using System.IO;
 
 namespace Cake
 {
@@ -66,10 +67,13 @@ namespace Cake
             // Running the script
             try
             {
+                string scriptPath = Path.GetFullPath(scriptArgument.Value);
+                // Set Processor's working directory to locate .exe files
+                Processor.SetWorkingDirectory(Environment.CurrentDirectory);
                 // Set current directory to the scripts directory
-                Environment.CurrentDirectory = System.IO.Path.GetDirectoryName(scriptArgument.Value);
+                Environment.CurrentDirectory = Path.GetDirectoryName(scriptPath);
 
-                await RoslynEngine.Instance.ExecuteFile(scriptArgument.Value).ConfigureAwait(false);
+                await RoslynEngine.Instance.ExecuteFile(scriptPath).ConfigureAwait(false);
             }
             catch (JobException j)
             {
