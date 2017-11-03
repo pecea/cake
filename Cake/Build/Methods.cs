@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Build
@@ -34,10 +33,6 @@ namespace Build
             { "x86", Platform.X86 },
             { "x64", Platform.X64 },
             { "Any CPU", Platform.AnyCpu }
-            //,
-            //{ "Any CPU 32", Platform.AnyCpu32BitPreferred },
-            //{ "Arm", Platform.Arm },
-            //{ "Itanium", Platform.Itanium }
         };
 
         private static readonly Dictionary<string, OptimizationLevel> OptimizationOptions = new Dictionary<string, OptimizationLevel>
@@ -76,14 +71,13 @@ namespace Build
         {
             var success = false;
             Logger.LogMethodStart();
-
-            var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+            
             var opts = project.CompilationOptions
                 .WithOptimizationLevel(OptimizationOptions[configuration])
                 .WithPlatform(PlatformOptions[platform]);
 
             var projectCompilation = await project
-                .WithMetadataReferences(new [] { mscorlib })
+                .WithMetadataReferences(project.MetadataReferences)
                 .WithCompilationOptions(opts)
                 .GetCompilationAsync()
                 .ConfigureAwait(false);
@@ -183,7 +177,7 @@ namespace Build
             Logger.LogMethodStart();
             if (!File.Exists(projectFile))
             {
-                Logger.Log(LogLevel.Warn, "The project file specified is nonexistent.");
+                Logger.Log(LogLevel.Warn, $"The project file ({Path.GetFullPath(projectFile)}) specified is nonexistent.");
                 return false;
             }
             if (!PlatformOptions.ContainsKey(platform))
