@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5311970D-8E70-4432-BFEC-7418C5E3713E}"
 	ProjectSection(SolutionItems) = preProject
@@ -83,7 +83,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{8B607D5B-458C-489D-9F72-5A2F5A913FBE}"
 	ProjectSection(SolutionItems) = preProject
 		Scripts\deps_cycle.csx = Scripts\deps_cycle.csx
-		Scripts\general_sample1.csx = Scripts\general_sample1.csx
+		Scripts\General\general_sample1.csx = Scripts\General\general_sample1.csx
+		Scripts\General\general_sample2.csx = Scripts\General\general_sample2.csx
 		Scripts\jobs_sample1.csx = Scripts\jobs_sample1.csx
 	EndProjectSection
 EndProject
@@ -101,6 +102,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Minify", "Minify", "{8E1023
 		Scripts\minify_sample1.csx = Scripts\minify_sample1.csx
 		template1.html = template1.html
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLib", "Scripts\General\TestApp\TestLib\TestLib.csproj", "{987716A3-9BD7-4A05-A4B9-E8617FF7D629}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -204,6 +207,10 @@ Global
 		{5F033557-9638-44F1-BD8E-197C2EC76038}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F033557-9638-44F1-BD8E-197C2EC76038}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F033557-9638-44F1-BD8E-197C2EC76038}.Release|Any CPU.Build.0 = Release|Any CPU
+		{987716A3-9BD7-4A05-A4B9-E8617FF7D629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{987716A3-9BD7-4A05-A4B9-E8617FF7D629}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{987716A3-9BD7-4A05-A4B9-E8617FF7D629}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{987716A3-9BD7-4A05-A4B9-E8617FF7D629}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -229,6 +236,7 @@ Global
 		{8B607D5B-458C-489D-9F72-5A2F5A913FBE} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
 		{8095E7FA-F187-4B07-84EF-A5F4E34774D2} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
 		{8E1023C0-EDF8-4D00-9EA9-3D50AC4953BC} = {70E5F872-FB05-4193-8C57-0ED47EAFA749}
+		{987716A3-9BD7-4A05-A4B9-E8617FF7D629} = {8B607D5B-458C-489D-9F72-5A2F5A913FBE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2CAA4D13-63CE-479B-AF62-7B591A6F66E2}
