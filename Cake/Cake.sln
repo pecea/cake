@@ -73,6 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{70E5
 	ProjectSection(SolutionItems) = preProject
 		minify.csx = minify.csx
 		script.csx = script.csx
+		subtitles.csx = subtitles.csx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{E58A5907-4AC8-473A-B1BD-944FAF5DA7BC}"
