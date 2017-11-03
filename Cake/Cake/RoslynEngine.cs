@@ -52,8 +52,11 @@ namespace Cake
         /// <param name="filePath">Script's path.</param>
         public async Task ExecuteFile(string filePath)
         {
-            await CSharpScript.RunAsync(File.ReadAllText(filePath), ScriptOptions.Default
-                .WithReferences(Assemblies).WithImports(Namespaces)).ConfigureAwait(false);
+            var options = ScriptOptions.Default
+                .WithReferences(Assemblies)
+                .WithImports(Namespaces);
+
+            await CSharpScript.RunAsync(File.ReadAllText(filePath), options).ConfigureAwait(false);
         }
     }
 }
