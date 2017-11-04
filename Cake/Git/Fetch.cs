@@ -18,7 +18,7 @@ namespace Git
         {
             Logger.LogMethodStart();
 
-            const string logMessage = "";
+            string logMessage = "";
             var options = new FetchOptions
             {
                 CredentialsProvider = UserIdentity.CredentialsProvider

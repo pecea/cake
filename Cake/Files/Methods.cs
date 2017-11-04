@@ -26,11 +26,6 @@ namespace Files
             var res = true;
 
             var dir = new DirectoryInfo(sourceDir);
-            if (!dir.Exists)
-            {
-                Logger.Log(LogLevel.Warn, $"Directory {sourceDir} not found.");
-                return false;
-            }
 
             // Get the subdirectories for the specified directory.
             var dirs = dir.GetDirectories();
@@ -59,6 +54,7 @@ namespace Files
                 }
                 catch (Exception ex)
                 {
+                    res = false;
                     Logger.LogException(LogLevel.Error, ex, $"Could not copy {file.Name}.");
                 }
             }
@@ -76,6 +72,7 @@ namespace Files
                     }
                     catch (Exception ex)
                     {
+                        res = false;
                         Logger.LogException(LogLevel.Error, ex, $"Could not copy {subdir.FullName}.");
                     }
                 }
@@ -95,11 +92,6 @@ namespace Files
         public static bool CopyFile(string sourceName, string destName, bool overwrite = true) //TODO: check whether overwrite works - probably when it's set to false, but there is already a file with the name of source file, we get an exception
         {
             Logger.LogMethodStart();
-            if (!File.Exists(sourceName))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {sourceName}.");
-                return false;
-            }
 
             File.Copy(sourceName, destName, overwrite);
             Logger.Log(LogLevel.Info, $"File {sourceName} copied.");
@@ -116,11 +108,6 @@ namespace Files
         public static bool DeleteFile(string filePath)
         {
             Logger.LogMethodStart();
-            if (!File.Exists(filePath))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
-                return false;
-            }
 
             File.Delete(filePath);
             Logger.Log(LogLevel.Info, $"File {filePath} deleted");
@@ -167,10 +154,7 @@ namespace Files
             var res = true;
 
             if (!Directory.Exists(parentDirectoryPath))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {parentDirectoryPath}");
-                return false;
-            }
+                throw new DirectoryNotFoundException($"Could not find a part of the path '{Path.GetFullPath(parentDirectoryPath)}'.");            
 
             foreach (var directory in GetFilesWithPattern(parentDirectoryPath, filePattern))
             {
@@ -181,6 +165,7 @@ namespace Files
                 }
                 catch (Exception ex)
                 {
+                    res = false;
                     Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
                 }
             }
@@ -204,10 +189,7 @@ namespace Files
             var res = true;
 
             if (!Directory.Exists(parentDirectoryPath))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {parentDirectoryPath}");
-                return false;
-            }
+                throw new DirectoryNotFoundException($"Could not find a part of the path '{Path.GetFullPath(parentDirectoryPath)}'.");
 
             var option = subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             foreach (var directory in Directory.GetDirectories(parentDirectoryPath, directoryPattern, option))
@@ -219,6 +201,7 @@ namespace Files
                 }
                 catch (Exception ex)
                 {
+                    res = false;
                     Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
                 }
             }
@@ -237,11 +220,6 @@ namespace Files
         public static bool DeleteDirectory(string directoryPath)
         {
             Logger.LogMethodStart();
-            if (!Directory.Exists(directoryPath))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
-                return false;
-            }
 
             Directory.Delete(directoryPath, true);
             Logger.Log(LogLevel.Info, $"Directory {directoryPath} deleted");
@@ -258,12 +236,10 @@ namespace Files
         public static bool CleanDirectory(string directoryPath) //TODO: check whether files outside directory are also cleaned :)
         {
             Logger.LogMethodStart();
+            var result = true;
 
             if (!Directory.Exists(directoryPath))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {directoryPath}");
-                return false;
-            }
+                throw new DirectoryNotFoundException($"Could not find a part of the path '{Path.GetFullPath(directoryPath)}'.");
 
             var directoriesToClean = Directory.GetDirectories(directoryPath);
             foreach (var dir in directoriesToClean)
@@ -275,6 +251,7 @@ namespace Files
                 }
                 catch (Exception ex)
                 {
+                    result = false;
                     Logger.LogException(LogLevel.Error, ex, $"Could not delete {dir}");
                 }
             }
@@ -289,6 +266,7 @@ namespace Files
                 }
                 catch (Exception ex)
                 {
+                    result = false;
                     Logger.LogException(LogLevel.Error, ex, $"Could not delete {file}");
                 }
             }
@@ -296,7 +274,7 @@ namespace Files
             Logger.Log(LogLevel.Info, $"{directoryPath} finished cleaning");
             Logger.LogMethodEnd();
 
-            return true;
+            return result;
         }
 
         /// <summary>
@@ -311,10 +289,7 @@ namespace Files
             Logger.LogMethodStart();
 
             if (!File.Exists(filePath))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {filePath}");
-                return false;
-            }
+                throw new FileNotFoundException($"Could not find a part of the path '{Path.GetFullPath(filePath)}'.");
 
             File.WriteAllText(filePath, Regex.Replace(File.ReadAllText(filePath), regex, newText));
             Logger.Log(LogLevel.Info, $"File {filePath} overwritten");
@@ -361,12 +336,6 @@ namespace Files
         public static bool WriteFile(string fileName)
         {
             Logger.LogMethodStart();
-
-            if (!File.Exists(fileName))
-            {
-                Logger.Log(LogLevel.Warn, $"Could not find {fileName}.");
-                return false;
-            }
 
             Logger.Log(LogLevel.Info, File.ReadAllText(fileName));
 

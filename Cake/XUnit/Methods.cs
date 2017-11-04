@@ -43,6 +43,9 @@ namespace XUnit
             if (!string.IsNullOrEmpty(result.Output))
                 res = result.Output.Contains(TestsPassed);
 
+            if (!res)
+                throw new TestsFailedException();
+
             Logger.LogMethodEnd();
             return res;
         }
@@ -101,6 +104,9 @@ namespace XUnit
             if (!string.IsNullOrEmpty(result.Output))
                 res = result.Output.Contains(TestsPassed);
 
+            if (!res)
+                throw new TestsFailedException();
+
             Logger.LogMethodEnd();
             return res;
         }
@@ -121,6 +127,10 @@ namespace XUnit
         private static IEnumerable<string> NormalizePaths(IEnumerable<string> paths)
         {
             return paths.Select(p => p.Trim()).Select(Path.GetFullPath);
+        }
+
+        internal class TestsFailedException : ApplicationException
+        {
         }
     }
 }

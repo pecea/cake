@@ -71,7 +71,7 @@ namespace Build
         {
             var success = false;
             Logger.LogMethodStart();
-            
+
             var opts = project.CompilationOptions
                 .WithOptimizationLevel(OptimizationOptions[configuration])
                 .WithPlatform(PlatformOptions[platform]);
@@ -175,34 +175,19 @@ namespace Build
         private static bool CheckBuildProjectArguments(string projectFile, string outputPath, string configuration, string platform)
         {
             Logger.LogMethodStart();
-            if (!File.Exists(projectFile))
-            {
-                Logger.Log(LogLevel.Warn, $"The project file ({Path.GetFullPath(projectFile)}) specified is nonexistent.");
-                return false;
-            }
-            if (!PlatformOptions.ContainsKey(platform))
-            {
-                Logger.Log(LogLevel.Warn, $"The platform parameter must be one of: {string.Join(", ", PlatformOptions.Select(k => k.Key))}.");
-                return false;
-            }
 
+            if (!File.Exists(projectFile))
+                throw new FileNotFoundException($"Could not find the project file ({Path.GetFullPath(projectFile)}).");
+
+            if (!PlatformOptions.ContainsKey(platform))
+                throw new ArgumentException($"Invalid platform specified (\"{platform}\"). The platform parameter must be one of: {string.Join(", ", PlatformOptions.Select(k => k.Key))}.", nameof(platform));
+            
             if (!OptimizationOptions.ContainsKey(configuration))
-            {
-                Logger.Log(LogLevel.Warn, "The configuration parameter must be set to \"Debug\" or \"Release\".");
-                return false;
-            }
+                throw new ArgumentException($"Invalid configuration specified (\"{configuration}\"). The configuration parameter must be one of: {string.Join(", ", OptimizationOptions.Select(k => k.Key))}.", nameof(configuration));
+            
             if (!string.IsNullOrEmpty(outputPath) && !Directory.Exists(outputPath))
-            {
-                try
-                {
-                    Directory.CreateDirectory(outputPath);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogException(LogLevel.Error, ex, $"Could not create output folder: {outputPath}.");
-                    return false;
-                }
-            }
+                Directory.CreateDirectory(outputPath);            
+
             Logger.LogMethodEnd();
             return true;
         }
@@ -221,7 +206,7 @@ namespace Build
 
             if (!CheckBuildProjectArguments(solutionFile, outputPath, configuration, platform)) return false;
             var res = await CompileSolutionAsync(solutionFile, outputPath, configuration, platform).ConfigureAwait(false);
-            
+
             Logger.LogMethodEnd();
             return res;
         }

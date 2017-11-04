@@ -74,12 +74,10 @@ namespace Minify
         private static bool ValidateGlob(IEnumerable<FileSystemInfo> files, string pattern)
         {
             Logger.LogMethodStart();
+
             files = files.ToArray();
             if (!files.Any())
-            {
-                Logger.Log(LogLevel.Warn, $"Pattern {pattern} did not match any files.");
-                return false;
-            }
+                throw new ArgumentException($"Pattern {pattern} did not match any files.", nameof(pattern));
 
             if (files.Any(f => f.Attributes == FileAttributes.Directory))
             {
@@ -88,11 +86,10 @@ namespace Minify
                     files.Where(f => f.Attributes == FileAttributes.Directory).Select(f => f.FullName)
                 );
 
-                Logger.Log(LogLevel.Warn, $"Pattern {pattern} matched directories: {directories}.");
-                return false;
+                throw new ArgumentException($"Pattern {pattern} matched directories: {directories}.", nameof(pattern));
             }
-            Logger.LogMethodEnd();
 
+            Logger.LogMethodEnd();
             return true;
         }
 
@@ -118,11 +115,10 @@ namespace Minify
                 var excludedFiles = Glob.Glob.Expand(excludePattern, ignoreCase);
                 files = files.Where(f => excludedFiles.All(ef => ef.FullName != f.FullName)).ToArray();
             }
-            if (string.IsNullOrEmpty(destination))
-            {
-                Logger.Log(LogLevel.Warn, "You have to specify the output file!");
-                return false;
-            }
+
+            if (string.IsNullOrEmpty(destination))            
+                throw new ArgumentNullException(nameof(destination));            
+
             var dest = Path.GetDirectoryName(destination);
             if (!string.IsNullOrEmpty(dest))
                 Directory.CreateDirectory(dest);

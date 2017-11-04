@@ -235,12 +235,10 @@ namespace Zip
 
             using (var zip = ZipFile.Read(zipPathAndName))
             {
-
                 if (zip[oldName] != null)
                     zip[oldName].FileName = newName;
                 else
                 {
-
                     Logger.Log(LogLevel.Warn, $"File {oldName} not found in the archive!");
                 }
                 zip.Save();
@@ -253,18 +251,26 @@ namespace Zip
         private static bool CheckZipFilesArguments(IEnumerable<string> filePaths, string zipPath)
         {
             Logger.LogMethodStart();
-            var enumerable = filePaths as IList<string> ?? filePaths.ToList();
-            if (!enumerable.All(filePath => File.Exists(filePath) || Directory.Exists(filePath)) || !enumerable.Any())
-                return false;
 
-            if (string.IsNullOrEmpty(zipPath)) return true;
+            if (filePaths == null || !filePaths.Any())
+                throw new ArgumentException("No file paths provided.", nameof(filePaths));
 
-            var fullPath = Path.GetFullPath(zipPath);
+            var invalidPaths = filePaths.Where(p => !File.Exists(p) && !Directory.Exists(p));
+            if (invalidPaths.Any())
+                throw new ArgumentException($"Could not find parts of paths:\n{string.Join(Environment.NewLine, invalidPaths)}).", nameof(filePaths));
 
-            Logger.LogMethodEnd();
-            return !string.IsNullOrEmpty(fullPath);
+            if (!string.IsNullOrWhiteSpace(zipPath) && !Uri.IsWellFormedUriString(zipPath, UriKind.RelativeOrAbsolute))
+                throw new ArgumentException($"'{zipPath}' is not a valid path.", nameof(zipPath));
+
+            return true;
         }
 
-        private static bool CheckIfArchiveExists(string archivePath) => File.Exists(archivePath);
+        private static bool CheckIfArchiveExists(string archivePath)
+        {
+            if (!File.Exists(archivePath))
+                throw new FileNotFoundException($"Could not find a part of the path: '{Path.GetFullPath(archivePath)}'.");
+
+            return true;
+        }
     }
 }
