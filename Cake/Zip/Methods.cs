@@ -44,7 +44,7 @@ namespace Zip
                     zip.Save(zipPathAndName);
                 else
                     zip.Save($"{zipPathAndName}.zip");
-                Logger.Log(LogLevel.Info, $"{zipPathAndName} zipped succesfully.");
+                Logger.Log(LogLevel.Info, $"{Path.GetFullPath(zipPathAndName)} zipped succesfully.");
             }
 
             Logger.LogMethodEnd();
@@ -106,7 +106,7 @@ namespace Zip
                     zip.Save(zipPathAndName);
                 else
                     zip.Save($"{zipPathAndName}.zip");
-                Logger.Log(LogLevel.Info, $"{zipPathAndName} zipped succesfully.");
+                Logger.Log(LogLevel.Info, $"{Path.GetFullPath(zipPathAndName)} zipped succesfully.");
             }
 
 
@@ -149,7 +149,7 @@ namespace Zip
                             entry.Extract(destination);
                     }
                 }
-                Logger.Log(LogLevel.Info, $"{zipPathAndName} unzipped succesfully.");
+                Logger.Log(LogLevel.Info, $"{Path.GetFullPath(zipPathAndName)} unzipped succesfully.");
             }
 
             Logger.LogMethodEnd();

@@ -2,21 +2,11 @@
 #r "C:\Users\Piotr\Source\Repos\cake\Cake\NUnit\bin\Debug\NUnit.dll"
 #r "C:\Users\Piotr\Source\Repos\cake\Cake\Zip\bin\Debug\Zip.dll"
 
-using System;
-
 new VoidJob("BuildProject")
-    .Does(() => 
-    {
-        if (!Build.Methods.BuildProjectAsync(@".\..\..\Fail\Fail.csproj").Result)
-            throw new ApplicationException("Build failed");
-    });
+    .Does(() => Build.Methods.BuildProjectAsync(@".\..\..\Fail\Fail.csproj").Wait());
 
 new VoidJob("RunTests")
-    .Does(() => 
-    {
-        if (!NUnit.Methods.RunTests(null, null, @".\..\..\Fail\bin\Debug\Fail.dll"))
-            throw new ApplicationException("Tests failed");
-    })
+    .Does(() => NUnit.Methods.RunTests(null, null, @".\..\..\Fail\bin\Debug\Fail.dll"))
     .DependsOn("BuildProject");
 
 new VoidJob("ZipResults")

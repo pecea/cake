@@ -49,8 +49,7 @@ namespace Build
 
             var project = await workspace.OpenProjectAsync(projectUrl).ConfigureAwait(false);
             var success = await CompileProjectAsync(project, outputDir, configuration, platform).ConfigureAwait(false);
-
-            Logger.Log(LogLevel.Info, $"Project {projectUrl} compilation finished.");
+            
             workspace.CloseSolution();
 
             Logger.LogMethodEnd();
@@ -111,7 +110,7 @@ namespace Build
 
                 if (result.Success)
                 {
-                    Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully.");
+                    Logger.Log(LogLevel.Info, $"Project {project.Name} compiled successfully to '{Path.GetFullPath(outputPath)}'.");
                     var extension = ProjectOutputs[project.CompilationOptions.OutputKind];
                     var pathOne = $"{outputPath}{projectCompilation.AssemblyName}{extension}";
                     var pathTwo = $"{outputPath}{projectCompilation.AssemblyName}.pdb";
