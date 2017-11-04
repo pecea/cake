@@ -75,6 +75,12 @@ namespace Build
                 .WithOptimizationLevel(OptimizationOptions[configuration])
                 .WithPlatform(PlatformOptions[platform]);
 
+            if (!project.MetadataReferences.Any(mref => mref.Display.Contains("mscorlib")))
+            {
+                var mscorlib = MetadataReference.CreateFromFile(typeof(object).Assembly.Location);
+                project = project.AddMetadataReference(mscorlib);
+            }
+
             var projectCompilation = await project
                 .WithMetadataReferences(project.MetadataReferences)
                 .WithCompilationOptions(opts)

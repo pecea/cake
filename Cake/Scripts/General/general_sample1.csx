@@ -2,15 +2,20 @@
 #r "..\..\NUnit\bin\Debug\NUnit.dll"
 #r "..\..\Zip\bin\Debug\Zip.dll"
 
+string projPath = @".\TestApp\TestLib\";
+//string projPath = @".\..\..\Success\";
+string projName = "TestLib";
+//string projName = "Success";
+
 new VoidJob("BuildProject")
-    .Does(() => Build.Methods.BuildProjectAsync(@".\..\..\Success\Success.csproj").Wait());
+    .Does(() => Build.Methods.BuildProjectAsync($"{projPath}{projName}.csproj").Wait());
 
 new VoidJob("RunTests")
-    .Does(() => NUnit.Methods.RunTests(null, null, @".\..\..\Success\bin\Debug\Success.dll"))
+    .Does(() => NUnit.Methods.RunTests(null, null, $@"{projPath}bin\Debug\{projName}.dll"))
     .DependsOn("BuildProject");
 
 new VoidJob("ZipResults")
-    .Does(() => Zip.Methods.ZipFiles("results.zip", @".\..\..\Success\bin\Debug\"))
+    .Does(() => Zip.Methods.ZipFiles("results.zip", $@"{projPath}bin\Debug\"))
     .DependsOn("RunTests");
 
-JobManager.SetDefault("BuildProject");
+JobManager.SetDefault("ZipResults");

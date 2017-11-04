@@ -56,6 +56,8 @@ namespace Cake
             var metadataResolver = ScriptMetadataResolver.Default
                 .WithBaseDirectory(scriptDirectory);
 
+            Logger.Debug($"Setting script's working directory to '{scriptDirectory}'.");
+
             var options = ScriptOptions.Default
                 .WithReferences(Assemblies)
                 .WithImports(Namespaces)

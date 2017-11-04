@@ -21,10 +21,10 @@ namespace Common
 
             if (!Directory.Exists(fullPath))
             {
-                throw new DirectoryNotFoundException($"Could not find directory ({fullPath}).");
+                throw new DirectoryNotFoundException($"Could not find directory '{fullPath}'.");
             }
 
-            Logger.Debug($"Setting Processor's working directory to {fullPath}.");
+            Logger.Debug($"Setting Processor's working directory to '{fullPath}'.");
             ProcessorWorkingDirectory = new Uri(fullPath, UriKind.Absolute);
         }
 
@@ -39,7 +39,6 @@ namespace Common
         {
             Logger.LogMethodStart();
             var result = new ProcessResult();
-            Logger.Log(LogLevel.Debug, $"Running command: {command} {arguments}.");
 
             if (string.IsNullOrWhiteSpace(workingDirectory))
             {
@@ -51,13 +50,13 @@ namespace Common
                 workingDirectory = ProcessorWorkingDirectory.AbsolutePath;
             }
 
-            var fullPathCommand = new Uri(ProcessorWorkingDirectory, command);
+            Logger.Log(LogLevel.Debug, $"Running command: {command} {arguments} in '{workingDirectory}'.");
 
             using (var process = new Process
             {
                 StartInfo =
                 {
-                    FileName = fullPathCommand.AbsolutePath,
+                    FileName = command,
                     Arguments = arguments,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
