@@ -42,12 +42,12 @@ namespace Common
 
             if (string.IsNullOrWhiteSpace(workingDirectory))
             {
-                workingDirectory = ProcessorWorkingDirectory.AbsolutePath;
+                workingDirectory = Uri.UnescapeDataString(ProcessorWorkingDirectory.AbsolutePath);
             }
             else if (!Directory.Exists(workingDirectory))
             {
                 Logger.Warn($"Working directory path does not exist! ({Path.GetFullPath(workingDirectory)}) Using Processor's working directory ({ProcessorWorkingDirectory}).");
-                workingDirectory = ProcessorWorkingDirectory.AbsolutePath;
+                workingDirectory = Uri.UnescapeDataString(ProcessorWorkingDirectory.AbsolutePath);
             }
 
             Logger.Log(LogLevel.Debug, $"Running command: {command} {arguments} in '{workingDirectory}'.");
