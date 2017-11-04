@@ -1,11 +1,12 @@
-#r "C:\Users\Piotr\Source\Repos\cake\Cake\Git\bin\Debug\Git.dll"
+#r "..\..\Git\bin\Debug\Git.dll"
 
 using System;
+using static Git.Methods;
 
 new VoidJob("GitInit").Does(() =>
 {
-    RepositoryPath = @"C:\Repository";
-    UserIdentity = Identity.FromJsonFile(@"C:\creds.json");
+    RepositoryPath = @"C:\Users\Piotr\Source\Repos\test";
+    UserIdentity = Git.Identity.FromJsonFile(@"C:\creds.json");
 });
 
 new Job("Commit").DependsOn("GitInit").Does(() =>
@@ -25,9 +26,9 @@ new Job("Commit").DependsOn("GitInit").Does(() =>
         : false;
 });
 
-new Job("Pull").DependsOn("Commit").Does(Pull);
+new Job("Pull").DependsOn("Commit").Does(() => Pull());
 
-new Job("Push").DependsOn("Pull").Does(Push);
+new Job("Push").DependsOn("Pull").Does(() => Push());
 
 JobManager.SetDefault("Push");
 

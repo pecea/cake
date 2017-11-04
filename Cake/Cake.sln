@@ -78,7 +78,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{70E5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{E58A5907-4AC8-473A-B1BD-944FAF5DA7BC}"
 	ProjectSection(SolutionItems) = preProject
-		Scripts\git_sample1.csx = Scripts\git_sample1.csx
+		Scripts\Git\git_sample1.csx = Scripts\Git\git_sample1.csx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{8B607D5B-458C-489D-9F72-5A2F5A913FBE}"
