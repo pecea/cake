@@ -1,6 +1,6 @@
-#r "C:\Users\Piotr\Source\Repos\cake\Cake\Build\bin\Debug\Build.dll"
-#r "C:\Users\Piotr\Source\Repos\cake\Cake\NUnit\bin\Debug\NUnit.dll"
-#r "C:\Users\Piotr\Source\Repos\cake\Cake\Zip\bin\Debug\Zip.dll"
+#r "..\..\Build\bin\Debug\Build.dll"
+#r "..\..\NUnit\bin\Debug\NUnit.dll"
+#r "..\..\Zip\bin\Debug\Zip.dll"
 
 new VoidJob("BuildProject")
     .Does(() => Build.Methods.BuildProjectAsync(@".\..\..\Success\Success.csproj").Wait());
@@ -13,4 +13,4 @@ new VoidJob("ZipResults")
     .Does(() => Zip.Methods.ZipFiles("results.zip", @".\..\..\Success\bin\Debug\"))
     .DependsOn("RunTests");
 
-JobManager.SetDefault("ZipResults");
+JobManager.SetDefault("BuildProject");

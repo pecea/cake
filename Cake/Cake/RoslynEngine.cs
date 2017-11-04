@@ -52,9 +52,14 @@ namespace Cake
         /// <param name="filePath">Script's path.</param>
         public async Task ExecuteFile(string filePath)
         {
+            var scriptDirectory = Path.GetDirectoryName(filePath);
+            var metadataResolver = ScriptMetadataResolver.Default
+                .WithBaseDirectory(scriptDirectory);
+
             var options = ScriptOptions.Default
                 .WithReferences(Assemblies)
-                .WithImports(Namespaces);
+                .WithImports(Namespaces)
+                .WithMetadataResolver(metadataResolver);
 
             await CSharpScript.RunAsync(File.ReadAllText(filePath), options).ConfigureAwait(false);
         }

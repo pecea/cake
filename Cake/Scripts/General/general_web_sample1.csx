@@ -1,6 +1,6 @@
-#r "C:\Users\Piotr\Source\Repos\cake\Cake\Build\bin\Debug\Build.dll"
-#r "C:\Users\Piotr\Source\Repos\cake\Cake\Minify\bin\Debug\Minify.dll"
-#r "C:\Users\Piotr\Source\Repos\cake\Cake\Files\bin\Debug\Files.dll"
+#r "..\..\Build\bin\Debug\Build.dll"
+#r "..\..\Minify\bin\Debug\Minify.dll"
+#r "..\..\Files\bin\Debug\Files.dll"
 
 new VoidJob("Clean")
     .Does(() => Files.Methods.CleanDirectory(@".\Webroot\Publish"));
