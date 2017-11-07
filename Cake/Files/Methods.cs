@@ -172,16 +172,16 @@ namespace Files
                 return false;
             }
 
-            foreach (var directory in GetFilesWithPattern(parentDirectoryPath, filePattern))
+            foreach (var file in GetFilesWithPattern(parentDirectoryPath, filePattern))
             {
                 try
                 {
-                    res &= DeleteFile(directory);
-                    Logger.Log(LogLevel.Debug, $"File {directory} deleted");
+                    res &= DeleteFile(file);
+                    Logger.Log(LogLevel.Debug, $"File {file} deleted");
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {file}");
                 }
             }
 
