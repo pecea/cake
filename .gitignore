@@ -198,3 +198,7 @@ ModelManifest.xml
 /.vs/*
 /Cake/Scripts/General/1/results.zip
 /Cake/Scripts/General/results.zip
+/Cake/Scripts/General/Webroot/js2.min.js
+/Cake/Scripts/General/Webroot/js1.min.js
+/Cake/Scripts/General/Webroot/colors.min.css
+/Cake/TestResults
