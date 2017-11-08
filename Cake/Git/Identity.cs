@@ -64,7 +64,7 @@ namespace Git
         /// <summary>
         /// Method for getting user signature
         /// </summary>
-        /// <returns></returns>
+        /// <returns><see cref="LibGit2Sharp.Signature"/></returns>
         public Signature GetSignature() => new Signature(Name, Email, DateTime.Now);
 
         private Credentials GetCredentials(string url, string usernameFromUrl, SupportedCredentialTypes types)
@@ -81,7 +81,7 @@ namespace Git
         /// Method for getting user identity from .json file
         /// </summary>
         /// <param name="path">Path to the user identity information</param>
-        /// <returns></returns>
+        /// <returns><see cref="Identity"/></returns>
         public static Identity FromJsonFile(string path)
         {
             var content = File.ReadAllText(path);
@@ -92,7 +92,7 @@ namespace Git
         /// Method for getting user identity from .xml file
         /// </summary>
         /// <param name="path">Path to the user identity information</param>
-        /// <returns></returns>
+        /// <returns><see cref="Identity"/></returns>
         public static Identity FromXmlFile(string path)
         {
             Identity result;
