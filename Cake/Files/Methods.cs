@@ -12,10 +12,10 @@ namespace Files
     public static class Methods
     {
         /// <summary>
-        /// Copy folder content to another folder
+        /// Copy directory content to another directory
         /// </summary>
-        /// <param name="sourceDir">Path to source folder</param>
-        /// <param name="destinationDir">Path to destination folder</param>
+        /// <param name="sourceDir">Path to source directory</param>
+        /// <param name="destinationDir">Path to destination directory</param>
         /// <param name="copySubDirs">If true, all subdirectories are also copied. Default value is true.</param>
         /// <param name="overwrite">If true, files in destination directory are overwriten. Default value is false.</param>
         /// <param name="cleanDestinationDirectory">If true, all files in destination directory are deleted before the operation. Default value is false.</param>
@@ -119,7 +119,7 @@ namespace Files
         /// <summary>
         /// Get all the files of a directory following a regex patern
         /// </summary>
-        /// <param name="parentDirectoryPath">Path to folder</param>
+        /// <param name="parentDirectoryPath">Path to directory</param>
         /// <param name="filePattern">Search pattern</param>
         /// <param name="subdirectories">If true, search all subdirectories</param>
         /// <returns>Names of files that match the pattern</returns>
@@ -145,7 +145,7 @@ namespace Files
         /// <summary>
         /// Delete all the files of a directory following a regex patern
         /// </summary>
-        /// <param name="parentDirectoryPath">Path to folder</param>
+        /// <param name="parentDirectoryPath">Path to directory</param>
         /// <param name="filePattern">Delete pattern</param>
         /// <returns>True, if files were correctly deleted</returns>
         public static bool DeleteFilesWithPattern(string parentDirectoryPath, string filePattern)
@@ -156,17 +156,17 @@ namespace Files
             if (!Directory.Exists(parentDirectoryPath))
                 throw new DirectoryNotFoundException($"Could not find a part of the path '{Path.GetFullPath(parentDirectoryPath)}'.");            
 
-            foreach (var directory in GetFilesWithPattern(parentDirectoryPath, filePattern))
+            foreach (var file in GetFilesWithPattern(parentDirectoryPath, filePattern))
             {
                 try
                 {
-                    res &= DeleteFile(directory);
-                    Logger.Log(LogLevel.Debug, $"File {directory} deleted");
+                    res &= DeleteFile(file);
+                    Logger.Log(LogLevel.Debug, $"File {file} deleted");
                 }
                 catch (Exception ex)
                 {
                     res = false;
-                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {directory}");
+                    Logger.LogException(LogLevel.Error, ex, $"Could not delete {file}");
                 }
             }
 
@@ -179,7 +179,7 @@ namespace Files
         /// <summary>
         /// Delete all the subdirectories of a directory following a regex patern
         /// </summary>
-        /// <param name="parentDirectoryPath">Path to folder</param>
+        /// <param name="parentDirectoryPath">Path to directory</param>
         /// <param name="directoryPattern">Delete pattern</param>
         /// <param name="subdirectories">If true, recursive</param>
         /// <returns>True, if directories where correctly deleted</returns>
@@ -215,8 +215,8 @@ namespace Files
         /// <summary>
         /// Delete a directory
         /// </summary>
-        /// <param name="directoryPath">Path to folder</param>
-        /// <returns>True, if folder was correctly deleted</returns>
+        /// <param name="directoryPath">Path to directory</param>
+        /// <returns>True, if directory was correctly deleted</returns>
         public static bool DeleteDirectory(string directoryPath)
         {
             Logger.LogMethodStart();
@@ -231,8 +231,8 @@ namespace Files
         /// <summary>
         /// Delete the content of a directory
         /// </summary>
-        /// <param name="directoryPath">Path to folder</param>
-        /// <returns>True, if all files and folders were correctly deleted</returns>
+        /// <param name="directoryPath">Path to directory</param>
+        /// <returns>True, if all files and directories were correctly deleted</returns>
         public static bool CleanDirectory(string directoryPath) //TODO: check whether files outside directory are also cleaned :)
         {
             Logger.LogMethodStart();
@@ -299,10 +299,10 @@ namespace Files
         }
 
         /// <summary>
-        /// Look for a file in different folders and return the full path where it is found
+        /// Look for a file in different directories and return the full path where it is found
         /// </summary>
         /// <param name="filename">Filename</param>
-        /// <param name="directories">Path to folders to search files in</param>
+        /// <param name="directories">Path to directories to search files in</param>
         /// <returns>Paths to file, if any found, filename otherwise</returns>
         public static string[] LookForFileInDirectories(string filename, params string[] directories)
         {
