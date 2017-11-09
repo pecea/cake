@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Cake
@@ -50,11 +51,12 @@ namespace Cake
         /// Executes .csx script with C# code in it.
         /// </summary>
         /// <param name="filePath">Script's path.</param>
-        /// <returns><see cref="Task" /></returns>
+        /// <returns><see cref="Task"/></returns>
         public async Task ExecuteFile(string filePath)
         {
             var scriptDirectory = Path.GetDirectoryName(filePath);
             var metadataResolver = ScriptMetadataResolver.Default
+                .WithSearchPaths(RuntimeEnvironment.GetRuntimeDirectory())
                 .WithBaseDirectory(scriptDirectory);
 
             Logger.Debug($"Setting script's working directory to '{scriptDirectory}'.");
