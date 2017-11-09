@@ -1,10 +1,13 @@
 ﻿using Common;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Threading.Tasks;
 
 namespace Cake
@@ -54,9 +57,10 @@ namespace Cake
         /// <returns><see cref="Task"/></returns>
         public async Task ExecuteFile(string filePath)
         {
+            var assembliesPaths = GetAssembliesSearchPaths();
             var scriptDirectory = Path.GetDirectoryName(filePath);
             var metadataResolver = ScriptMetadataResolver.Default
-                .WithSearchPaths(RuntimeEnvironment.GetRuntimeDirectory())
+                .WithSearchPaths(assembliesPaths)
                 .WithBaseDirectory(scriptDirectory);
 
             Logger.Debug($"Setting script's working directory to '{scriptDirectory}'.");
@@ -67,6 +71,27 @@ namespace Cake
                 .WithMetadataResolver(metadataResolver);
 
             await CSharpScript.RunAsync(File.ReadAllText(filePath), options).ConfigureAwait(false);
+        }
+
+        private IEnumerable<string> GetAssembliesSearchPaths()
+        {
+            IList<string> gacDirectories = new List<string>();
+            try
+            {
+                string winDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                gacDirectories = Directory
+                    .EnumerateDirectories($@"{winDir}\Microsoft.NET\", "*", SearchOption.AllDirectories)
+                    .ToList();
+            }
+            catch (Exception e)
+            {
+                Logger.LogException(LogLevel.Warn, e, "Could not enumerate GAC directories.");
+            }
+
+            string runtimeDir = RuntimeEnvironment.GetRuntimeDirectory();
+            gacDirectories.Add(runtimeDir);
+
+            return gacDirectories;
         }
     }
 }
