@@ -50,6 +50,7 @@ namespace Cake
         /// Executes .csx script with C# code in it.
         /// </summary>
         /// <param name="filePath">Script's path.</param>
+        /// <returns><see cref="Task" /></returns>
         public async Task ExecuteFile(string filePath)
         {
             var scriptDirectory = Path.GetDirectoryName(filePath);
