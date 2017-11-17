@@ -108,12 +108,22 @@ namespace Files
         public static bool DeleteFile(string filePath)
         {
             Logger.LogMethodStart();
+            bool success;
 
-            File.Delete(filePath);
-            Logger.Log(LogLevel.Info, $"File {filePath} deleted");
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+                Logger.Log(LogLevel.Info, $"File {filePath} deleted");
+                success = true;
+            }
+            else
+            {
+                Logger.Warn($"File {filePath} does not exist");
+                success = false;
+            }
 
             Logger.LogMethodEnd();
-            return true;
+            return success;
         }
 
         /// <summary>
@@ -220,12 +230,22 @@ namespace Files
         public static bool DeleteDirectory(string directoryPath)
         {
             Logger.LogMethodStart();
+            bool success;
 
-            Directory.Delete(directoryPath, true);
-            Logger.Log(LogLevel.Info, $"Directory {directoryPath} deleted");
+            if (Directory.Exists(directoryPath))
+            {
+                Directory.Delete(directoryPath, true);
+                Logger.Log(LogLevel.Info, $"Directory {directoryPath} deleted");
+                success = true;
+            }
+            else
+            {
+                Logger.Warn($"Directory {directoryPath} does not exist");
+                success = false;
+            }
 
             Logger.LogMethodEnd();
-            return true;
+            return success;
         }
 
         /// <summary>
