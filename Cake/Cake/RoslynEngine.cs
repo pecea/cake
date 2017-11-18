@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading.Tasks;
+using Microsoft.CSharp;
 
 namespace Cake
 {
@@ -26,6 +27,7 @@ namespace Cake
         {
             Assemblies.Add(typeof(Job).Assembly);
             Assemblies.Add(typeof(Logger).Assembly);
+            Assemblies.Add(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo).Assembly); //dynamic 
             Namespaces.Add(typeof(Job).Namespace);
             Namespaces.Add(typeof(JobManager).Namespace);
             Namespaces.Add(typeof(Logger).Namespace);
@@ -76,9 +78,10 @@ namespace Cake
         private IEnumerable<string> GetAssembliesSearchPaths()
         {
             IList<string> gacDirectories = new List<string>();
+            string winDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+
             try
             {
-                string winDir = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
                 gacDirectories = Directory
                     .EnumerateDirectories($@"{winDir}\Microsoft.NET\", "*", SearchOption.AllDirectories)
                     .ToList();
@@ -89,9 +92,9 @@ namespace Cake
             }
 
             string runtimeDir = RuntimeEnvironment.GetRuntimeDirectory();
-            gacDirectories.Add(runtimeDir);
-
+            gacDirectories.Add($@"{winDir}\Microsoft.NET\");
             return gacDirectories;
+
         }
     }
 }
