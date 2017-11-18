@@ -28,7 +28,6 @@ namespace Cake
             {
                 Console.WriteLine($"{e.ParamName} is not a valid argument.");
                 ShowHelp();
-                Console.ReadKey();
                 return;
             }
 
@@ -37,7 +36,6 @@ namespace Cake
             if (helpArgument != null)
             {
                 ShowHelp();
-                Console.ReadKey();
                 return;
             }
 
@@ -78,18 +76,15 @@ namespace Cake
             catch (JobException j)
             {
                 HandleJobException(j);
-                Console.ReadKey();
                 return;
             }
             catch (Exception e)
             {
                 Logger.LogException(LogLevel.Fatal, e, "A fatal error has occured.");
-                Console.ReadKey();
                 return;
             }
 
             Logger.Log(LogLevel.Info, "Cake finished successfully.");
-            Console.ReadKey();
         }
 
         private static void HandleJobException(JobException j)
