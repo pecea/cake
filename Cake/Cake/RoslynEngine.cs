@@ -92,7 +92,7 @@ namespace Cake
             }
 
             string runtimeDir = RuntimeEnvironment.GetRuntimeDirectory();
-            gacDirectories.Add($@"{winDir}\Microsoft.NET\");
+            gacDirectories.Add(runtimeDir);
             return gacDirectories;
 
         }
